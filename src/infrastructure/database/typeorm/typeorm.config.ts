@@ -11,11 +11,21 @@ export default () => ({
     synchronize: true,
     timezone: 'Z',
     cache: {
-    	type: 'ioredis',
-    	port: `redis://${process.env.REDISCLOUD_URL}`,
+      type: 'redis',
+      port: `redis://${process.env.REDISCLOUD_URL}`,
+      options: {
+        username: 'default',
+        password: 'REDIS_PASSWORD',
+        socket: {
+          host: 'redis-16575.c59.eu-west-1-2.ec2.redns.redis-cloud.com',
+          port: 16575
+        }
+      }
     },
     ssl: {
       rejectUnauthorized: false,
+      // added for connection error
+      // also could be achieved with heroku config:set PGSSLMODE=no-verify
     },
   } as DataSourceOptions,
 });
