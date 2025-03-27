@@ -11,7 +11,7 @@ export default () => ({
     synchronize: true,
     timezone: 'Z',
     cache: {
-      type: 'redis',
+      type: 'ioredis',
       options: {
         username: 'default',
         password: process.env.REDIS_PASSWORD,
