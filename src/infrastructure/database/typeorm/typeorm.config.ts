@@ -14,5 +14,8 @@ export default () => ({
     	type: 'ioredis',
     	port: `redis://${process.env.REDISCLOUD_URL}`,
     },
+    ssl: {
+      rejectUnauthorized: false,
+    },
   } as DataSourceOptions,
 });
