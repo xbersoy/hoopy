@@ -28,12 +28,11 @@ export async function bootstrap() {
 
   const {
     env,
-    host,
     port
   } = configService.get(APP_CONFIG)
   
 	await app.listen(port, () => {
-		Logger.log(`ENV:${env} - Application runs at ${host}:${port}`, 'App')
+		Logger.log(`ENV:${env} - Application runs on ::${port}`, 'App')
 	})
 }
 
