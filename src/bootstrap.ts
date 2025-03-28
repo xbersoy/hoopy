@@ -32,7 +32,7 @@ export async function bootstrap() {
     port
   } = configService.get(APP_CONFIG)
   
-	await app.listen(port, host, () => {
+	await app.listen(port, () => {
 		Logger.log(`ENV:${env} - Application runs at ${host}:${port}`, 'App')
 	})
 }

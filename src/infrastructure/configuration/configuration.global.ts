@@ -12,7 +12,7 @@ export default () => ({
 		refreshTokenExpirationTime: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
 	},
 	[APP_CONFIG]: {
-		port: parseInt(process.env.PORT, 10) || 8080,
+		port: parseInt(process.env.PORT, 10),
 		host: process.env.HOST,
 		env: process.env.ENV,
 	},
