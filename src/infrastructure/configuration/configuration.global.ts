@@ -1,4 +1,5 @@
-import { DEBUG_CONFIG, JWT_CONFIG, APP_CONFIG } from './configuration.consts'
+import { isDevelopment } from '@infras/common'
+import { DEBUG_CONFIG, JWT_CONFIG, APP_CONFIG, REDIS_CONFIG } from './configuration.consts'
 
 export default () => ({
 	[DEBUG_CONFIG]: {
@@ -14,5 +15,11 @@ export default () => ({
 		port: parseInt(process.env.PORT, 10) || 8080,
 		host: process.env.HOST,
 		env: process.env.ENV,
+	},
+	[REDIS_CONFIG]: {
+		host: isDevelopment() ? '127.0.0.1' : process.env.REDIS_HOST,
+		port: isDevelopment() ? 6379 : process.env.REDIS_PORT,
+		username: isDevelopment() ? '' : process.env.REDIS_USERNAME,
+		password: isDevelopment() ? '' : process.env.REDIS_PASSWORD,
 	}
 })

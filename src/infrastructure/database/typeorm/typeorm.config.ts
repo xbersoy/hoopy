@@ -5,7 +5,7 @@ import { TYPEORM_CONFIG_PROVIDER } from './typeorm.constants';
 export default () => ({
   [TYPEORM_CONFIG_PROVIDER]: {
     type: 'postgres',
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_CONNECTION_STRING,
     autoLoadEntities: true,
     logging: isDevelopment(),
     synchronize: true,
@@ -14,16 +14,16 @@ export default () => ({
     cache: {
       type: 'ioredis',
       options: {
-        username: 'default',
-        password: process.env.REDIS_PASSWORD,
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+        host: isDevelopment() ? '127.0.0.1' : process.env.REDIS_HOST,
+        port: isDevelopment() ? 6379 : process.env.REDIS_PORT,
+        username: isDevelopment() ? '' : process.env.REDIS_USERNAME,
+        password: isDevelopment() ? '' : process.env.REDIS_PASSWORD,
       }
     },
-    // ssl: {
-    //   rejectUnauthorized: false,
-    //   // added for connection error
-    //   // also could be achieved with heroku config:set PGSSLMODE=no-verify
-    // },
-  } as DataSourceOptions,
+    ...(!isDevelopment() && { ssl: {
+      rejectUnauthorized: isDevelopment(),
+      // added for connection error
+      // also could be achieved with heroku config:set PGSSLMODE=no-verify
+    }}),
+  } as unknown as DataSourceOptions,
 });
