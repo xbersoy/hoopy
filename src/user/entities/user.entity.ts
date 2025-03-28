@@ -1,14 +1,16 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { IsEmail } from 'class-validator';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
+  @IsEmail()
   email: string;
 
-  @Column()
+  @Column({ nullable: false })
   password: string;
 
   @Column({ nullable: true })

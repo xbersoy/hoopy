@@ -5,17 +5,33 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { JWT_CONFIG } from '@infras/configuration';
+
+export interface JWT_CONFIG {
+	accessSecret: string
+	refreshSecret: string
+	accessTokenExpirationTime: string
+	refreshTokenExpirationTime: string
+}
 
 @Injectable()
 export class AuthService {
+  private config: JWT_CONFIG
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.config = this.configService.get(JWT_CONFIG)
+  }
 
   async register(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
+    if (!email || !password) {
+      throw new BadRequestException('Email and password are required');
+    }
+
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) {
       throw new BadRequestException('User already exists');
@@ -23,16 +39,24 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({
-      email,
+      email: email.trim(),
       password: hashedPassword,
     });
 
-    await this.userRepository.save(user);
-    return this.generateTokens(user);
+    try {
+      await this.userRepository.save(user);
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new BadRequestException('Failed to create user');
+    }
   }
 
   async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userRepository.findOne({ where: { email } });
+    if (!email || !password) {
+      throw new BadRequestException('Email and password are required');
+    }
+
+    const user = await this.userRepository.findOne({ where: { email: email.trim() } });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -46,6 +70,10 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
+    if (!refreshToken) {
+      throw new BadRequestException('Refresh token is required');
+    }
+
     try {
       const payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: this.configService.get('jwt.refreshSecret'),
@@ -63,6 +91,9 @@ export class AuthService {
   }
 
   async logout(userId: string): Promise<void> {
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
     await this.userRepository.update(userId, { refreshToken: null });
   }
 
@@ -70,13 +101,13 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('jwt.accessSecret'),
-      expiresIn: '12h',
+      secret: this.config.accessSecret,
+      expiresIn: this.config.accessTokenExpirationTime,
     });
     
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('jwt.refreshSecret'),
-      expiresIn: '7d',
+      secret: this.config.refreshSecret,
+      expiresIn: this.config.refreshTokenExpirationTime,
     });
 
     await this.userRepository.update(user.id, { refreshToken });

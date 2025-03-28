@@ -9,6 +9,7 @@ export default () => ({
     autoLoadEntities: true,
     logging: isDevelopment(),
     synchronize: true,
+    dropSchema: isDevelopment(),
     timezone: 'Z',
     cache: {
       type: 'ioredis',
@@ -19,10 +20,10 @@ export default () => ({
         port: process.env.REDIS_PORT,
       }
     },
-    ssl: {
-      rejectUnauthorized: false,
-      // added for connection error
-      // also could be achieved with heroku config:set PGSSLMODE=no-verify
-    },
+    // ssl: {
+    //   rejectUnauthorized: false,
+    //   // added for connection error
+    //   // also could be achieved with heroku config:set PGSSLMODE=no-verify
+    // },
   } as DataSourceOptions,
 });
