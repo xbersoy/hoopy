@@ -5,7 +5,7 @@ import { TYPEORM_CONFIG_PROVIDER } from './typeorm.constants';
 export default () => ({
   [TYPEORM_CONFIG_PROVIDER]: {
     type: 'postgres',
-    url: process.env.DATABASE_CONNECTION_STRING,
+    url: process.env.DATABASE_URL,
     autoLoadEntities: true,
     logging: isDevelopment(),
     synchronize: true,
