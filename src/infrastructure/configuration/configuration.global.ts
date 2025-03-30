@@ -15,6 +15,12 @@ export default () => ({
 		port: parseInt(process.env.PORT, 10),
 		host: process.env.HOST,
 		env: process.env.ENV,
+		cors: {
+			origin: process.env.CORS_ORIGIN || '*',
+			methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+			allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+			credentials: true,
+		},
 	},
 	[REDIS_CONFIG]: {
 		host: isDevelopment() ? '127.0.0.1' : process.env.REDIS_HOST,

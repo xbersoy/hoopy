@@ -28,8 +28,12 @@ export async function bootstrap() {
 
   const {
     env,
-    port
+    port,
+    cors
   } = configService.get(APP_CONFIG)
+  
+  // Enable CORS with configuration
+  app.enableCors(cors);
   
 	await app.listen(port, () => {
 		Logger.log(`ENV:${env} - Application runs on ::${port}`, 'App')
