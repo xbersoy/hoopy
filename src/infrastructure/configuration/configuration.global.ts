@@ -16,7 +16,7 @@ export default () => ({
 		host: process.env.HOST,
 		env: process.env.ENV,
 		cors: {
-			origin: process.env.CORS_ORIGIN || '*',
+			origin: '*',
 			methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 			allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
 			credentials: true,
