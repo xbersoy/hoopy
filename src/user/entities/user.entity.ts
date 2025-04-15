@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 import { IsEmail } from 'class-validator';
+import { Company } from '../../company/entities/company.entity';
 
 @Entity('users')
 export class User {
@@ -15,6 +16,9 @@ export class User {
 
   @Column({ nullable: true })
   refreshToken?: string;
+
+  @OneToOne(() => Company, company => company.owner)
+  company?: Company;
 
   @CreateDateColumn()
   createdAt: Date;

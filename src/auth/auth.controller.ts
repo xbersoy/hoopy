@@ -9,20 +9,20 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOperation({ summary: 'Register a new user with company information' })
   @ApiResponse({ 
     status: 201, 
-    description: 'User successfully registered',
+    description: 'User and company successfully registered',
     schema: {
       properties: {
-        id: { type: 'string' },
-        email: { type: 'string' },
+        accessToken: { type: 'string' },
+        refreshToken: { type: 'string' },
       }
     }
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  async register(@Body() body: RegisterDto) {
-    return this.authService.register(body.email, body.password);
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
   @Post('login')
