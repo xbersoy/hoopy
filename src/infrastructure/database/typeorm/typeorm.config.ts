@@ -1,6 +1,7 @@
 import { DataSourceOptions } from 'typeorm';
 import { isDevelopment } from '@infras/common';
 import { TYPEORM_CONFIG_PROVIDER } from './typeorm.constants';
+import { join } from 'path';
 
 export default () => ({
   [TYPEORM_CONFIG_PROVIDER]: {
@@ -8,9 +9,11 @@ export default () => ({
     url: process.env.DATABASE_URL,
     autoLoadEntities: true,
     logging: isDevelopment(),
-    synchronize: true,
-    dropSchema: isDevelopment(),
+    synchronize: false,
+    dropSchema: false,
     timezone: 'Z',
+    migrations: [join(__dirname, '../../../migrations/*{.ts,.js}')],
+    migrationsRun: true,
     cache: {
       type: 'ioredis',
       options: {
