@@ -20,8 +20,11 @@ export class EmployeeService {
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
     const { educations, ...employeeData } = createEmployeeDto;
     
-    // Create employee
-    const employee = this.employeeRepository.create(employeeData);
+    // Create employee, converting date fields
+    const employee = this.employeeRepository.create({
+      ...employeeData,
+      hireDate: employeeData.hireDate ? new Date(employeeData.hireDate) : undefined,
+    });
     const savedEmployee = await this.employeeRepository.save(employee);
     
     // Create educations if provided
@@ -29,6 +32,8 @@ export class EmployeeService {
       const educationEntities = educations.map(education => 
         this.educationRepository.create({
           ...education,
+          startDate: education.startDate ? new Date(education.startDate) : undefined,
+          endDate: education.endDate ? new Date(education.endDate) : undefined,
           employee: savedEmployee,
           employee_id: savedEmployee.id
         })
@@ -60,9 +65,12 @@ export class EmployeeService {
     // Find employee
     const employee = await this.findOne(id);
     
-    // Update employee data
+    // Update employee data, converting date fields
     if (Object.keys(employeeData).length > 0) {
-      Object.assign(employee, employeeData);
+      Object.assign(employee, {
+        ...employeeData,
+        hireDate: employeeData.hireDate ? new Date(employeeData.hireDate) : employee.hireDate,
+      });
       await this.employeeRepository.save(employee);
     }
     
@@ -75,6 +83,8 @@ export class EmployeeService {
       const educationEntities = educations.map(education => 
         this.educationRepository.create({
           ...education,
+          startDate: education.startDate ? new Date(education.startDate) : undefined,
+          endDate: education.endDate ? new Date(education.endDate) : undefined,
           employee: employee,
           employee_id: id
         })

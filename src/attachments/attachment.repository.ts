@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Attachment } from './attachment.entity';
 
 export interface AttachmentRepository {
@@ -14,9 +14,13 @@ export interface AttachmentRepository {
 @Injectable()
 export class TypeOrmAttachmentRepository implements AttachmentRepository {
   constructor(
-    @InjectRepository(Attachment)
-    private readonly repo: Repository<Attachment>,
-  ) {}
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.repo = this.dataSource.getRepository(Attachment);
+  }
+
+  private readonly repo: Repository<Attachment>;
 
   create(data: Partial<Attachment>): Attachment {
     return this.repo.create(data);

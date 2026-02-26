@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Contact, ContactType } from './entities/contact.entity';
 import { User } from '../user/entities/user.entity';
 
@@ -16,9 +16,13 @@ export interface ContactRepository {
 @Injectable()
 export class TypeOrmContactRepository implements ContactRepository {
   constructor(
-    @InjectRepository(Contact)
-    private readonly repo: Repository<Contact>,
-  ) {}
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.repo = this.dataSource.getRepository(Contact);
+  }
+
+  private readonly repo: Repository<Contact>;
 
   async unsetPrimaryForType(userId: string, type: ContactType): Promise<void> {
     await this.repo.update(

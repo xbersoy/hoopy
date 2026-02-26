@@ -11,12 +11,18 @@ export default () => ({
 		accessTokenExpirationTime: process.env.ACCESS_TOKEN_EXPIRATION_TIME,
 		refreshTokenExpirationTime: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
 	},
-	[APP_CONFIG]: {
+		[APP_CONFIG]: {
 		port: parseInt(process.env.PORT, 10),
 		host: process.env.HOST,
 		env: process.env.ENV,
 		cors: {
-			origin: '*',
+			// When credentials: true, browser requires exact origin (not *). Allow both Vite dev servers.
+			origin: [
+				'http://localhost:5174',
+				'http://localhost:5175',
+				'http://127.0.0.1:5174',
+				'http://127.0.0.1:5175',
+			],
 			methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 			allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
 			credentials: true,

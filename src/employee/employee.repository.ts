@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Employee } from './entities/employee.entity';
 import { EmployeeEducation } from './entities/employee-education.entity';
 
@@ -21,9 +21,13 @@ export interface EmployeeEducationRepository {
 @Injectable()
 export class TypeOrmEmployeeRepository implements EmployeeRepository {
   constructor(
-    @InjectRepository(Employee)
-    private readonly repo: Repository<Employee>,
-  ) {}
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.repo = this.dataSource.getRepository(Employee);
+  }
+
+  private readonly repo: Repository<Employee>;
 
   create(data: Partial<Employee>): Employee {
     return this.repo.create(data);
@@ -52,9 +56,13 @@ export class TypeOrmEmployeeRepository implements EmployeeRepository {
 @Injectable()
 export class TypeOrmEmployeeEducationRepository implements EmployeeEducationRepository {
   constructor(
-    @InjectRepository(EmployeeEducation)
-    private readonly repo: Repository<EmployeeEducation>,
-  ) {}
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.repo = this.dataSource.getRepository(EmployeeEducation);
+  }
+
+  private readonly repo: Repository<EmployeeEducation>;
 
   create(data: Partial<EmployeeEducation>): EmployeeEducation {
     return this.repo.create(data);

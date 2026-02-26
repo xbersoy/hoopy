@@ -131,12 +131,14 @@ export class AuthService {
     
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: this.config.accessSecret,
-      expiresIn: this.config.accessTokenExpirationTime,
+      // Cast to satisfy typings from jsonwebtoken/ms while keeping string config values
+      expiresIn: this.config.accessTokenExpirationTime as any,
     });
     
     const refreshToken = await this.jwtService.signAsync(payload, {
       secret: this.config.refreshSecret,
-      expiresIn: this.config.refreshTokenExpirationTime,
+      // Cast to satisfy typings from jsonwebtoken/ms while keeping string config values
+      expiresIn: this.config.refreshTokenExpirationTime as any,
     });
 
     await this.userRepository.update(user.id, { refreshToken });

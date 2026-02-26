@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Company } from './entities/company.entity';
 import { User } from '../user/entities/user.entity';
 
@@ -13,9 +13,13 @@ export interface CompanyRepository {
 @Injectable()
 export class TypeOrmCompanyRepository implements CompanyRepository {
   constructor(
-    @InjectRepository(Company)
-    private readonly repo: Repository<Company>,
-  ) {}
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.repo = this.dataSource.getRepository(Company);
+  }
+
+  private readonly repo: Repository<Company>;
 
   create(data: { name: string; sector: string; owner: User }): Company {
     return this.repo.create(data);
