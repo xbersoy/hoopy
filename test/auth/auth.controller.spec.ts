@@ -2,49 +2,26 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '@auth/auth.controller';
 import { AuthService } from '@auth/auth.service';
 import { RegisterDto } from '@auth/dto/auth.dto';
-import { User } from '@user/entities/user.entity';
-import { Company } from '@company/entities/company.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
-import {
-  mockJwtService,
-  mockConfigService,
-  mockUserRepository,
-  mockCompanyRepository,
-  mockDataSource,
-} from '@test/test.utils';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: AuthService;
 
   beforeEach(async () => {
+    const mockAuthService = {
+      register: jest.fn(),
+      login: jest.fn(),
+      refresh: jest.fn(),
+      logout: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
-        AuthService,
         {
-          provide: getRepositoryToken(User),
-          useValue: mockUserRepository
+          provide: AuthService,
+          useValue: mockAuthService,
         },
-        {
-          provide: getRepositoryToken(Company),
-          useValue: mockCompanyRepository
-        },
-        {
-          provide: JwtService,
-          useValue: mockJwtService
-        },
-        {
-          provide: ConfigService,
-          useValue: mockConfigService
-        },
-        {
-          provide: DataSource,
-          useValue: mockDataSource
-        }
       ]
     }).compile();
 
@@ -59,11 +36,13 @@ describe('AuthController', () => {
   describe('register', () => {
     it('should register a new user and return tokens', async () => {
       const registerDto: RegisterDto = {
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'test@example.com',
         password: 'password123',
-        company: {
-          name: 'Test Company',
-          sector: 'Technology'
+        account: {
+          name: 'Test Account',
+          type: 'Personal'
         }
       };
 

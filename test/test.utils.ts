@@ -1,5 +1,7 @@
 import { User } from '@user/entities/user.entity';
 import { Company } from '@company/entities/company.entity';
+import { Account } from '../src/account/entities/account.entity';
+import { Contact } from '../src/contact/entities/contact.entity';
 import * as bcrypt from 'bcrypt';
 
 export const createMockUser = async (overrides: Partial<User> = {}): Promise<User> => {
@@ -22,6 +24,19 @@ export const createMockCompany = async (overrides: Partial<Company> = {}): Promi
   }
   
   return Object.assign(company, overrides);
+};
+
+export const createMockAccount = async (overrides: Partial<Account> = {}): Promise<Account> => {
+  const account = new Account();
+  account.id = '1';
+  account.name = 'Test Account';
+  account.type = 'Personal';
+  
+  if (!overrides.owner) {
+    account.owner = await createMockUser();
+  }
+  
+  return Object.assign(account, overrides);
 };
 
 export const mockJwtService = {
@@ -61,6 +76,29 @@ export const mockCompanyRepository = {
     }
     return Promise.resolve(null);
   }),
+  save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
+  create: jest.fn().mockImplementation((entity) => entity)
+};
+
+export const mockAccountRepository = {
+  findOne: jest.fn().mockImplementation((options) => {
+    if (options?.where?.owner?.id === '1') {
+      const account = new Account();
+      account.id = '1';
+      account.name = 'Test Account';
+      account.type = 'Personal';
+      account.owner = new User();
+      account.owner.id = '1';
+      return Promise.resolve(account);
+    }
+    return Promise.resolve(null);
+  }),
+  save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
+  create: jest.fn().mockImplementation((entity) => entity)
+};
+
+export const mockContactRepository = {
+  findOne: jest.fn().mockResolvedValue(null),
   save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
   create: jest.fn().mockImplementation((entity) => entity)
 };

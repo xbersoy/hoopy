@@ -1,15 +1,14 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { StorageService } from '../storage/storage.service.interface';
 import { Attachment } from './attachment.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { AttachmentRepository } from './attachment.repository';
 
 @Injectable()
 export class AttachmentsService {
   constructor(
     @Inject('StorageService') private storageService: StorageService,
-    @InjectRepository(Attachment) private attachmentRepository: Repository<Attachment>
+    @Inject('AttachmentRepository') private attachmentRepository: AttachmentRepository
   ) {}
 
   async upload(file: Express.Multer.File, relatedType: string, relatedId: string) {
@@ -41,7 +40,7 @@ export class AttachmentsService {
   }
 
   async delete(id: string) {
-    const attachment = await this.attachmentRepository.findOne({ where: { id } });
+    const attachment = await this.attachmentRepository.findById(id);
     if (!attachment) {
       throw new NotFoundException(`Attachment with ID "${id}" not found`);
     }
@@ -52,7 +51,7 @@ export class AttachmentsService {
   }
 
   async findOne(id: string) {
-    const attachment = await this.attachmentRepository.findOne({ where: { id } });
+    const attachment = await this.attachmentRepository.findById(id);
     if (!attachment) {
       throw new NotFoundException(`Attachment with ID "${id}" not found`);
     }
@@ -60,11 +59,6 @@ export class AttachmentsService {
   }
 
   async findByRelated(relatedType: string, relatedId: string) {
-    return this.attachmentRepository.find({
-      where: {
-        relatedType,
-        relatedId,
-      },
-    });
+    return this.attachmentRepository.findByRelated(relatedType, relatedId);
   }
 } 

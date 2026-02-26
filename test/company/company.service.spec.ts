@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyService } from '@company/services/company.service';
 import { Company } from '@company/entities/company.entity';
 import { User } from '@user/entities/user.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { mockCompanyRepository, createMockUser, createMockCompany } from '@test/test.utils';
 
 describe('CompanyService', () => {
@@ -10,18 +9,24 @@ describe('CompanyService', () => {
   let companyRepository: jest.Mocked<any>;
 
   beforeEach(async () => {
+    const companyRepositoryMock = {
+      create: jest.fn(),
+      save: jest.fn(),
+      findByOwnerId: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CompanyService,
         {
-          provide: getRepositoryToken(Company),
-          useValue: mockCompanyRepository
+          provide: 'CompanyRepository',
+          useValue: companyRepositoryMock,
         }
       ]
     }).compile();
 
     service = module.get<CompanyService>(CompanyService);
-    companyRepository = module.get(getRepositoryToken(Company));
+    companyRepository = module.get('CompanyRepository');
   });
 
   afterEach(() => {
@@ -65,29 +70,23 @@ describe('CompanyService', () => {
       const mockUser = await createMockUser();
       const mockCompany = await createMockCompany({ owner: mockUser });
 
-      companyRepository.findOne.mockResolvedValue(mockCompany);
+      companyRepository.findByOwnerId.mockResolvedValue(mockCompany);
 
       const result = await service.findByOwner(mockUser.id);
 
       expect(result).toEqual(mockCompany);
-      expect(companyRepository.findOne).toHaveBeenCalledWith({
-        where: { owner: { id: mockUser.id } },
-        relations: ['owner']
-      });
+      expect(companyRepository.findByOwnerId).toHaveBeenCalledWith(mockUser.id);
     });
 
     it('should return null if company not found', async () => {
       const mockUser = await createMockUser();
 
-      companyRepository.findOne.mockResolvedValue(null);
+      companyRepository.findByOwnerId.mockResolvedValue(null);
 
       const result = await service.findByOwner(mockUser.id);
 
       expect(result).toBeNull();
-      expect(companyRepository.findOne).toHaveBeenCalledWith({
-        where: { owner: { id: mockUser.id } },
-        relations: ['owner']
-      });
+      expect(companyRepository.findByOwnerId).toHaveBeenCalledWith(mockUser.id);
     });
   });
 }); 

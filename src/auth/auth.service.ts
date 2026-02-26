@@ -7,8 +7,9 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JWT_CONFIG } from '@infras/configuration';
 import { RegisterDto } from './dto/auth.dto';
-import { DataSource } from 'typeorm';
-import { Company } from '../company/entities/company.entity';
+import { ContactType } from '../contact/entities/contact.entity';
+import { AccountService } from '../account/services/account.service';
+import { ContactService } from '../contact/contact.service';
 
 export interface JWT_CONFIG {
 	accessSecret: string
@@ -24,56 +25,59 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Company)
-    private readonly companyRepository: Repository<Company>,
+    private readonly accountService: AccountService,
+    private readonly contactService: ContactService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly dataSource: DataSource,
   ) {
-    this.config = this.configService.get(JWT_CONFIG)
+    this.config = this.configService.get<JWT_CONFIG>(JWT_CONFIG)
   }
 
   async register(registerDto: RegisterDto): Promise<{ accessToken: string; refreshToken: string }> {
-    const { email, password, company } = registerDto;
+    const { email, password, account, firstName, lastName, phoneNumber } = registerDto;
 
-    if (!email || !password || !company) {
-      throw new BadRequestException('Email, password, and company information are required');
+    if (!email || !password || !account || !firstName || !lastName) {
+      throw new BadRequestException('Required fields are missing');
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const existingUser = await queryRunner.manager.findOne(User, { where: { email } });
-      if (existingUser) {
-        throw new BadRequestException('User already exists');
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const user = this.userRepository.create({
-        email: email.trim(),
-        password: hashedPassword,
-      });
-
-      const savedUser = await queryRunner.manager.save(user);
-      
-      const companyEntity = this.companyRepository.create({
-        name: company.name,
-        sector: company.sector,
-        owner: savedUser,
-      });
-      
-      await queryRunner.manager.save(companyEntity);
-      await queryRunner.commitTransaction();
-      
-      return this.generateTokens(savedUser);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw new BadRequestException('Failed to create user and company');
-    } finally {
-      await queryRunner.release();
+    const existingUser = await this.userRepository.findOne({
+      where: { email: email.trim() },
+    });
+    if (existingUser) {
+      throw new BadRequestException('User already exists');
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = this.userRepository.create({
+      email: email.trim(),
+      password: hashedPassword,
+      firstName,
+      lastName,
+    });
+
+    const savedUser = await this.userRepository.save(user);
+
+    await this.accountService.create(account.name, account.type, savedUser);
+
+    await this.contactService.createContact(
+      savedUser,
+      ContactType.EMAIL,
+      email,
+      undefined,
+      true,
+    );
+
+    if (phoneNumber) {
+      await this.contactService.createContact(
+        savedUser,
+        ContactType.PHONE,
+        phoneNumber,
+        undefined,
+        true,
+      );
+    }
+
+    return this.generateTokens(savedUser);
   }
 
   async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {

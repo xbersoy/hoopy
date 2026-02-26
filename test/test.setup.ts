@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { DataSource } from 'typeorm';
 import { User } from '../src/user/entities/user.entity';
 import { Company } from '../src/company/entities/company.entity';
+import { Contact } from '../src/contact/entities/contact.entity';
 
 export const createTestApp = async (): Promise<INestApplication> => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -24,7 +25,7 @@ export const createTestApp = async (): Promise<INestApplication> => {
           username: process.env.DB_USERNAME,
           password: process.env.DB_PASSWORD,
           database: process.env.DB_DATABASE,
-          entities: [User, Company],
+          entities: [User, Company, Contact],
           synchronize: true,
         }),
         inject: [ConfigService],

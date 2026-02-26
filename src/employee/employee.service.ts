@@ -1,19 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
-import { EmployeeEducation } from './entities/employee-education.entity';
+import {
+  EmployeeEducationRepository,
+  EmployeeRepository,
+} from './employee.repository';
 
 @Injectable()
 export class EmployeeService {
   constructor(
-    @InjectRepository(Employee)
-    private readonly employeeRepository: Repository<Employee>,
-    
-    @InjectRepository(EmployeeEducation)
-    private readonly educationRepository: Repository<EmployeeEducation>,
+    @Inject('EmployeeRepository')
+    private readonly employeeRepository: EmployeeRepository,
+
+    @Inject('EmployeeEducationRepository')
+    private readonly educationRepository: EmployeeEducationRepository,
   ) {}
 
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
@@ -32,7 +33,7 @@ export class EmployeeService {
           employee_id: savedEmployee.id
         })
       );
-      await this.educationRepository.save(educationEntities);
+      await this.educationRepository.saveAll(educationEntities);
     }
     
     // Return the employee with educations
@@ -40,16 +41,11 @@ export class EmployeeService {
   }
 
   async findAll(): Promise<Employee[]> {
-    return this.employeeRepository.find({
-      relations: ['educations'],
-    });
+    return this.employeeRepository.findAllWithEducations();
   }
 
   async findOne(id: string): Promise<Employee> {
-    const employee = await this.employeeRepository.findOne({
-      where: { id },
-      relations: ['educations'],
-    });
+    const employee = await this.employeeRepository.findOneWithEducations(id);
 
     if (!employee) {
       throw new NotFoundException(`Employee with ID "${id}" not found`);
@@ -73,7 +69,7 @@ export class EmployeeService {
     // Update educations if provided
     if (educations && educations.length > 0) {
       // Remove existing educations
-      await this.educationRepository.delete({ employee_id: id });
+      await this.educationRepository.deleteByEmployeeId(id);
       
       // Create new educations
       const educationEntities = educations.map(education => 
@@ -83,7 +79,7 @@ export class EmployeeService {
           employee_id: id
         })
       );
-      await this.educationRepository.save(educationEntities);
+      await this.educationRepository.saveAll(educationEntities);
     }
     
     // Return updated employee with educations
@@ -94,7 +90,7 @@ export class EmployeeService {
     const employee = await this.findOne(id);
     
     // Delete educations first (should happen automatically with CASCADE)
-    await this.educationRepository.delete({ employee_id: id });
+    await this.educationRepository.deleteByEmployeeId(id);
     
     // Delete employee
     await this.employeeRepository.remove(employee);

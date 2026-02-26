@@ -69,6 +69,20 @@ Creates the employee_educations table for storing employee education history.
 - Foreign Keys:
   - `fk_employee_educations_employee`: employee_id → employees.id (CASCADE on delete)
 
+### 5. Create Accounts Table (1723456789000)
+Creates the accounts table with a foreign key relationship to users.
+
+**Table: `accounts`**
+- Primary Key: `id` (UUID, auto-generated)
+- Fields:
+  - `name` (varchar, required)
+  - `type` (varchar, required)
+  - `owner_id` (UUID, required) - References users.id
+  - `created_at` (timestamp)
+  - `updated_at` (timestamp)
+- Foreign Keys:
+  - `fk_accounts_owner`: owner_id → users.id (CASCADE on delete)
+
 ## Migration Commands
 
 ### Available Commands
@@ -130,6 +144,7 @@ The migration configuration is set in `src/infrastructure/database/typeorm/typeo
 ```mermaid
 erDiagram
     USERS ||--o{ COMPANIES : owns
+    USERS ||--o{ ACCOUNTS : owns
     EMPLOYEES ||--o{ EMPLOYEE_EDUCATIONS : has
     
     USERS {
@@ -145,6 +160,15 @@ erDiagram
         uuid id PK
         string name
         string sector
+        uuid owner_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ACCOUNTS {
+        uuid id PK
+        string name
+        string type
         uuid owner_id FK
         timestamp created_at
         timestamp updated_at

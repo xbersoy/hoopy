@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { DatabaseTypeOrmModule } from '@infras/database/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
+import { AccountModule } from './account/account.module';
 import { ConfigurationModule } from '@infras/configuration';
 import { EmployeeModule } from './employee/employee.module';
 import { StorageModule } from './storage/storage.module';
@@ -20,6 +21,7 @@ import { initSupabase } from './supabase/supabase.client';
     DatabaseTypeOrmModule,
     AuthModule,
     CompanyModule,
+    AccountModule,
     EmployeeModule,
     StorageModule,
     AttachmentsModule,

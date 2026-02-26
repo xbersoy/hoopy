@@ -1,11 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
-import { IsEmail } from 'class-validator';
-import { Company } from '../../company/entities/company.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
+import { IsEmail, IsString, IsNotEmpty } from 'class-validator';
+import { Account } from '../../account/entities/account.entity';
+import { Contact } from '../../contact/entities/contact.entity';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ nullable: false })
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @Column({ nullable: false })
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
   @Column({ unique: true, nullable: false })
   @IsEmail()
@@ -17,8 +28,11 @@ export class User {
   @Column({ nullable: true })
   refreshToken?: string;
 
-  @OneToOne(() => Company, company => company.owner)
-  company?: Company;
+  @OneToOne(() => Account, account => account.owner)
+  account?: Account;
+
+  @OneToMany(() => Contact, contact => contact.user)
+  contacts: Contact[];
 
   @CreateDateColumn()
   createdAt: Date;
