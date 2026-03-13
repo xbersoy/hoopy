@@ -5,9 +5,15 @@ import { Account } from './entities/account.entity';
 import { User } from '../user/entities/user.entity';
 
 export interface AccountRepository {
-  create(data: { name: string; type: string; owner: User }): Account;
+  create(data: {
+    name: string;
+    type: string;
+    owner: User;
+    settings?: Record<string, any>;
+  }): Account;
   save(account: Account): Promise<Account>;
   findByOwnerId(ownerId: string): Promise<Account | null>;
+  findById(id: string): Promise<Account | null>;
 }
 
 @Injectable()
@@ -21,7 +27,12 @@ export class TypeOrmAccountRepository implements AccountRepository {
 
   private readonly repo: Repository<Account>;
 
-  create(data: { name: string; type: string; owner: User }): Account {
+  create(data: {
+    name: string;
+    type: string;
+    owner: User;
+    settings?: Record<string, any>;
+  }): Account {
     return this.repo.create(data);
   }
 
@@ -35,5 +46,8 @@ export class TypeOrmAccountRepository implements AccountRepository {
       relations: ['owner'],
     });
   }
-}
 
+  findById(id: string): Promise<Account | null> {
+    return this.repo.findOne({ where: { id } });
+  }
+}

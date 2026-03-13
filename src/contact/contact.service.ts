@@ -10,7 +10,13 @@ export class ContactService {
     private readonly contactRepository: ContactRepository,
   ) {}
 
-  async createContact(user: User, type: ContactType, value: string, label?: string, isPrimary: boolean = false): Promise<Contact> {
+  async createContact(
+    user: User,
+    type: ContactType,
+    value: string,
+    label?: string,
+    isPrimary: boolean = false,
+  ): Promise<Contact> {
     if (isPrimary) {
       // If this is primary, unset any existing primary contact of the same type
       await this.contactRepository.unsetPrimaryForType(user.id, type);
@@ -27,11 +33,18 @@ export class ContactService {
     return this.contactRepository.save(contact);
   }
 
-  async getPrimaryContact(userId: string, type: ContactType): Promise<Contact | null> {
+  async getPrimaryContact(
+    userId: string,
+    type: ContactType,
+  ): Promise<Contact | null> {
     return this.contactRepository.findPrimary(userId, type);
   }
 
-  async updateContact(id: string, userId: string, updates: Partial<Contact>): Promise<Contact> {
+  async updateContact(
+    id: string,
+    userId: string,
+    updates: Partial<Contact>,
+  ): Promise<Contact> {
     const contact = await this.contactRepository.findByIdForUser(id, userId);
 
     if (!contact) {
@@ -53,4 +66,4 @@ export class ContactService {
       throw new NotFoundException('Contact not found');
     }
   }
-} 
+}

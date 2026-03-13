@@ -1,6 +1,5 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { StorageService } from '../storage/storage.service.interface';
-import { Attachment } from './attachment.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { AttachmentRepository } from './attachment.repository';
 
@@ -8,12 +7,17 @@ import { AttachmentRepository } from './attachment.repository';
 export class AttachmentsService {
   constructor(
     @Inject('StorageService') private storageService: StorageService,
-    @Inject('AttachmentRepository') private attachmentRepository: AttachmentRepository
+    @Inject('AttachmentRepository')
+    private attachmentRepository: AttachmentRepository,
   ) {}
 
-  async upload(file: Express.Multer.File, relatedType: string, relatedId: string) {
+  async upload(
+    file: Express.Multer.File,
+    relatedType: string,
+    relatedId: string,
+  ) {
     const destinationPath = `uploads/${uuidv4()}-${file.originalname}`;
-    
+
     try {
       const { url } = await this.storageService.upload(file, destinationPath);
 
@@ -33,7 +37,10 @@ export class AttachmentsService {
         await this.storageService.delete(destinationPath);
       } catch (deleteError) {
         // Log the error but don't throw it since the original error is more important
-        console.error('Failed to delete file after failed upload:', deleteError);
+        console.error(
+          'Failed to delete file after failed upload:',
+          deleteError,
+        );
       }
       throw error;
     }
@@ -45,7 +52,9 @@ export class AttachmentsService {
       throw new NotFoundException(`Attachment with ID "${id}" not found`);
     }
 
-    const filePath = attachment.url.split('/storage/v1/object/public/hoopy/')[1];
+    const filePath = attachment.url.split(
+      '/storage/v1/object/public/hoopy/',
+    )[1];
     await this.storageService.delete(filePath);
     await this.attachmentRepository.remove(attachment);
   }
@@ -61,4 +70,4 @@ export class AttachmentsService {
   async findByRelated(relatedType: string, relatedId: string) {
     return this.attachmentRepository.findByRelated(relatedType, relatedId);
   }
-} 
+}

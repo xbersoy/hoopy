@@ -11,4 +11,4 @@ export const initSupabase = (configService: ConfigService) => {
   return supabase;
 };
 
-export { supabase }; 
+export { supabase };

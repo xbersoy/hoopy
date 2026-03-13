@@ -1,2 +1,2 @@
-export { ConfigurationModule } from './configuration.module'
-export * from './configuration.consts'
+export { ConfigurationModule } from './configuration.module';
+export * from './configuration.consts';

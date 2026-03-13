@@ -1,4 +1,5 @@
 import { DataSourceOptions } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { isDevelopment } from '@infras/common';
 import { TYPEORM_CONFIG_PROVIDER } from './typeorm.constants';
 import { join } from 'path';
@@ -8,6 +9,7 @@ export default () => ({
     type: 'postgres',
     url: process.env.DATABASE_URL,
     autoLoadEntities: true,
+    namingStrategy: new SnakeNamingStrategy(),
     logging: isDevelopment(),
     synchronize: process.env.DATABASE_SYNCHRONIZE === '1',
     dropSchema: process.env.DATABASE_DROP_SCHEMA === '1',
@@ -21,12 +23,14 @@ export default () => ({
         port: isDevelopment() ? 6379 : process.env.REDIS_PORT,
         username: isDevelopment() ? '' : process.env.REDIS_USERNAME,
         password: isDevelopment() ? '' : process.env.REDIS_PASSWORD,
-      }
+      },
     },
-    ...(!isDevelopment() && { ssl: {
-      rejectUnauthorized: isDevelopment(),
-      // added for connection error
-      // also could be achieved with heroku config:set PGSSLMODE=no-verify
-    }}),
+    ...(!isDevelopment() && {
+      ssl: {
+        rejectUnauthorized: isDevelopment(),
+        // added for connection error
+        // also could be achieved with heroku config:set PGSSLMODE=no-verify
+      },
+    }),
   } as unknown as DataSourceOptions,
 });

@@ -1,6 +1,6 @@
-import { 
-  Controller, 
-  Post, 
+import {
+  Controller,
+  Post,
   Get,
   Delete,
   Param,
@@ -9,10 +9,17 @@ import {
   UploadedFile,
   ParseUUIDPipe,
   UseGuards,
-  Body
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AttachmentsService } from './attachments.service';
 import { Attachment } from './attachment.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -45,7 +52,7 @@ export class AttachmentsController {
           example: '123e4567-e89b-12d3-a456-426614174000',
         },
       },
-      required: ['file', 'relatedType', 'relatedId']
+      required: ['file', 'relatedType', 'relatedId'],
     },
   })
   @ApiResponse({
@@ -97,4 +104,4 @@ export class AttachmentsController {
     await this.attachmentsService.delete(id);
     return { message: 'Attachment deleted successfully' };
   }
-} 
+}

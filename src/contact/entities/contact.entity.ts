@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { IsString, IsNotEmpty, IsBoolean, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -8,7 +16,7 @@ export enum ContactType {
   PHONE = 'phone',
   EMERGENCY_PHONE = 'emergency_phone',
   LINKEDIN = 'linkedin',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 @Entity('contacts')
@@ -19,12 +27,12 @@ export class Contact {
   @ApiProperty({
     description: 'Type of contact',
     enum: ContactType,
-    example: ContactType.EMAIL
+    example: ContactType.EMAIL,
   })
   @Column({
     type: 'enum',
     enum: ContactType,
-    nullable: false
+    nullable: false,
   })
   @IsEnum(ContactType)
   @IsNotEmpty()
@@ -32,7 +40,7 @@ export class Contact {
 
   @ApiProperty({
     description: 'Contact value (e.g., email address or phone number)',
-    example: 'john@example.com'
+    example: 'john@example.com',
   })
   @Column({ nullable: false })
   @IsString()
@@ -42,7 +50,7 @@ export class Contact {
   @ApiProperty({
     description: 'Optional label for the contact (e.g., "work", "personal")',
     example: 'work',
-    required: false
+    required: false,
   })
   @Column({ nullable: true })
   @IsString()
@@ -50,7 +58,7 @@ export class Contact {
 
   @ApiProperty({
     description: 'Whether this is the primary contact of its type',
-    example: true
+    example: true,
   })
   @Column({ default: false })
   @IsBoolean()
@@ -65,4 +73,4 @@ export class Contact {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class CreateAccountsTable1723456789000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -59,4 +64,4 @@ export class CreateAccountsTable1723456789000 implements MigrationInterface {
     await queryRunner.dropForeignKey('accounts', 'fk_accounts_owner');
     await queryRunner.dropTable('accounts');
   }
-} 
+}

@@ -3,9 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { AccountService } from './services/account.service';
 import { TypeOrmAccountRepository } from './account.repository';
+import { AccountPreferencesController } from './controllers/account-preferences.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Account])],
+  controllers: [AccountPreferencesController],
   providers: [
     AccountService,
     {
@@ -15,4 +17,4 @@ import { TypeOrmAccountRepository } from './account.repository';
   ],
   exports: [AccountService, TypeOrmModule.forFeature([Account])],
 })
-export class AccountModule {} 
+export class AccountModule {}

@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class CreateEmployeeEducationsTable1710514800000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -76,7 +81,10 @@ export class CreateEmployeeEducationsTable1710514800000 implements MigrationInte
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('employee_educations', 'fk_employee_educations_employee');
+    await queryRunner.dropForeignKey(
+      'employee_educations',
+      'fk_employee_educations_employee',
+    );
     await queryRunner.dropTable('employee_educations');
   }
-} 
+}

@@ -7,10 +7,7 @@ import { Attachment } from './attachment.entity';
 import { TypeOrmAttachmentRepository } from './attachment.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Attachment]),
-    StorageModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Attachment]), StorageModule],
   controllers: [AttachmentsController],
   providers: [
     AttachmentsService,
@@ -21,4 +18,4 @@ import { TypeOrmAttachmentRepository } from './attachment.repository';
   ],
   exports: [AttachmentsService],
 })
-export class AttachmentsModule {} 
+export class AttachmentsModule {}

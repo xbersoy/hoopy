@@ -16,4 +16,4 @@ export class AddNameFieldsToUsers1710514000002 implements MigrationInterface {
       DROP COLUMN last_name;
     `);
   }
-} 
+}

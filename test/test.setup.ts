@@ -1,56 +1,96 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
-import { User } from '../src/user/entities/user.entity';
-import { Company } from '../src/company/entities/company.entity';
-import { Contact } from '../src/contact/entities/contact.entity';
+import { TestDatabaseModule } from './test-db.module';
+import { testConfiguration } from './test-config';
+import { UserModule } from '../src/user/user.module';
+import { AuthModule } from '../src/auth/auth.module';
+import { CompanyModule } from '../src/company/company.module';
+import { AccountModule } from '../src/account/account.module';
+import { ContactModule } from '../src/contact/contact.module';
+import { EmployeeModule } from '../src/employee/employee.module';
+import { OrgStructureModule } from '../src/org-structure/org-structure.module';
+import { AttachmentsModule } from '../src/attachments/attachments.module';
+import { AppController } from '../src/app.controller';
 
-export const createTestApp = async (): Promise<INestApplication> => {
+/**
+ * Creates a fully wired NestJS application for E2E / integration tests.
+ *
+ * Key differences from the production AppModule:
+ * - Uses TestDatabaseModule  → Postgres with synchronize + dropSchema (schema from entities, no migrations)
+ * - Uses plain ConfigModule   → test-friendly defaults, no .env.example validation
+ * - Mocks StorageService      → avoids Supabase dependency
+ * - Does NOT initialise Supabase
+ *
+ * Requires a running Postgres instance with the test database.
+ * See .env.test.example for required environment variables.
+ */
+export async function createE2EApp(): Promise<INestApplication> {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [
       ConfigModule.forRoot({
         isGlobal: true,
-        envFilePath: '.env.test',
+        load: [testConfiguration],
       }),
-      TypeOrmModule.forRootAsync({
-        imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          type: 'postgres',
-          host: process.env.DB_HOST,
-          port: parseInt(process.env.DB_PORT, 10),
-          username: process.env.DB_USERNAME,
-          password: process.env.DB_PASSWORD,
-          database: process.env.DB_DATABASE,
-          entities: [User, Company, Contact],
-          synchronize: true,
-        }),
-        inject: [ConfigService],
-      }),
-      JwtModule.registerAsync({
-        imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          secret: process.env.JWT_ACCESS_SECRET,
-          signOptions: { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME },
-        }),
-        inject: [ConfigService],
-      }),
-      PassportModule.register({ defaultStrategy: 'jwt' }),
+      TestDatabaseModule,
+      UserModule,
+      AuthModule,
+      CompanyModule,
+      AccountModule,
+      ContactModule,
+      EmployeeModule,
+      OrgStructureModule,
+      AttachmentsModule,
     ],
-  }).compile();
+    controllers: [AppController],
+  })
+    .overrideProvider('StorageService')
+    .useValue({
+      upload: jest.fn().mockResolvedValue({
+        url: 'https://test-storage.example.com/uploads/test-file.pdf',
+      }),
+      delete: jest.fn().mockResolvedValue(undefined),
+      getPublicUrl: jest
+        .fn()
+        .mockResolvedValue(
+          'https://test-storage.example.com/uploads/test-file.pdf',
+        ),
+    })
+    .compile();
 
   const app = moduleFixture.createNestApplication();
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  // Mirror production bootstrap pipe settings
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
   await app.init();
-
   return app;
-};
+}
 
-export const closeTestApp = async (app: INestApplication): Promise<void> => {
+/**
+ * Truncates every table in the test database while preserving schema.
+ * Use in `beforeEach` for isolation between individual test cases.
+ */
+export async function cleanDatabase(app: INestApplication): Promise<void> {
   const dataSource = app.get(DataSource);
-  await dataSource.dropDatabase();
+  const entities = dataSource.entityMetadatas;
+
+  for (const entity of entities) {
+    const repo = dataSource.getRepository(entity.name);
+    await repo.query(`TRUNCATE TABLE "${entity.tableName}" CASCADE`);
+  }
+}
+
+/**
+ * Gracefully shuts down the application and its DB connection.
+ * Use in `afterAll`.
+ */
+export async function closeTestApp(app: INestApplication): Promise<void> {
   await app.close();
-}; 
+}

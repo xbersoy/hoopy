@@ -6,9 +6,11 @@ import { AuthService } from '../../src/auth/auth.service';
 import { User } from '../../src/user/entities/user.entity';
 import { RegisterDto } from '../../src/auth/dto/auth.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { AccountService } from '../../src/account/services/account.service';
 import { ContactService } from '../../src/contact/contact.service';
+import { CompanyService } from '../../src/company/services/company.service';
+import { EmployeeService } from '../../src/employee/employee.service';
+import { PermissionsService } from '../../src/permissions/services/permissions.service';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword'),
@@ -21,6 +23,8 @@ describe('AuthService', () => {
   let jwtService: any;
   let accountService: any;
   let contactService: any;
+  let companyService: any;
+  let employeeService: any;
 
   beforeEach(async () => {
     const mockUserRepository = {
@@ -31,11 +35,30 @@ describe('AuthService', () => {
     };
 
     const mockAccountService = {
-      create: jest.fn(),
+      create: jest.fn().mockResolvedValue({
+        id: 'account-1',
+        name: 'Test Account',
+        type: 'Personal',
+      }),
     };
 
     const mockContactService = {
       createContact: jest.fn(),
+    };
+
+    const mockCompanyService = {
+      findByOwner: jest.fn().mockResolvedValue(null),
+      create: jest.fn().mockResolvedValue({
+        id: 'company-1',
+        name: 'Test Company',
+        sector: 'Technology',
+      }),
+    };
+
+    const mockEmployeeService = {
+      create: jest
+        .fn()
+        .mockResolvedValue({ id: 'emp-1', firstName: 'John', lastName: 'Doe' }),
     };
 
     const mockJwtService = {
@@ -77,6 +100,18 @@ describe('AuthService', () => {
           provide: ContactService,
           useValue: mockContactService,
         },
+        {
+          provide: CompanyService,
+          useValue: mockCompanyService,
+        },
+        {
+          provide: EmployeeService,
+          useValue: mockEmployeeService,
+        },
+        {
+          provide: PermissionsService,
+          useValue: { userCan: jest.fn().mockResolvedValue(true) },
+        },
       ],
     }).compile();
 
@@ -85,6 +120,8 @@ describe('AuthService', () => {
     jwtService = module.get(JwtService);
     accountService = module.get(AccountService);
     contactService = module.get(ContactService);
+    companyService = module.get(CompanyService);
+    employeeService = module.get(EmployeeService);
   });
 
   afterEach(() => {
@@ -93,7 +130,7 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('should register a new user with account and contacts', async () => {
+    it('should register a new user with account, company, employee and contacts', async () => {
       const registerDto: RegisterDto = {
         firstName: 'John',
         lastName: 'Doe',
@@ -103,6 +140,10 @@ describe('AuthService', () => {
         account: {
           name: 'Test Account',
           type: 'Personal',
+        },
+        company: {
+          name: 'Test Company',
+          sector: 'Technology',
         },
       };
 
@@ -117,7 +158,6 @@ describe('AuthService', () => {
       userRepository.create.mockReturnValue(user);
       userRepository.save.mockResolvedValue(user);
 
-      accountService.create.mockResolvedValue({});
       contactService.createContact.mockResolvedValue({});
 
       jwtService.signAsync.mockResolvedValue('test-token');
@@ -141,7 +181,27 @@ describe('AuthService', () => {
         registerDto.account.name,
         registerDto.account.type,
         user,
+        undefined,
       );
+      expect(companyService.create).toHaveBeenCalledWith(
+        registerDto.company.name,
+        registerDto.company.sector,
+        user,
+        undefined,
+        expect.objectContaining({ id: 'account-1' }),
+      );
+      expect(employeeService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          firstName: registerDto.firstName,
+          lastName: registerDto.lastName,
+          email: registerDto.email.trim(),
+          companyId: 'company-1',
+          userId: user.id,
+        }),
+      );
+      expect(userRepository.update).toHaveBeenCalledWith(user.id, {
+        employee: { id: 'emp-1' },
+      });
       expect(contactService.createContact).toHaveBeenCalledTimes(2);
     });
 
@@ -156,12 +216,18 @@ describe('AuthService', () => {
           name: 'Test Account',
           type: 'Personal',
         },
+        company: {
+          name: 'Test Company',
+          sector: 'Technology',
+        },
       };
 
       const existingUser = new User();
       userRepository.findOne.mockResolvedValue(existingUser);
 
-      await expect(service.register(registerDto)).rejects.toThrow(BadRequestException);
+      await expect(service.register(registerDto)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(accountService.create).not.toHaveBeenCalled();
     });
   });
@@ -186,13 +252,43 @@ describe('AuthService', () => {
       });
     });
 
+    it('should include accountId in tokens when company has an account', async () => {
+      const email = 'test@example.com';
+      const password = 'password123';
+      const user = new User();
+      user.id = '1';
+      user.email = email;
+      user.password = 'hashedPassword';
+
+      userRepository.findOne.mockResolvedValue(user);
+      companyService.findByOwner.mockResolvedValue({
+        id: 'company-1',
+        account: { id: 'account-1' },
+      });
+      jwtService.signAsync.mockResolvedValue('test-token');
+
+      await service.login(email, password);
+
+      expect(jwtService.signAsync).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sub: '1',
+          email: 'test@example.com',
+          companyId: 'company-1',
+          accountId: 'account-1',
+        }),
+        expect.any(Object),
+      );
+    });
+
     it('should throw UnauthorizedException for invalid credentials', async () => {
       const email = 'test@example.com';
       const password = 'wrongpassword';
 
       userRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.login(email, password)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(email, password)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

@@ -3,6 +3,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './user.repository';
+import { UserSettingsDto } from './dto/user-settings.dto';
+import { UserSettings } from './interfaces/user-settings.interface';
+import { createDefaultUserSettings } from './factories/user-settings.factory';
+import { deepMerge } from '../utils/deep-merge.util';
 
 @Injectable()
 export class UserService {
@@ -12,7 +16,16 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+    const defaultSettings = createDefaultUserSettings();
+    const finalSettings = deepMerge<Record<string, any>>(
+      defaultSettings as any,
+      (createUserDto as any).settings || {},
+    );
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      settings: finalSettings,
+    });
     return this.userRepository.save(user);
   }
 
@@ -39,5 +52,44 @@ export class UserService {
   async remove(id: string) {
     const user = await this.findOne(id);
     return this.userRepository.remove(user);
+  }
+
+  async getSettings(userId: string): Promise<UserSettings> {
+    const user = await this.findOne(userId);
+
+    const defaults = createDefaultUserSettings();
+    return deepMerge<UserSettings>(defaults as any, user.settings);
+  }
+
+  async updateSettings(
+    userId: string,
+    dto: UserSettingsDto,
+  ): Promise<UserSettings> {
+    const user = await this.findOne(userId);
+
+    const currentSettings = user.settings || {};
+    const updatedSettings = deepMerge<Record<string, any>>(
+      currentSettings,
+      dto as any,
+    );
+
+    user.settings = updatedSettings;
+    await this.userRepository.save(user);
+
+    return this.getSettings(userId);
+  }
+
+  resolveUserSetting<T = any>(user: User, keyPath: string, fallback?: T): T {
+    const keys = keyPath.split('.');
+    let current: any = user.settings;
+
+    for (const key of keys) {
+      if (current === undefined || current === null) {
+        return fallback as T;
+      }
+      current = current[key];
+    }
+
+    return current !== undefined ? current : fallback;
   }
 }

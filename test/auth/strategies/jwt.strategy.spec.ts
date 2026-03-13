@@ -3,13 +3,12 @@ import { JwtStrategy } from '@auth/strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { UnauthorizedException } from '@nestjs/common';
 import { User } from '@user/entities/user.entity';
-import { mockConfigService, mockUserRepository } from '@test/test.utils';
+import { mockUserRepository } from '@test/test.utils';
 import { JWT_CONFIG } from '@infras/configuration/configuration.consts';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('JwtStrategy', () => {
   let strategy: JwtStrategy;
-  let configService: ConfigService;
   let userRepository: jest.Mocked<any>;
 
   beforeEach(async () => {
@@ -25,12 +24,12 @@ describe('JwtStrategy', () => {
                   accessSecret: 'test-secret',
                   refreshSecret: 'test-refresh-secret',
                   accessExpiresIn: '1h',
-                  refreshExpiresIn: '7d'
+                  refreshExpiresIn: '7d',
                 };
               }
               return null;
-            })
-          }
+            }),
+          },
         },
         {
           provide: getRepositoryToken(User),
@@ -44,14 +43,13 @@ describe('JwtStrategy', () => {
                 return Promise.resolve(user);
               }
               return Promise.resolve(null);
-            })
-          }
-        }
-      ]
+            }),
+          },
+        },
+      ],
     }).compile();
 
     strategy = module.get<JwtStrategy>(JwtStrategy);
-    configService = module.get<ConfigService>(ConfigService);
     userRepository = module.get(getRepositoryToken(User));
   });
 
@@ -67,17 +65,19 @@ describe('JwtStrategy', () => {
       expect(result).toBeDefined();
       expect(result.id).toBe('1');
       expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: payload.sub }
+        where: { id: payload.sub },
       });
     });
 
     it('should throw UnauthorizedException if user not found', async () => {
       const payload = { sub: '2', email: 'test@example.com' };
 
-      await expect(strategy.validate(payload)).rejects.toThrow(UnauthorizedException);
+      await expect(strategy.validate(payload)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: payload.sub }
+        where: { id: payload.sub },
       });
     });
   });
-}); 
+});

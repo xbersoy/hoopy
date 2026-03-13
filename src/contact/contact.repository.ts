@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Contact, ContactType } from './entities/contact.entity';
-import { User } from '../user/entities/user.entity';
 
 export interface ContactRepository {
   unsetPrimaryForType(userId: string, type: ContactType): Promise<void>;
@@ -56,4 +55,3 @@ export class TypeOrmContactRepository implements ContactRepository {
     return result.affected ?? 0;
   }
 }
-

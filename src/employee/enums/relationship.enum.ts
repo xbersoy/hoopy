@@ -1,0 +1,9 @@
+export enum Relationship {
+  SPOUSE = 'SPOUSE',
+  PARENT = 'PARENT',
+  SIBLING = 'SIBLING',
+  CHILD = 'CHILD',
+  FRIEND = 'FRIEND',
+  DOMESTIC_PARTNER = 'DOMESTIC_PARTNER',
+  OTHER = 'OTHER',
+}

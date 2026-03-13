@@ -22,7 +22,7 @@ describe('AuthController', () => {
           provide: AuthService,
           useValue: mockAuthService,
         },
-      ]
+      ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
@@ -42,13 +42,17 @@ describe('AuthController', () => {
         password: 'password123',
         account: {
           name: 'Test Account',
-          type: 'Personal'
-        }
+          type: 'Personal',
+        },
+        company: {
+          name: 'Test Company',
+          sector: 'Technology',
+        },
       };
 
       const expectedResponse = {
         accessToken: 'mock-token',
-        refreshToken: 'mock-token'
+        refreshToken: 'mock-token',
       };
 
       jest.spyOn(authService, 'register').mockResolvedValue(expectedResponse);
@@ -64,12 +68,12 @@ describe('AuthController', () => {
     it('should login user and return tokens', async () => {
       const loginDto = {
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
       const expectedResponse = {
         accessToken: 'mock-token',
-        refreshToken: 'mock-token'
+        refreshToken: 'mock-token',
       };
 
       jest.spyOn(authService, 'login').mockResolvedValue(expectedResponse);
@@ -77,7 +81,10 @@ describe('AuthController', () => {
       const result = await controller.login(loginDto);
 
       expect(result).toEqual(expectedResponse);
-      expect(authService.login).toHaveBeenCalledWith(loginDto.email, loginDto.password);
+      expect(authService.login).toHaveBeenCalledWith(
+        loginDto.email,
+        loginDto.password,
+      );
     });
   });
 
@@ -86,7 +93,7 @@ describe('AuthController', () => {
       const refreshToken = 'valid-refresh-token';
       const expectedResponse = {
         accessToken: 'mock-token',
-        refreshToken: 'mock-token'
+        refreshToken: 'mock-token',
       };
 
       jest.spyOn(authService, 'refresh').mockResolvedValue(expectedResponse);
@@ -108,4 +115,4 @@ describe('AuthController', () => {
       expect(authService.logout).toHaveBeenCalledWith(userId);
     });
   });
-}); 
+});

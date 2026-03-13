@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEnum, IsBoolean, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 import { ContactType } from '../entities/contact.entity';
 
 export class CreateContactDto {
   @ApiProperty({
     description: 'Type of contact',
     enum: ContactType,
-    example: ContactType.EMAIL
+    example: ContactType.EMAIL,
   })
   @IsEnum(ContactType)
   @IsNotEmpty()
@@ -14,7 +20,7 @@ export class CreateContactDto {
 
   @ApiProperty({
     description: 'Contact value (e.g., email address or phone number)',
-    example: 'john@example.com'
+    example: 'john@example.com',
   })
   @IsString()
   @IsNotEmpty()
@@ -23,7 +29,7 @@ export class CreateContactDto {
   @ApiProperty({
     description: 'Optional label for the contact (e.g., "work", "personal")',
     example: 'work',
-    required: false
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -32,9 +38,9 @@ export class CreateContactDto {
   @ApiProperty({
     description: 'Whether this is the primary contact of its type',
     example: true,
-    default: false
+    default: false,
   })
   @IsBoolean()
   @IsOptional()
   isPrimary?: boolean;
-} 
+}

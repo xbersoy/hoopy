@@ -47,4 +47,3 @@ export class TypeOrmUserRepository implements UserRepository {
     return this.repo.remove(user);
   }
 }
-

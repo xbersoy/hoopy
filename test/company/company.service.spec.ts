@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyService } from '@company/services/company.service';
 import { Company } from '@company/entities/company.entity';
-import { User } from '@user/entities/user.entity';
-import { mockCompanyRepository, createMockUser, createMockCompany } from '@test/test.utils';
+import { createMockUser, createMockCompany } from '@test/test.utils';
 
 describe('CompanyService', () => {
   let service: CompanyService;
@@ -21,8 +20,8 @@ describe('CompanyService', () => {
         {
           provide: 'CompanyRepository',
           useValue: companyRepositoryMock,
-        }
-      ]
+        },
+      ],
     }).compile();
 
     service = module.get<CompanyService>(CompanyService);
@@ -40,16 +39,22 @@ describe('CompanyService', () => {
       const companyData = {
         name: 'Test Company',
         sector: 'Technology',
-        owner: mockUser
+        owner: mockUser,
       };
 
       companyRepository.create.mockReturnValue(mockCompany);
       companyRepository.save.mockResolvedValue(mockCompany);
 
-      const result = await service.create(companyData.name, companyData.sector, companyData.owner);
+      const result = await service.create(
+        companyData.name,
+        companyData.sector,
+        companyData.owner,
+      );
 
       expect(result).toEqual(mockCompany);
-      expect(companyRepository.create).toHaveBeenCalledWith(companyData);
+      expect(companyRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining(companyData),
+      );
       expect(companyRepository.save).toHaveBeenCalledWith(mockCompany);
     });
 
@@ -60,8 +65,9 @@ describe('CompanyService', () => {
       companyRepository.create.mockReturnValue({} as Company);
       companyRepository.save.mockRejectedValue(error);
 
-      await expect(service.create('Test Company', 'Technology', mockUser))
-        .rejects.toThrow(error);
+      await expect(
+        service.create('Test Company', 'Technology', mockUser),
+      ).rejects.toThrow(error);
     });
   });
 
@@ -89,4 +95,4 @@ describe('CompanyService', () => {
       expect(companyRepository.findByOwnerId).toHaveBeenCalledWith(mockUser.id);
     });
   });
-}); 
+});

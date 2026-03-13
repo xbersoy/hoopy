@@ -1,26 +1,44 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { EmployeeEducation } from './employee-education.entity';
+import { EmployeeEmergencyContact } from './employee-emergency-contact.entity';
+import { EmployeeDependent } from './employee-dependent.entity';
+import { EmployeeWorkExperience } from './employee-work-experience.entity';
+import { EmployeeJobInformation } from './employee-job-information.entity';
+import { EmployeeLicenseCertification } from './employee-license-certification.entity';
+import { EmployeeNationalId } from './employee-national-id.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../../user/entities/user.entity';
+import { Company } from '../../company/entities/company.entity';
 
 @Entity('employees')
 export class Employee {
   @ApiProperty({
     description: 'Unique identifier for the employee',
-    example: '123e4567-e89b-12d3-a456-426614174000'
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({
     description: 'First name of the employee',
-    example: 'John'
+    example: 'John',
   })
   @Column({ nullable: false })
   firstName: string;
 
   @ApiProperty({
     description: 'Last name of the employee',
-    example: 'Doe'
+    example: 'Doe',
   })
   @Column({ nullable: false })
   lastName: string;
@@ -28,7 +46,7 @@ export class Employee {
   @ApiProperty({
     description: 'Email address of the employee',
     example: 'john.doe@example.com',
-    required: false
+    required: false,
   })
   @Column({ nullable: true })
   email: string;
@@ -36,7 +54,7 @@ export class Employee {
   @ApiProperty({
     description: 'Phone number of the employee',
     example: '+1234567890',
-    required: false
+    required: false,
   })
   @Column({ nullable: true })
   phone: string;
@@ -44,7 +62,7 @@ export class Employee {
   @ApiProperty({
     description: 'Job position of the employee',
     example: 'Software Engineer',
-    required: false
+    required: false,
   })
   @Column({ nullable: true })
   position: string;
@@ -52,7 +70,7 @@ export class Employee {
   @ApiProperty({
     description: 'Department of the employee',
     example: 'Engineering',
-    required: false
+    required: false,
   })
   @Column({ nullable: true })
   department: string;
@@ -60,7 +78,7 @@ export class Employee {
   @ApiProperty({
     description: 'Date when the employee was hired',
     example: '2020-01-15',
-    required: false
+    required: false,
   })
   @Column({ nullable: true, type: 'date' })
   hireDate: Date;
@@ -69,22 +87,104 @@ export class Employee {
     description: 'Educational background of the employee',
     type: [EmployeeEducation],
     required: false,
-    isArray: true
+    isArray: true,
   })
-  @OneToMany(() => EmployeeEducation, (education) => education.employee, { cascade: true })
+  @OneToMany(() => EmployeeEducation, (education) => education.employee, {
+    cascade: true,
+  })
   educations: EmployeeEducation[];
 
   @ApiProperty({
+    description: 'Emergency contacts of the employee',
+    type: [EmployeeEmergencyContact],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeEmergencyContact, (contact) => contact.employee, {
+    cascade: true,
+  })
+  emergencyContacts: EmployeeEmergencyContact[];
+
+  @ApiProperty({
+    description: 'Dependents of the employee',
+    type: [EmployeeDependent],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeDependent, (dependent) => dependent.employee, {
+    cascade: true,
+  })
+  dependents: EmployeeDependent[];
+
+  @ApiProperty({
+    description: 'Work experiences of the employee',
+    type: [EmployeeWorkExperience],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(
+    () => EmployeeWorkExperience,
+    (experience) => experience.employee,
+    {
+      cascade: true,
+    },
+  )
+  workExperiences: EmployeeWorkExperience[];
+
+  @ApiProperty({
+    description: 'Job information history of the employee',
+    type: [EmployeeJobInformation],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeJobInformation, (jobInfo) => jobInfo.employee, {
+    cascade: true,
+  })
+  jobInformations: EmployeeJobInformation[];
+
+  @ApiProperty({
+    description: 'Licenses and certifications of the employee',
+    type: [EmployeeLicenseCertification],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(
+    () => EmployeeLicenseCertification,
+    (license) => license.employee,
+    { cascade: true },
+  )
+  licensesCertifications: EmployeeLicenseCertification[];
+
+  @ApiProperty({
+    description: 'National IDs of the employee',
+    type: [EmployeeNationalId],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeNationalId, (nationalId) => nationalId.employee, {
+    cascade: true,
+  })
+  nationalIds: EmployeeNationalId[];
+
+  @OneToOne(() => User, (user) => user.employee, { nullable: true })
+  @JoinColumn()
+  user?: User;
+
+  @ManyToOne(() => Company, { nullable: true })
+  @JoinColumn()
+  company?: Company;
+
+  @ApiProperty({
     description: 'Date when the employee record was created',
-    example: '2023-01-15T12:00:00Z'
+    example: '2023-01-15T12:00:00Z',
   })
   @CreateDateColumn()
   createdAt: Date;
 
   @ApiProperty({
     description: 'Date when the employee record was last updated',
-    example: '2023-01-16T12:00:00Z'
+    example: '2023-01-16T12:00:00Z',
   })
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

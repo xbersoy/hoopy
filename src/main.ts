@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 if (!process.env.ENV) {
-	dotenv.config()
+  dotenv.config();
 }
 
 import { bootstrap } from './bootstrap';

@@ -44,4 +44,3 @@ export class TypeOrmAttachmentRepository implements AttachmentRepository {
     });
   }
 }
-

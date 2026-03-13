@@ -1,7 +1,22 @@
-import { Controller, Post, Body, UnauthorizedException, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Req,
+  UnauthorizedException,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { RegisterDto, LoginDto, RefreshTokenDto } from './dto/auth.dto';
+import { JwtAuthGuard } from './guards/jwt.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -10,15 +25,15 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user with company information' })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'User and company successfully registered',
     schema: {
       properties: {
         accessToken: { type: 'string' },
         refreshToken: { type: 'string' },
-      }
-    }
+      },
+    },
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   async register(@Body() registerDto: RegisterDto) {
@@ -27,15 +42,15 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Login user' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User successfully logged in',
     schema: {
       properties: {
         accessToken: { type: 'string' },
         refreshToken: { type: 'string' },
-      }
-    }
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(@Body() body: LoginDto) {
@@ -44,15 +59,15 @@ export class AuthController {
 
   @Post('refresh')
   @ApiOperation({ summary: 'Refresh access token' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Token successfully refreshed',
     schema: {
       properties: {
         accessToken: { type: 'string' },
         refreshToken: { type: 'string' },
-      }
-    }
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async refresh(@Body() body: RefreshTokenDto) {
@@ -70,4 +85,22 @@ export class AuthController {
   async logout(@Param('userId') userId: string) {
     return this.authService.logout(userId);
   }
-} 
+
+  @Get('me/permissions')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user permissions' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of user permissions',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getMyPermissions(@Req() req) {
+    return {
+      permissions: await this.authService.getUserPermissions(
+        req.user.id,
+        req.user.companyId,
+      ),
+    };
+  }
+}

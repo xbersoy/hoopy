@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('accounts')
@@ -26,6 +34,15 @@ export class Account {
   @IsNotEmpty()
   type: string;
 
+  @ApiProperty({
+    description: 'Account settings',
+    example: { theme: 'dark', language: 'en' },
+    required: false,
+  })
+  @Column({ type: 'jsonb', nullable: true, default: {} })
+  @IsOptional()
+  settings?: Record<string, any>;
+
   @OneToOne(() => User)
   @JoinColumn({ name: 'owner_id' })
   owner: User;
@@ -35,4 +52,4 @@ export class Account {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-} 
+}

@@ -1,1 +1,1 @@
-export { default as setupSwagger } from './swagger'
+export { default as setupSwagger } from './swagger';

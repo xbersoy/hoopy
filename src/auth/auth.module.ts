@@ -10,6 +10,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JWT_CONFIG } from '@infras/configuration';
 import { ContactModule } from '../contact/contact.module';
 import { AccountModule } from '../account/account.module';
+import { CompanyModule } from '../company/company.module';
+import { EmployeeModule } from '../employee/employee.module';
+import { PermissionsModule } from '../permissions/permissions.module';
 
 @Module({
   imports: [
@@ -19,15 +22,20 @@ import { AccountModule } from '../account/account.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get(JWT_CONFIG).accessSecret,
-        signOptions: { expiresIn: configService.get(JWT_CONFIG).accessTokenExpirationTime },
+        signOptions: {
+          expiresIn: configService.get(JWT_CONFIG).accessTokenExpirationTime,
+        },
       }),
       inject: [ConfigService],
     }),
     AccountModule,
     ContactModule,
+    CompanyModule,
+    EmployeeModule,
+    PermissionsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
-export class AuthModule {} 
+export class AuthModule {}

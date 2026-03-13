@@ -12,13 +12,17 @@ export class SupabaseStorageService implements StorageService {
   }
 
   async upload(file: Express.Multer.File, destinationPath: string) {
-    const { error } = await supabase.storage.from(this.bucketName).upload(destinationPath, file.buffer, {
-      contentType: file.mimetype,
-      upsert: true,
-    });
+    const { error } = await supabase.storage
+      .from(this.bucketName)
+      .upload(destinationPath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
     if (error) throw new Error('Failed to upload attachment: ' + error.message);
 
-    const { data } = supabase.storage.from(this.bucketName).getPublicUrl(destinationPath);
+    const { data } = supabase.storage
+      .from(this.bucketName)
+      .getPublicUrl(destinationPath);
     return { url: data.publicUrl };
   }
 
@@ -27,7 +31,9 @@ export class SupabaseStorageService implements StorageService {
   }
 
   async getPublicUrl(filePath: string) {
-    const { data } = supabase.storage.from(this.bucketName).getPublicUrl(filePath);
+    const { data } = supabase.storage
+      .from(this.bucketName)
+      .getPublicUrl(filePath);
     return data.publicUrl;
   }
-} 
+}

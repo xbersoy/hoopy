@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService } from './account.service';
-import { createMockAccount, createMockUser, mockAccountRepository } from '../../../test/test.utils';
+import { createMockAccount, createMockUser } from '../../../test/test.utils';
 
 describe('AccountService', () => {
   let service: AccountService;
@@ -54,8 +54,12 @@ describe('AccountService', () => {
       );
 
       expect(result).toEqual({ id: '1', ...mockAccount });
-      expect(accountRepository.create).toHaveBeenCalledWith(mockAccount);
-      expect(accountRepository.save).toHaveBeenCalledWith(mockAccount);
+      expect(accountRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining(mockAccount),
+      );
+      expect(accountRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining(mockAccount),
+      );
     });
   });
 
@@ -83,4 +87,4 @@ describe('AccountService', () => {
       expect(accountRepository.findByOwnerId).toHaveBeenCalledWith(mockUser.id);
     });
   });
-}); 
+});

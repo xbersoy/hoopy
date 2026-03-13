@@ -18,12 +18,27 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["src/*"],
-      "@infras/*": ["src/infrastructure/*"],
-      "@auth/*": ["src/auth/*"],
-      "@user/*": ["src/user/*"],
-      "@company/*": ["src/company/*"],
-      "@test/*": ["test/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@infras/*": [
+        "src/infrastructure/*"
+      ],
+      "@auth/*": [
+        "src/auth/*"
+      ],
+      "@user/*": [
+        "src/user/*"
+      ],
+      "@company/*": [
+        "src/company/*"
+      ],
+      "@org-structure/*": [
+        "src/org-structure/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ]
     }
   }
 }
