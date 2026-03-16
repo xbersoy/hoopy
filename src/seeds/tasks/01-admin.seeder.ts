@@ -105,14 +105,20 @@ export class AdminSeeder implements Seeder {
     // Ensure admin has an employee record
     if (company) {
       try {
-        this.logger.log('Creating admin employee record...');
-        await employeeService.create({
-          firstName: 'Admin',
-          lastName: 'User',
-          email: adminEmail,
-          companyId: company.id,
-          userId: admin.id,
-        } as any);
+        const allEmployees = await employeeService.findAll();
+        const hasEmployee = allEmployees.some((e: any) => e.email === adminEmail);
+        if (!hasEmployee) {
+          this.logger.log('Creating admin employee record...');
+          await employeeService.create({
+            firstName: 'Admin',
+            lastName: 'User',
+            email: adminEmail,
+            companyId: company.id,
+            userId: admin.id,
+          } as any);
+        } else {
+          this.logger.log('Admin employee record already exists.');
+        }
       } catch (err) {
         this.logger.warn(
           `Employee seed step failed or already exists: ${(err as Error).message}`,
