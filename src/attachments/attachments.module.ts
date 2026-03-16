@@ -5,9 +5,10 @@ import { AttachmentsController } from './attachments.controller';
 import { AttachmentsService } from './attachments.service';
 import { Attachment } from './attachment.entity';
 import { TypeOrmAttachmentRepository } from './attachment.repository';
+import { PermissionsModule } from '../permissions/permissions.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attachment]), StorageModule],
+  imports: [TypeOrmModule.forFeature([Attachment]), StorageModule, PermissionsModule],
   controllers: [AttachmentsController],
   providers: [
     AttachmentsService,

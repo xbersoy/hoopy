@@ -23,15 +23,18 @@ import {
 import { AttachmentsService } from './attachments.service';
 import { Attachment } from './attachment.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { PermissionsGuard } from '../permissions/guards/permissions.guard';
+import { RequirePermissions } from '../permissions/decorators/require-permissions.decorator';
 
 @ApiTags('Attachments')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('attachments')
 export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
   @Post('upload')
+  @RequirePermissions({ action: 'create', resourceType: 'attachment' })
   @ApiOperation({ summary: 'Upload a new attachment' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -70,6 +73,7 @@ export class AttachmentsController {
   }
 
   @Get(':id')
+  @RequirePermissions({ action: 'read', resourceType: 'attachment' })
   @ApiOperation({ summary: 'Get attachment by ID' })
   @ApiResponse({
     status: 200,
@@ -81,6 +85,7 @@ export class AttachmentsController {
   }
 
   @Get()
+  @RequirePermissions({ action: 'read', resourceType: 'attachment' })
   @ApiOperation({ summary: 'Get attachments by related entity' })
   @ApiResponse({
     status: 200,
@@ -95,6 +100,7 @@ export class AttachmentsController {
   }
 
   @Delete(':id')
+  @RequirePermissions({ action: 'delete', resourceType: 'attachment' })
   @ApiOperation({ summary: 'Delete attachment' })
   @ApiResponse({
     status: 200,
