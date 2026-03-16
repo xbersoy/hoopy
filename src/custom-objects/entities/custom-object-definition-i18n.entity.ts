@@ -29,7 +29,9 @@ export class CustomObjectDefinitionI18n {
   @Column({ name: 'definition_id', type: 'uuid' })
   definitionId: string;
 
-  @ManyToOne(() => CustomObjectDefinition, (def) => def.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => CustomObjectDefinition, (def) => def.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'definition_id' })
   definition: CustomObjectDefinition;
 

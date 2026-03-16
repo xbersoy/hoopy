@@ -45,8 +45,14 @@ export class WorkflowDefinitionService {
     });
   }
 
-  async findOneById(companyId: string, id: string, entityManager?: EntityManager): Promise<WorkflowDefinition> {
-    const repo = entityManager ? entityManager.getRepository(WorkflowDefinition) : this.definitionRepo;
+  async findOneById(
+    companyId: string,
+    id: string,
+    entityManager?: EntityManager,
+  ): Promise<WorkflowDefinition> {
+    const repo = entityManager
+      ? entityManager.getRepository(WorkflowDefinition)
+      : this.definitionRepo;
     const def = await repo.findOne({
       where: { id, companyId },
       relations: ['versions', 'translations'],
@@ -55,16 +61,23 @@ export class WorkflowDefinitionService {
     return def;
   }
 
-  async findByCode(companyId: string, code: string): Promise<WorkflowDefinition> {
+  async findByCode(
+    companyId: string,
+    code: string,
+  ): Promise<WorkflowDefinition> {
     const def = await this.definitionRepo.findOne({
       where: { code, companyId },
       relations: ['versions'],
     });
-    if (!def) throw new NotFoundException(`Workflow definition "${code}" not found`);
+    if (!def)
+      throw new NotFoundException(`Workflow definition "${code}" not found`);
     return def;
   }
 
-  async create(companyId: string, dto: CreateWorkflowDefinitionDto): Promise<WorkflowDefinition> {
+  async create(
+    companyId: string,
+    dto: CreateWorkflowDefinitionDto,
+  ): Promise<WorkflowDefinition> {
     return this.dataSource.transaction(async (manager) => {
       // Create definition
       const definition = manager.create(WorkflowDefinition, {
@@ -79,13 +92,16 @@ export class WorkflowDefinitionService {
 
       // Save definition translations
       for (const t of dto.translations) {
-        await manager.save(WorkflowDefinitionI18n, manager.create(WorkflowDefinitionI18n, {
-          companyId,
-          definitionId: savedDef.id,
-          locale: t.locale,
-          name: t.name,
-          description: t.description,
-        }));
+        await manager.save(
+          WorkflowDefinitionI18n,
+          manager.create(WorkflowDefinitionI18n, {
+            companyId,
+            definitionId: savedDef.id,
+            locale: t.locale,
+            name: t.name,
+            description: t.description,
+          }),
+        );
       }
 
       // Create version 1 as draft
@@ -99,7 +115,10 @@ export class WorkflowDefinitionService {
         slaConfig: dto.slaConfig,
         behaviorConfig: dto.behaviorConfig,
       });
-      const savedVersion = await manager.save(WorkflowDefinitionVersion, version);
+      const savedVersion = await manager.save(
+        WorkflowDefinitionVersion,
+        version,
+      );
 
       // Create steps
       const stepEntities: WorkflowStepDefinition[] = [];
@@ -115,13 +134,16 @@ export class WorkflowDefinitionService {
         // Save step translations
         if (stepTranslations) {
           for (const t of stepTranslations) {
-            await manager.save(WorkflowStepI18n, manager.create(WorkflowStepI18n, {
-              companyId,
-              stepId: savedStep.id,
-              locale: t.locale,
-              name: t.name,
-              description: t.description,
-            }));
+            await manager.save(
+              WorkflowStepI18n,
+              manager.create(WorkflowStepI18n, {
+                companyId,
+                stepId: savedStep.id,
+                locale: t.locale,
+                name: t.name,
+                description: t.description,
+              }),
+            );
           }
         }
       }
@@ -131,11 +153,17 @@ export class WorkflowDefinitionService {
       for (const transDto of dto.transitions) {
         const fromStepId = stepCodeToId.get(transDto.fromStepCode);
         if (!fromStepId) {
-          throw new BadRequestException(`Invalid from step code: "${transDto.fromStepCode}"`);
+          throw new BadRequestException(
+            `Invalid from step code: "${transDto.fromStepCode}"`,
+          );
         }
-        const toStepId = transDto.toStepCode ? stepCodeToId.get(transDto.toStepCode) : null;
+        const toStepId = transDto.toStepCode
+          ? stepCodeToId.get(transDto.toStepCode)
+          : null;
         if (transDto.toStepCode && !toStepId) {
-          throw new BadRequestException(`Invalid to step code: "${transDto.toStepCode}"`);
+          throw new BadRequestException(
+            `Invalid to step code: "${transDto.toStepCode}"`,
+          );
         }
 
         const transition = manager.create(WorkflowTransitionDefinition, {
@@ -185,7 +213,10 @@ export class WorkflowDefinitionService {
   async getPublishedVersion(companyId: string, definitionId: string) {
     const def = await this.findOneById(companyId, definitionId);
     const version = await this.versionRepo.findOne({
-      where: { definitionId: def.id, status: WorkflowDefinitionStatus.PUBLISHED },
+      where: {
+        definitionId: def.id,
+        status: WorkflowDefinitionStatus.PUBLISHED,
+      },
       relations: ['steps', 'transitions'],
       order: { version: 'DESC' },
     });
@@ -199,15 +230,24 @@ export class WorkflowDefinitionService {
       throw new BadRequestException(`Workflow "${workflowCode}" is not active`);
     }
     const version = await this.versionRepo.findOne({
-      where: { definitionId: def.id, status: WorkflowDefinitionStatus.PUBLISHED },
+      where: {
+        definitionId: def.id,
+        status: WorkflowDefinitionStatus.PUBLISHED,
+      },
       relations: ['steps', 'transitions'],
       order: { version: 'DESC' },
     });
-    if (!version) throw new NotFoundException(`No published version for workflow "${workflowCode}"`);
+    if (!version)
+      throw new NotFoundException(
+        `No published version for workflow "${workflowCode}"`,
+      );
     return { definition: def, version };
   }
 
-  async createNewVersion(companyId: string, definitionId: string): Promise<WorkflowDefinitionVersion> {
+  async createNewVersion(
+    companyId: string,
+    definitionId: string,
+  ): Promise<WorkflowDefinitionVersion> {
     const def = await this.findOneById(companyId, definitionId);
     const latestVersion = await this.versionRepo.findOne({
       where: { definitionId: def.id },
@@ -237,10 +277,13 @@ export class WorkflowDefinitionService {
     return this.dataSource.transaction(async (manager) => {
       // Update version fields
       if (dto.triggerMode !== undefined) version.triggerMode = dto.triggerMode;
-      if (dto.entryCriteria !== undefined) version.entryCriteria = dto.entryCriteria;
-      if (dto.notificationConfig !== undefined) version.notificationConfig = dto.notificationConfig;
+      if (dto.entryCriteria !== undefined)
+        version.entryCriteria = dto.entryCriteria;
+      if (dto.notificationConfig !== undefined)
+        version.notificationConfig = dto.notificationConfig;
       if (dto.slaConfig !== undefined) version.slaConfig = dto.slaConfig;
-      if (dto.behaviorConfig !== undefined) version.behaviorConfig = dto.behaviorConfig;
+      if (dto.behaviorConfig !== undefined)
+        version.behaviorConfig = dto.behaviorConfig;
       if (dto.changeNotes !== undefined) version.changeNotes = dto.changeNotes;
       await manager.save(WorkflowDefinitionVersion, version);
 
@@ -258,7 +301,9 @@ export class WorkflowDefinitionService {
 
       // Replace transitions if provided
       if (dto.transitions) {
-        await manager.delete(WorkflowTransitionDefinition, { versionId: version.id });
+        await manager.delete(WorkflowTransitionDefinition, {
+          versionId: version.id,
+        });
 
         // Fetch fresh steps for code→id mapping
         const steps = await manager.find(WorkflowStepDefinition, {
@@ -269,11 +314,17 @@ export class WorkflowDefinitionService {
         for (const transDto of dto.transitions) {
           const fromStepId = stepCodeToId.get(transDto.fromStepCode);
           if (!fromStepId) {
-            throw new BadRequestException(`Invalid from step code: "${transDto.fromStepCode}"`);
+            throw new BadRequestException(
+              `Invalid from step code: "${transDto.fromStepCode}"`,
+            );
           }
-          const toStepId = transDto.toStepCode ? stepCodeToId.get(transDto.toStepCode) : null;
+          const toStepId = transDto.toStepCode
+            ? stepCodeToId.get(transDto.toStepCode)
+            : null;
           if (transDto.toStepCode && !toStepId) {
-            throw new BadRequestException(`Invalid to step code: "${transDto.toStepCode}"`);
+            throw new BadRequestException(
+              `Invalid to step code: "${transDto.toStepCode}"`,
+            );
           }
 
           const transition = manager.create(WorkflowTransitionDefinition, {

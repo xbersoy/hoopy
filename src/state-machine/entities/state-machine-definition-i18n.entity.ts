@@ -31,7 +31,9 @@ export class StateMachineDefinitionI18n {
   @Column({ name: 'definition_id', type: 'uuid' })
   definitionId: string;
 
-  @ManyToOne(() => StateMachineDefinition, (d) => d.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => StateMachineDefinition, (d) => d.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'definition_id' })
   definition: StateMachineDefinition;
 
@@ -39,7 +41,10 @@ export class StateMachineDefinitionI18n {
   @Column({ type: 'varchar', length: 35 })
   locale: string;
 
-  @ApiProperty({ description: 'Localized name', example: 'Leave Request Lifecycle' })
+  @ApiProperty({
+    description: 'Localized name',
+    example: 'Leave Request Lifecycle',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 

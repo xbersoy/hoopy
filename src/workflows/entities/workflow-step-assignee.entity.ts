@@ -16,7 +16,9 @@ export class WorkflowStepAssignee {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => WorkflowStepInstance, (s) => s.assignees, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkflowStepInstance, (s) => s.assignees, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'step_instance_id' })
   stepInstance: WorkflowStepInstance;
 
@@ -27,27 +29,46 @@ export class WorkflowStepAssignee {
   @Column({ type: 'uuid' })
   userId: string;
 
-  @ApiProperty({ description: 'Original assignee if this is a delegation', required: false })
+  @ApiProperty({
+    description: 'Original assignee if this is a delegation',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   originalUserId: string;
 
-  @ApiProperty({ description: 'User who delegated this assignment', required: false })
+  @ApiProperty({
+    description: 'User who delegated this assignment',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   delegatedById: string;
 
-  @ApiProperty({ description: 'Type of delegation', required: false, example: 'vacation' })
+  @ApiProperty({
+    description: 'Type of delegation',
+    required: false,
+    example: 'vacation',
+  })
   @Column({ type: 'varchar', length: 50, nullable: true })
   delegationType: string;
 
-  @ApiProperty({ description: 'How this assignee was resolved', example: 'manager' })
+  @ApiProperty({
+    description: 'How this assignee was resolved',
+    example: 'manager',
+  })
   @Column()
   resolvedVia: string;
 
-  @ApiProperty({ description: 'Whether this assignee has acted', default: false })
+  @ApiProperty({
+    description: 'Whether this assignee has acted',
+    default: false,
+  })
   @Column({ default: false })
   hasActed: boolean;
 
-  @ApiProperty({ description: 'The decision made by this assignee', required: false })
+  @ApiProperty({
+    description: 'The decision made by this assignee',
+    required: false,
+  })
   @Column({ nullable: true })
   decision: string;
 

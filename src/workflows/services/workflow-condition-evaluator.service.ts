@@ -7,4 +7,3 @@ export {
   ConditionGroup,
   ConditionRule,
 } from '../../state-machine/services/condition-evaluator.service';
-

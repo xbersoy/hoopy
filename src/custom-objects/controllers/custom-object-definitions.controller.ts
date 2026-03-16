@@ -3,12 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Query,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,7 +19,6 @@ import { PermissionsGuard } from '../../permissions/guards/permissions.guard';
 import { RequirePermissions } from '../../permissions/decorators/require-permissions.decorator';
 import { CustomObjectDefinitionsService } from '../services/custom-object-definitions.service';
 import { CreateCustomObjectDefinitionDto } from '../dto/create-custom-object-definition.dto';
-import { UpdateCustomObjectDefinitionDto } from '../dto/update-custom-object-definition.dto';
 import { QueryCustomObjectDefinitionDto } from '../dto/query-custom-object-definition.dto';
 import { CustomObjectDefinition } from '../entities/custom-object-definition.entity';
 import { PaginatedResponse } from '../../shared/dto';
@@ -34,7 +30,7 @@ import { PaginatedResponse } from '../../shared/dto';
 export class CustomObjectDefinitionsController {
   constructor(
     private readonly definitionsService: CustomObjectDefinitionsService,
-  ) { }
+  ) {}
 
   @Post()
   @RequirePermissions({
@@ -76,13 +72,22 @@ export class CustomObjectDefinitionsController {
     action: 'read',
     resourceType: 'custom-object-definition',
   })
-  @ApiOperation({ summary: 'Export all custom object definitions (with translations)' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  @ApiOperation({
+    summary: 'Export all custom object definitions (with translations)',
+  })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
   async exportDefinitions(
     @Query('format') format: string = 'json',
     @Req() req,
   ) {
-    const { data } = await this.definitionsService.findAll(req.user.companyId, { page: 1, limit: 1000 });
+    const { data } = await this.definitionsService.findAll(req.user.companyId, {
+      page: 1,
+      limit: 1000,
+    });
     if (format === 'csv') {
       const { CsvHelper } = await import('../../shared/utils/csv.helper');
       const rows = data.map((d) => ({
@@ -132,7 +137,9 @@ export class CustomObjectDefinitionsController {
         description: row.description || undefined,
         baseObjectType: row.baseObjectType || undefined,
         isActive: row.isActive === 'true',
-        translations: row.translations ? JSON.parse(row.translations) : undefined,
+        translations: row.translations
+          ? JSON.parse(row.translations)
+          : undefined,
         fields: row.fields ? JSON.parse(row.fields) : undefined,
       }));
     } else {
@@ -141,7 +148,11 @@ export class CustomObjectDefinitionsController {
 
     const results: CustomObjectDefinition[] = [];
     for (const def of definitions) {
-      const created = await this.definitionsService.create(def, req.user.companyId, req.user.sub);
+      const created = await this.definitionsService.create(
+        def,
+        req.user.companyId,
+        req.user.sub,
+      );
       results.push(created);
     }
     return { imported: results.length, definitions: results };

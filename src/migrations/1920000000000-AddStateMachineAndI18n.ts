@@ -310,16 +310,28 @@ export class AddStateMachineAndI18n1920000000000 implements MigrationInterface {
     `);
 
     // Drop migrated columns from parent tables
-    await queryRunner.query(`ALTER TABLE "workflow_definitions" DROP COLUMN IF EXISTS "name"`);
-    await queryRunner.query(`ALTER TABLE "workflow_definitions" DROP COLUMN IF EXISTS "description"`);
-    await queryRunner.query(`ALTER TABLE "workflow_step_definitions" DROP COLUMN IF EXISTS "name"`);
+    await queryRunner.query(
+      `ALTER TABLE "workflow_definitions" DROP COLUMN IF EXISTS "name"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_definitions" DROP COLUMN IF EXISTS "description"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_step_definitions" DROP COLUMN IF EXISTS "name"`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Re-add dropped columns
-    await queryRunner.query(`ALTER TABLE "workflow_step_definitions" ADD COLUMN "name" varchar`);
-    await queryRunner.query(`ALTER TABLE "workflow_definitions" ADD COLUMN "description" text`);
-    await queryRunner.query(`ALTER TABLE "workflow_definitions" ADD COLUMN "name" varchar`);
+    await queryRunner.query(
+      `ALTER TABLE "workflow_step_definitions" ADD COLUMN "name" varchar`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_definitions" ADD COLUMN "description" text`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_definitions" ADD COLUMN "name" varchar`,
+    );
 
     // Restore data from i18n tables (English locale)
     await queryRunner.query(`
@@ -337,24 +349,54 @@ export class AddStateMachineAndI18n1920000000000 implements MigrationInterface {
     `);
 
     // Drop i18n tables
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_step_i18n" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_definition_i18n" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_step_i18n" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_definition_i18n" CASCADE`,
+    );
 
     // Drop added columns from workflow tables
-    await queryRunner.query(`ALTER TABLE "workflow_step_definitions" DROP COLUMN IF EXISTS "transition_code"`);
-    await queryRunner.query(`ALTER TABLE "workflow_instances" DROP CONSTRAINT IF EXISTS "fk_workflow_instances_sm_instance"`);
-    await queryRunner.query(`ALTER TABLE "workflow_instances" DROP COLUMN IF EXISTS "state_machine_instance_id"`);
-    await queryRunner.query(`ALTER TABLE "workflow_definitions" DROP CONSTRAINT IF EXISTS "fk_workflow_definitions_sm_definition"`);
-    await queryRunner.query(`ALTER TABLE "workflow_definitions" DROP COLUMN IF EXISTS "state_machine_definition_id"`);
+    await queryRunner.query(
+      `ALTER TABLE "workflow_step_definitions" DROP COLUMN IF EXISTS "transition_code"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_instances" DROP CONSTRAINT IF EXISTS "fk_workflow_instances_sm_instance"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_instances" DROP COLUMN IF EXISTS "state_machine_instance_id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_definitions" DROP CONSTRAINT IF EXISTS "fk_workflow_definitions_sm_definition"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workflow_definitions" DROP COLUMN IF EXISTS "state_machine_definition_id"`,
+    );
 
     // Drop state machine tables in reverse order
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_transition_history" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_instances" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_transition_i18n" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_transitions" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_state_i18n" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_states" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_definition_i18n" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "state_machine_definitions" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_transition_history" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_instances" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_transition_i18n" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_transitions" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_state_i18n" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_states" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_definition_i18n" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "state_machine_definitions" CASCADE`,
+    );
   }
 }

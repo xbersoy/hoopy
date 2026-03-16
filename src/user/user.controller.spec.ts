@@ -35,7 +35,10 @@ describe('UserController', () => {
       controllers: [UserController],
       providers: [
         { provide: UserService, useValue: userService },
-        { provide: PermissionsService, useValue: { userCan: jest.fn().mockResolvedValue(true) } },
+        {
+          provide: PermissionsService,
+          useValue: { userCan: jest.fn().mockResolvedValue(true) },
+        },
       ],
     }).compile();
 

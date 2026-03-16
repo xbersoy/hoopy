@@ -10,7 +10,12 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { PermissionsGuard } from '../permissions/guards/permissions.guard';
 import { RequirePermissions } from '../permissions/decorators/require-permissions.decorator';
@@ -25,7 +30,7 @@ import { UpdatePicklistOptionDto } from './dto/update-picklist-option.dto';
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('picklists')
 export class PicklistsController {
-  constructor(private readonly picklistsService: PicklistsService) { }
+  constructor(private readonly picklistsService: PicklistsService) {}
 
   @Post()
   @RequirePermissions({ action: 'create', resourceType: 'picklist' })
@@ -37,21 +42,43 @@ export class PicklistsController {
   @Get()
   @RequirePermissions({ action: 'read', resourceType: 'picklist' })
   @ApiOperation({ summary: 'Find all picklists (with localized resolution)' })
-  @ApiQuery({ name: 'lang', required: false, description: 'Locale fallback (e.g. en, tr)' })
-  @ApiQuery({ name: 'includeTranslations', required: false, description: 'Include all translations', type: Boolean })
-  findAll(@Req() req, @Query('lang') lang?: string, @Query('includeTranslations') includeTranslations?: string) {
-    return this.picklistsService.findAll(req.user.companyId, lang, includeTranslations === 'true');
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    description: 'Locale fallback (e.g. en, tr)',
+  })
+  @ApiQuery({
+    name: 'includeTranslations',
+    required: false,
+    description: 'Include all translations',
+    type: Boolean,
+  })
+  findAll(
+    @Req() req,
+    @Query('lang') lang?: string,
+    @Query('includeTranslations') includeTranslations?: string,
+  ) {
+    return this.picklistsService.findAll(
+      req.user.companyId,
+      lang,
+      includeTranslations === 'true',
+    );
   }
 
   @Get('export')
   @RequirePermissions({ action: 'read', resourceType: 'picklist' })
-  @ApiOperation({ summary: 'Export all picklists with translations (JSON or CSV)' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
-  async exportPicklists(
-    @Query('format') format: string = 'json',
-    @Req() req,
-  ) {
-    const picklists = await this.picklistsService.findAllRaw(req.user.companyId);
+  @ApiOperation({
+    summary: 'Export all picklists with translations (JSON or CSV)',
+  })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
+  async exportPicklists(@Query('format') format: string = 'json', @Req() req) {
+    const picklists = await this.picklistsService.findAllRaw(
+      req.user.companyId,
+    );
     if (format === 'csv') {
       const { CsvHelper } = await import('../shared/utils/csv.helper');
       const rows = picklists.map((p) => ({
@@ -68,10 +95,13 @@ export class PicklistsController {
             code: opt.code,
             sortOrder: opt.sortOrder,
             isActive: opt.isActive,
-            translations: (opt.translations || []).reduce((acc: any, t: any) => {
-              acc[t.locale] = { label: t.label };
-              return acc;
-            }, {}),
+            translations: (opt.translations || []).reduce(
+              (acc: any, t: any) => {
+                acc[t.locale] = { label: t.label };
+                return acc;
+              },
+              {},
+            ),
           })),
         ),
       }));
@@ -104,13 +134,22 @@ export class PicklistsController {
     const results = [];
     for (const pl of picklists) {
       const { options, ...picklistData } = pl;
-      const created = await this.picklistsService.create(req.user.companyId, picklistData);
+      const created = await this.picklistsService.create(
+        req.user.companyId,
+        picklistData,
+      );
       if (options?.length) {
         for (const opt of options) {
-          await this.picklistsService.createOption(req.user.companyId, created.id, opt);
+          await this.picklistsService.createOption(
+            req.user.companyId,
+            created.id,
+            opt,
+          );
         }
       }
-      results.push(await this.picklistsService.findOne(created.id, req.user.companyId));
+      results.push(
+        await this.picklistsService.findOne(created.id, req.user.companyId),
+      );
     }
     return { imported: results.length, picklists: results };
   }
@@ -119,9 +158,24 @@ export class PicklistsController {
   @RequirePermissions({ action: 'read', resourceType: 'picklist' })
   @ApiOperation({ summary: 'Find one picklist (with localized resolution)' })
   @ApiQuery({ name: 'lang', required: false })
-  @ApiQuery({ name: 'includeTranslations', required: false, description: 'Include all translations', type: Boolean })
-  findOne(@Req() req, @Param('id') id: string, @Query('lang') lang?: string, @Query('includeTranslations') includeTranslations?: string) {
-    return this.picklistsService.findOneResolved(id, req.user.companyId, lang, includeTranslations === 'true');
+  @ApiQuery({
+    name: 'includeTranslations',
+    required: false,
+    description: 'Include all translations',
+    type: Boolean,
+  })
+  findOne(
+    @Req() req,
+    @Param('id') id: string,
+    @Query('lang') lang?: string,
+    @Query('includeTranslations') includeTranslations?: string,
+  ) {
+    return this.picklistsService.findOneResolved(
+      id,
+      req.user.companyId,
+      lang,
+      includeTranslations === 'true',
+    );
   }
 
   @Patch(':id')
@@ -141,15 +195,31 @@ export class PicklistsController {
   @Post(':id/options')
   @RequirePermissions({ action: 'create', resourceType: 'picklist' })
   @ApiOperation({ summary: 'Create a new picklist option' })
-  createOption(@Req() req, @Param('id') picklistId: string, @Body() dto: CreatePicklistOptionDto) {
-    return this.picklistsService.createOption(req.user.companyId, picklistId, dto);
+  createOption(
+    @Req() req,
+    @Param('id') picklistId: string,
+    @Body() dto: CreatePicklistOptionDto,
+  ) {
+    return this.picklistsService.createOption(
+      req.user.companyId,
+      picklistId,
+      dto,
+    );
   }
 
   @Patch('options/:optionId')
   @RequirePermissions({ action: 'update', resourceType: 'picklist' })
   @ApiOperation({ summary: 'Update a picklist option' })
-  updateOption(@Req() req, @Param('optionId') optionId: string, @Body() dto: UpdatePicklistOptionDto) {
-    return this.picklistsService.updateOption(optionId, req.user.companyId, dto);
+  updateOption(
+    @Req() req,
+    @Param('optionId') optionId: string,
+    @Body() dto: UpdatePicklistOptionDto,
+  ) {
+    return this.picklistsService.updateOption(
+      optionId,
+      req.user.companyId,
+      dto,
+    );
   }
 
   @Delete('options/:optionId')

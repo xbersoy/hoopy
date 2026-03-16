@@ -9,14 +9,22 @@ import { StateMachineDefinitionStatus } from '@/state-machine/enums/state-machin
 const createMockRepo = () => ({
   find: jest.fn(),
   findOne: jest.fn(),
-  create: jest.fn().mockImplementation((data) => ({ id: 'generated-id', ...data })),
+  create: jest
+    .fn()
+    .mockImplementation((data) => ({ id: 'generated-id', ...data })),
   save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
   remove: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
 });
 
 const createMockManager = () => ({
-  create: jest.fn().mockImplementation((_Entity, data) => ({ id: 'gen-id', ...data })),
-  save: jest.fn().mockImplementation((_Entity, data) => Promise.resolve({ id: 'gen-id', ...data })),
+  create: jest
+    .fn()
+    .mockImplementation((_Entity, data) => ({ id: 'gen-id', ...data })),
+  save: jest
+    .fn()
+    .mockImplementation((_Entity, data) =>
+      Promise.resolve({ id: 'gen-id', ...data }),
+    ),
   findOne: jest.fn(),
   find: jest.fn(),
   delete: jest.fn(),
@@ -47,7 +55,9 @@ describe('StateMachineService', () => {
     historyRepo = createMockRepo();
 
     dataSource = {
-      transaction: jest.fn().mockImplementation((cb) => cb(createMockManager())),
+      transaction: jest
+        .fn()
+        .mockImplementation((cb) => cb(createMockManager())),
     };
 
     conditionEvaluator = new ConditionEvaluatorService();
@@ -83,8 +93,16 @@ describe('StateMachineService', () => {
       initialStateCode: 'draft',
       translations: [{ locale: 'en', name: 'Leave Lifecycle' }],
       states: [
-        { code: 'draft', isInitial: true, translations: [{ locale: 'en', name: 'Draft' }] },
-        { code: 'approved', isFinal: true, translations: [{ locale: 'en', name: 'Approved' }] },
+        {
+          code: 'draft',
+          isInitial: true,
+          translations: [{ locale: 'en', name: 'Draft' }],
+        },
+        {
+          code: 'approved',
+          isFinal: true,
+          translations: [{ locale: 'en', name: 'Approved' }],
+        },
       ],
       transitions: [
         {
@@ -100,7 +118,10 @@ describe('StateMachineService', () => {
       const mockManager = createMockManager();
       let stateCount = 0;
       mockManager.save.mockImplementation((_Entity: any, data: any) => {
-        if (_Entity.name === 'StateMachineState' || (_Entity.name === undefined && data?.code && !data.fromStateId)) {
+        if (
+          _Entity.name === 'StateMachineState' ||
+          (_Entity.name === undefined && data?.code && !data.fromStateId)
+        ) {
           stateCount++;
           return Promise.resolve({ id: `state-${stateCount}`, ...data });
         }
@@ -125,7 +146,9 @@ describe('StateMachineService', () => {
 
       expect(dataSource.transaction).toHaveBeenCalledTimes(1);
       expect(eventPublisher.emit).toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'state_machine.definition.created' }),
+        expect.objectContaining({
+          eventType: 'state_machine.definition.created',
+        }),
       );
       expect(result).toBeDefined();
     });
@@ -134,7 +157,12 @@ describe('StateMachineService', () => {
       const badInput = {
         ...input,
         transitions: [
-          { code: 'submit', fromStateCode: 'nonexistent', toStateCode: 'approved', translations: [] },
+          {
+            code: 'submit',
+            fromStateCode: 'nonexistent',
+            toStateCode: 'approved',
+            translations: [],
+          },
         ],
       };
 
@@ -146,7 +174,9 @@ describe('StateMachineService', () => {
       });
       dataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
-      await expect(service.createDefinition(companyId, badInput)).rejects.toThrow(BadRequestException);
+      await expect(
+        service.createDefinition(companyId, badInput),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -161,7 +191,9 @@ describe('StateMachineService', () => {
 
       const result = await service.findDefinitionsByCompany('comp-1');
       expect(result).toEqual(defs);
-      expect(definitionRepo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { companyId: 'comp-1' } }));
+      expect(definitionRepo.find).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { companyId: 'comp-1' } }),
+      );
     });
   });
 
@@ -180,7 +212,9 @@ describe('StateMachineService', () => {
 
     it('throws NotFoundException when not found', async () => {
       definitionRepo.findOne.mockResolvedValue(null);
-      await expect(service.findDefinitionById('comp-1', 'missing')).rejects.toThrow(NotFoundException);
+      await expect(
+        service.findDefinitionById('comp-1', 'missing'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -197,12 +231,17 @@ describe('StateMachineService', () => {
         states: [{ id: 's1', code: 'initial' }],
       };
       definitionRepo.findOne.mockResolvedValue(def);
-      definitionRepo.save.mockResolvedValue({ ...def, status: StateMachineDefinitionStatus.PUBLISHED });
+      definitionRepo.save.mockResolvedValue({
+        ...def,
+        status: StateMachineDefinitionStatus.PUBLISHED,
+      });
 
       const result = await service.publishDefinition('comp-1', 'def-1');
       expect(result.status).toBe(StateMachineDefinitionStatus.PUBLISHED);
       expect(eventPublisher.emit).toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'state_machine.definition.published' }),
+        expect.objectContaining({
+          eventType: 'state_machine.definition.published',
+        }),
       );
     });
 
@@ -214,7 +253,9 @@ describe('StateMachineService', () => {
       };
       definitionRepo.findOne.mockResolvedValue(def);
 
-      await expect(service.publishDefinition('comp-1', 'def-1')).rejects.toThrow(BadRequestException);
+      await expect(
+        service.publishDefinition('comp-1', 'def-1'),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('rejects definition with no states', async () => {
@@ -225,7 +266,9 @@ describe('StateMachineService', () => {
       };
       definitionRepo.findOne.mockResolvedValue(def);
 
-      await expect(service.publishDefinition('comp-1', 'def-1')).rejects.toThrow(BadRequestException);
+      await expect(
+        service.publishDefinition('comp-1', 'def-1'),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -235,14 +278,23 @@ describe('StateMachineService', () => {
 
   describe('archiveDefinition', () => {
     it('archives a definition and emits event', async () => {
-      const def = { id: 'def-1', code: 'test', status: StateMachineDefinitionStatus.PUBLISHED };
+      const def = {
+        id: 'def-1',
+        code: 'test',
+        status: StateMachineDefinitionStatus.PUBLISHED,
+      };
       definitionRepo.findOne.mockResolvedValue(def);
-      definitionRepo.save.mockResolvedValue({ ...def, status: StateMachineDefinitionStatus.ARCHIVED });
+      definitionRepo.save.mockResolvedValue({
+        ...def,
+        status: StateMachineDefinitionStatus.ARCHIVED,
+      });
 
       const result = await service.archiveDefinition('comp-1', 'def-1');
       expect(result.status).toBe(StateMachineDefinitionStatus.ARCHIVED);
       expect(eventPublisher.emit).toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'state_machine.definition.archived' }),
+        expect.objectContaining({
+          eventType: 'state_machine.definition.archived',
+        }),
       );
     });
   });
@@ -262,7 +314,9 @@ describe('StateMachineService', () => {
 
     it('throws NotFoundException when not found', async () => {
       definitionRepo.findOne.mockResolvedValue(null);
-      await expect(service.deleteDefinition('comp-1', 'missing')).rejects.toThrow(NotFoundException);
+      await expect(
+        service.deleteDefinition('comp-1', 'missing'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -284,9 +338,16 @@ describe('StateMachineService', () => {
       };
       definitionRepo.findOne.mockResolvedValue(def);
       instanceRepo.create.mockImplementation((data) => data);
-      instanceRepo.save.mockImplementation((data) => Promise.resolve({ id: 'inst-1', ...data }));
+      instanceRepo.save.mockImplementation((data) =>
+        Promise.resolve({ id: 'inst-1', ...data }),
+      );
 
-      const result = await service.createInstance('comp-1', 'def-1', 'leave_request', 'res-1');
+      const result = await service.createInstance(
+        'comp-1',
+        'def-1',
+        'leave_request',
+        'res-1',
+      );
 
       expect(result.currentStateId).toBe('state-1');
       expect(result.isCompleted).toBe(false);
@@ -324,7 +385,9 @@ describe('StateMachineService', () => {
 
     it('throws NotFoundException when not found', async () => {
       instanceRepo.findOne.mockResolvedValue(null);
-      await expect(service.findInstanceById('comp-1', 'missing')).rejects.toThrow(NotFoundException);
+      await expect(
+        service.findInstanceById('comp-1', 'missing'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -357,9 +420,11 @@ describe('StateMachineService', () => {
 
       const mockManager = createMockManager();
       mockManager.findOne
-        .mockResolvedValueOnce(instance)   // find instance
+        .mockResolvedValueOnce(instance) // find instance
         .mockResolvedValueOnce(transition); // find transition
-      mockManager.save.mockImplementation((_E: any, data: any) => Promise.resolve(data));
+      mockManager.save.mockImplementation((_E: any, data: any) =>
+        Promise.resolve(data),
+      );
 
       dataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
@@ -393,7 +458,9 @@ describe('StateMachineService', () => {
       dataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
       await expect(
-        service.executeTransition('comp-1', 'inst-1', { transitionCode: 'submit' }),
+        service.executeTransition('comp-1', 'inst-1', {
+          transitionCode: 'submit',
+        }),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -410,7 +477,9 @@ describe('StateMachineService', () => {
       dataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
       await expect(
-        service.executeTransition('comp-1', 'inst-1', { transitionCode: 'submit' }),
+        service.executeTransition('comp-1', 'inst-1', {
+          transitionCode: 'submit',
+        }),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -444,7 +513,9 @@ describe('StateMachineService', () => {
       dataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
       await expect(
-        service.executeTransition('comp-1', 'inst-1', { transitionCode: 'approve' }),
+        service.executeTransition('comp-1', 'inst-1', {
+          transitionCode: 'approve',
+        }),
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -469,7 +540,10 @@ describe('StateMachineService', () => {
         {
           id: 't-1',
           code: 'escalate',
-          guardCondition: { logic: 'and', rules: [{ field: 'level', operator: 'gte', value: 5 }] },
+          guardCondition: {
+            logic: 'and',
+            rules: [{ field: 'level', operator: 'gte', value: 5 }],
+          },
         },
         {
           id: 't-2',
@@ -506,24 +580,38 @@ describe('StateMachineService', () => {
         states: [{ id: 's1' }],
       };
       definitionRepo.findOne.mockResolvedValue(def);
-      definitionRepo.save.mockResolvedValue({ ...def, status: StateMachineDefinitionStatus.PUBLISHED });
+      definitionRepo.save.mockResolvedValue({
+        ...def,
+        status: StateMachineDefinitionStatus.PUBLISHED,
+      });
 
       await service.publishDefinition('comp-1', 'def-1');
 
       expect(eventPublisher.emit).toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'state_machine.definition.published' }),
+        expect.objectContaining({
+          eventType: 'state_machine.definition.published',
+        }),
       );
     });
 
     it('emits event on archive', async () => {
-      const def = { id: 'def-1', code: 'test', status: StateMachineDefinitionStatus.PUBLISHED };
+      const def = {
+        id: 'def-1',
+        code: 'test',
+        status: StateMachineDefinitionStatus.PUBLISHED,
+      };
       definitionRepo.findOne.mockResolvedValue(def);
-      definitionRepo.save.mockResolvedValue({ ...def, status: StateMachineDefinitionStatus.ARCHIVED });
+      definitionRepo.save.mockResolvedValue({
+        ...def,
+        status: StateMachineDefinitionStatus.ARCHIVED,
+      });
 
       await service.archiveDefinition('comp-1', 'def-1');
 
       expect(eventPublisher.emit).toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'state_machine.definition.archived' }),
+        expect.objectContaining({
+          eventType: 'state_machine.definition.archived',
+        }),
       );
     });
   });

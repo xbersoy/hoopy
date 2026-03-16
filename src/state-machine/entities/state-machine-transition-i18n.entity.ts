@@ -31,7 +31,9 @@ export class StateMachineTransitionI18n {
   @Column({ name: 'transition_id', type: 'uuid' })
   transitionId: string;
 
-  @ManyToOne(() => StateMachineTransition, (t) => t.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => StateMachineTransition, (t) => t.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'transition_id' })
   transition: StateMachineTransition;
 
@@ -39,11 +41,17 @@ export class StateMachineTransitionI18n {
   @Column({ type: 'varchar', length: 35 })
   locale: string;
 
-  @ApiProperty({ description: 'Localized action label', example: 'Submit for Approval' })
+  @ApiProperty({
+    description: 'Localized action label',
+    example: 'Submit for Approval',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @ApiProperty({ description: 'Localized description/help text', required: false })
+  @ApiProperty({
+    description: 'Localized description/help text',
+    required: false,
+  })
   @Column({ type: 'text', nullable: true })
   description: string | null;
 

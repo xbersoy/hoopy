@@ -63,10 +63,7 @@ const builtinResolvers = [
       WorkflowActionLog,
     ]),
   ],
-  controllers: [
-    WorkflowDefinitionController,
-    WorkflowInstanceController,
-  ],
+  controllers: [WorkflowDefinitionController, WorkflowInstanceController],
   providers: [
     // Core services
     WorkflowDefinitionService,
@@ -83,9 +80,6 @@ const builtinResolvers = [
       inject: builtinResolvers,
     },
   ],
-  exports: [
-    WorkflowDefinitionService,
-    WorkflowEngineService,
-  ],
+  exports: [WorkflowDefinitionService, WorkflowEngineService],
 })
 export class WorkflowsModule {}

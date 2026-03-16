@@ -1,5 +1,15 @@
-import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PicklistRepository, PicklistI18nRepository, PicklistOptionRepository, PicklistOptionI18nRepository } from './picklists.repository';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import {
+  PicklistRepository,
+  PicklistI18nRepository,
+  PicklistOptionRepository,
+  PicklistOptionI18nRepository,
+} from './picklists.repository';
 import { CreatePicklistDto } from './dto/create-picklist.dto';
 import { UpdatePicklistDto } from './dto/update-picklist.dto';
 import { CreatePicklistOptionDto } from './dto/create-picklist-option.dto';
@@ -42,13 +52,14 @@ export class PicklistsService {
     private readonly optionsRepo: PicklistOptionRepository,
     @Inject('PicklistOptionI18nRepository')
     private readonly optionsI18nRepo: PicklistOptionI18nRepository,
-  ) { }
+  ) {}
 
   // ── PICKLISTS ──────────────────────────────────────────────
 
   async create(companyId: string, dto: CreatePicklistDto): Promise<Picklist> {
     const locales = Object.keys(dto.translations || {});
-    if (locales.length === 0) throw new BadRequestException('Translations required');
+    if (locales.length === 0)
+      throw new BadRequestException('Translations required');
 
     const entity = this.picklistsRepo.create({
       companyId,
@@ -58,10 +69,15 @@ export class PicklistsService {
     const saved = await this.picklistsRepo.save(entity);
 
     for (const locale of locales) {
-      await this.picklistsI18nRepo.upsertForPicklist(companyId, saved.id, locale, {
-        name: dto.translations[locale].name,
-        description: dto.translations[locale].description,
-      });
+      await this.picklistsI18nRepo.upsertForPicklist(
+        companyId,
+        saved.id,
+        locale,
+        {
+          name: dto.translations[locale].name,
+          description: dto.translations[locale].description,
+        },
+      );
     }
 
     if (dto.options?.length) {
@@ -73,16 +89,27 @@ export class PicklistsService {
     return this.picklistsRepo.findOne(saved.id, companyId);
   }
 
-  async findAll(companyId: string, locale?: string, includeTranslations?: boolean): Promise<ResolvedPicklist[]> {
+  async findAll(
+    companyId: string,
+    locale?: string,
+    includeTranslations?: boolean,
+  ): Promise<ResolvedPicklist[]> {
     const picklists = await this.picklistsRepo.findByCompany(companyId);
-    return picklists.map((p) => this.resolvePicklist(p, locale ?? 'en', includeTranslations));
+    return picklists.map((p) =>
+      this.resolvePicklist(p, locale ?? 'en', includeTranslations),
+    );
   }
 
   async findAllRaw(companyId: string): Promise<Picklist[]> {
     return this.picklistsRepo.findByCompany(companyId);
   }
 
-  async findOneResolved(id: string, companyId: string, locale?: string, includeTranslations?: boolean): Promise<ResolvedPicklist> {
+  async findOneResolved(
+    id: string,
+    companyId: string,
+    locale?: string,
+    includeTranslations?: boolean,
+  ): Promise<ResolvedPicklist> {
     const picklist = await this.picklistsRepo.findOne(id, companyId);
     if (!picklist) throw new NotFoundException('Picklist not found');
     return this.resolvePicklist(picklist, locale ?? 'en', includeTranslations);
@@ -94,7 +121,11 @@ export class PicklistsService {
     return picklist;
   }
 
-  async update(id: string, companyId: string, dto: UpdatePicklistDto): Promise<Picklist> {
+  async update(
+    id: string,
+    companyId: string,
+    dto: UpdatePicklistDto,
+  ): Promise<Picklist> {
     const picklist = await this.findOne(id, companyId);
     if (dto.code !== undefined) picklist.code = dto.code;
     if (dto.isActive !== undefined) picklist.isActive = dto.isActive;
@@ -124,15 +155,27 @@ export class PicklistsService {
     return this.picklistsRepo.remove(entity);
   }
 
-  private resolvePicklist(picklist: Picklist, locale: string, includeTranslations?: boolean): ResolvedPicklist {
+  private resolvePicklist(
+    picklist: Picklist,
+    locale: string,
+    includeTranslations?: boolean,
+  ): ResolvedPicklist {
     const translations = picklist.translations || [];
-    const match = translations.find((t) => t.locale === locale) ?? translations.find((t) => t.locale === 'en') ?? translations[0] ?? null;
+    const match =
+      translations.find((t) => t.locale === locale) ??
+      translations.find((t) => t.locale === 'en') ??
+      translations[0] ??
+      null;
 
     const resolvedOptions = (picklist.options || [])
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map((opt) => {
         const optTranslations = opt.translations || [];
-        const optMatch = optTranslations.find((t) => t.locale === locale) ?? optTranslations.find((t) => t.locale === 'en') ?? optTranslations[0] ?? null;
+        const optMatch =
+          optTranslations.find((t) => t.locale === locale) ??
+          optTranslations.find((t) => t.locale === 'en') ??
+          optTranslations[0] ??
+          null;
         const resolved: ResolvedPicklistOption = {
           id: opt.id,
           companyId: opt.companyId,
@@ -178,9 +221,14 @@ export class PicklistsService {
 
   // ── PICKLIST OPTIONS ───────────────────────────────────────
 
-  async createOption(companyId: string, picklistId: string, dto: CreatePicklistOptionDto): Promise<PicklistOption> {
+  async createOption(
+    companyId: string,
+    picklistId: string,
+    dto: CreatePicklistOptionDto,
+  ): Promise<PicklistOption> {
     await this.findOne(picklistId, companyId);
-    if (!Object.keys(dto.translations || {}).length) throw new BadRequestException('Translations required for option');
+    if (!Object.keys(dto.translations || {}).length)
+      throw new BadRequestException('Translations required for option');
 
     const entity = this.optionsRepo.create({
       companyId,
@@ -199,7 +247,11 @@ export class PicklistsService {
     return this.optionsRepo.findOne(saved.id, companyId);
   }
 
-  async updateOption(id: string, companyId: string, dto: UpdatePicklistOptionDto): Promise<PicklistOption> {
+  async updateOption(
+    id: string,
+    companyId: string,
+    dto: UpdatePicklistOptionDto,
+  ): Promise<PicklistOption> {
     const option = await this.optionsRepo.findOne(id, companyId);
     if (!option) throw new NotFoundException('Picklist Option not found');
 
@@ -210,7 +262,9 @@ export class PicklistsService {
 
     if (dto.translations) {
       for (const [locale, t] of Object.entries(dto.translations)) {
-        await this.optionsI18nRepo.upsertForOption(companyId, id, locale, { label: t.label });
+        await this.optionsI18nRepo.upsertForOption(companyId, id, locale, {
+          label: t.label,
+        });
       }
     }
     return this.optionsRepo.findOne(id, companyId);
@@ -222,7 +276,11 @@ export class PicklistsService {
     return this.optionsRepo.remove(option);
   }
 
-  async isValidOptionCode(picklistId: string, companyId: string, code: string): Promise<boolean> {
+  async isValidOptionCode(
+    picklistId: string,
+    companyId: string,
+    code: string,
+  ): Promise<boolean> {
     const picklist = await this.picklistsRepo.findOne(picklistId, companyId);
     if (!picklist || !picklist.options) return false;
     return picklist.options.some((opt) => opt.code === code && opt.isActive);

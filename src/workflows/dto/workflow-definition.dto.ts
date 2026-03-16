@@ -40,16 +40,26 @@ export class WorkflowI18nDto {
 // ─── Step Definition DTO ───
 
 export class CreateWorkflowStepDefinitionDto {
-  @ApiProperty({ description: 'Unique code within the version', example: 'manager_approval' })
+  @ApiProperty({
+    description: 'Unique code within the version',
+    example: 'manager_approval',
+  })
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Corresponding state machine transition code', required: false })
+  @ApiProperty({
+    description: 'Corresponding state machine transition code',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   transitionCode?: string;
 
-  @ApiProperty({ description: 'Step type', enum: WorkflowStepType, default: WorkflowStepType.APPROVAL })
+  @ApiProperty({
+    description: 'Step type',
+    enum: WorkflowStepType,
+    default: WorkflowStepType.APPROVAL,
+  })
   @IsEnum(WorkflowStepType)
   @IsOptional()
   type?: WorkflowStepType;
@@ -68,7 +78,11 @@ export class CreateWorkflowStepDefinitionDto {
   @IsOptional()
   assigneeConfig?: Record<string, any>;
 
-  @ApiProperty({ description: 'Approval strategy', enum: ApprovalStrategy, required: false })
+  @ApiProperty({
+    description: 'Approval strategy',
+    enum: ApprovalStrategy,
+    required: false,
+  })
   @IsEnum(ApprovalStrategy)
   @IsOptional()
   approvalStrategy?: ApprovalStrategy;
@@ -93,7 +107,10 @@ export class CreateWorkflowStepDefinitionDto {
   @IsOptional()
   isCommentRequired?: boolean;
 
-  @ApiProperty({ description: 'Whether attachment is required', required: false })
+  @ApiProperty({
+    description: 'Whether attachment is required',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isAttachmentRequired?: boolean;
@@ -133,11 +150,17 @@ export class CreateWorkflowStepDefinitionDto {
 // ─── Transition Definition DTO ───
 
 export class CreateWorkflowTransitionDefinitionDto {
-  @ApiProperty({ description: 'Code of the from-step', example: 'manager_approval' })
+  @ApiProperty({
+    description: 'Code of the from-step',
+    example: 'manager_approval',
+  })
   @IsString()
   fromStepCode: string;
 
-  @ApiProperty({ description: 'Code of the to-step (null = workflow end)', required: false })
+  @ApiProperty({
+    description: 'Code of the to-step (null = workflow end)',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   toStepCode?: string;
@@ -146,7 +169,10 @@ export class CreateWorkflowTransitionDefinitionDto {
   @IsEnum(TransitionAction)
   action: TransitionAction;
 
-  @ApiProperty({ description: 'Condition for this transition', required: false })
+  @ApiProperty({
+    description: 'Condition for this transition',
+    required: false,
+  })
   @IsObject()
   @IsOptional()
   condition?: Record<string, any>;
@@ -170,15 +196,24 @@ export class CreateWorkflowTransitionDefinitionDto {
 // ─── Workflow Definition DTO ───
 
 export class CreateWorkflowDefinitionDto {
-  @ApiProperty({ description: 'Unique code within the company', example: 'leave_request_approval' })
+  @ApiProperty({
+    description: 'Unique code within the company',
+    example: 'leave_request_approval',
+  })
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Target resource type', example: 'leave_request' })
+  @ApiProperty({
+    description: 'Target resource type',
+    example: 'leave_request',
+  })
   @IsString()
   resourceType: string;
 
-  @ApiProperty({ description: 'State machine definition ID that governs this workflow\'s lifecycle' })
+  @ApiProperty({
+    description:
+      "State machine definition ID that governs this workflow's lifecycle",
+  })
   @IsUUID()
   stateMachineDefinitionId: string;
 
@@ -192,7 +227,11 @@ export class CreateWorkflowDefinitionDto {
   @IsOptional()
   priority?: number;
 
-  @ApiProperty({ description: 'Trigger mode', enum: WorkflowTriggerMode, required: false })
+  @ApiProperty({
+    description: 'Trigger mode',
+    enum: WorkflowTriggerMode,
+    required: false,
+  })
   @IsEnum(WorkflowTriggerMode)
   @IsOptional()
   triggerMode?: WorkflowTriggerMode;
@@ -217,19 +256,28 @@ export class CreateWorkflowDefinitionDto {
   @IsOptional()
   behaviorConfig?: Record<string, any>;
 
-  @ApiProperty({ description: 'Definition translations', type: [WorkflowI18nDto] })
+  @ApiProperty({
+    description: 'Definition translations',
+    type: [WorkflowI18nDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => WorkflowI18nDto)
   translations: WorkflowI18nDto[];
 
-  @ApiProperty({ description: 'Step definitions', type: [CreateWorkflowStepDefinitionDto] })
+  @ApiProperty({
+    description: 'Step definitions',
+    type: [CreateWorkflowStepDefinitionDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateWorkflowStepDefinitionDto)
   steps: CreateWorkflowStepDefinitionDto[];
 
-  @ApiProperty({ description: 'Transition definitions', type: [CreateWorkflowTransitionDefinitionDto] })
+  @ApiProperty({
+    description: 'Transition definitions',
+    type: [CreateWorkflowTransitionDefinitionDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateWorkflowTransitionDefinitionDto)
@@ -256,7 +304,11 @@ export class UpdateWorkflowDefinitionDto {
 // ─── Version Draft Update DTO ───
 
 export class UpdateWorkflowVersionDraftDto {
-  @ApiProperty({ description: 'Trigger mode', enum: WorkflowTriggerMode, required: false })
+  @ApiProperty({
+    description: 'Trigger mode',
+    enum: WorkflowTriggerMode,
+    required: false,
+  })
   @IsEnum(WorkflowTriggerMode)
   @IsOptional()
   triggerMode?: WorkflowTriggerMode;
@@ -286,14 +338,22 @@ export class UpdateWorkflowVersionDraftDto {
   @IsOptional()
   changeNotes?: string;
 
-  @ApiProperty({ description: 'Steps', type: [CreateWorkflowStepDefinitionDto], required: false })
+  @ApiProperty({
+    description: 'Steps',
+    type: [CreateWorkflowStepDefinitionDto],
+    required: false,
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateWorkflowStepDefinitionDto)
   @IsOptional()
   steps?: CreateWorkflowStepDefinitionDto[];
 
-  @ApiProperty({ description: 'Transitions', type: [CreateWorkflowTransitionDefinitionDto], required: false })
+  @ApiProperty({
+    description: 'Transitions',
+    type: [CreateWorkflowTransitionDefinitionDto],
+    required: false,
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateWorkflowTransitionDefinitionDto)

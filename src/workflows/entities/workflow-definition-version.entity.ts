@@ -25,7 +25,9 @@ export class WorkflowDefinitionVersion {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => WorkflowDefinition, (d) => d.versions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkflowDefinition, (d) => d.versions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'definition_id' })
   definition: WorkflowDefinition;
 
@@ -36,16 +38,23 @@ export class WorkflowDefinitionVersion {
   @Column({ type: 'int' })
   version: number;
 
-  @ApiProperty({ description: 'Version status', enum: WorkflowDefinitionStatus })
+  @ApiProperty({
+    description: 'Version status',
+    enum: WorkflowDefinitionStatus,
+  })
   @Column({ type: 'varchar', default: WorkflowDefinitionStatus.DRAFT })
   status: WorkflowDefinitionStatus;
 
-  @ApiProperty({ description: 'How this workflow is triggered', enum: WorkflowTriggerMode })
+  @ApiProperty({
+    description: 'How this workflow is triggered',
+    enum: WorkflowTriggerMode,
+  })
   @Column({ type: 'varchar', default: WorkflowTriggerMode.MANUAL })
   triggerMode: WorkflowTriggerMode;
 
   @ApiProperty({
-    description: 'Entry criteria conditions (JSON DSL). Workflow is selected only if these match.',
+    description:
+      'Entry criteria conditions (JSON DSL). Workflow is selected only if these match.',
     required: false,
   })
   @Column({ type: 'jsonb', nullable: true })
@@ -72,18 +81,26 @@ export class WorkflowDefinitionVersion {
   @Column({ type: 'jsonb', nullable: true })
   behaviorConfig: Record<string, any>;
 
-  @ApiProperty({ description: 'Optional notes about this version', required: false })
+  @ApiProperty({
+    description: 'Optional notes about this version',
+    required: false,
+  })
   @Column({ type: 'text', nullable: true })
   changeNotes: string;
 
-  @ApiProperty({ description: 'When this version was published', required: false })
+  @ApiProperty({
+    description: 'When this version was published',
+    required: false,
+  })
   @Column({ type: 'timestamptz', nullable: true })
   publishedAt: Date;
 
   @OneToMany(() => WorkflowStepDefinition, (s) => s.version, { cascade: true })
   steps: WorkflowStepDefinition[];
 
-  @OneToMany(() => WorkflowTransitionDefinition, (t) => t.version, { cascade: true })
+  @OneToMany(() => WorkflowTransitionDefinition, (t) => t.version, {
+    cascade: true,
+  })
   transitions: WorkflowTransitionDefinition[];
 
   @CreateDateColumn()

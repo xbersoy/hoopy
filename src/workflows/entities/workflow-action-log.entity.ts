@@ -18,14 +18,19 @@ export class WorkflowActionLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => WorkflowInstance, (i) => i.actionLogs, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkflowInstance, (i) => i.actionLogs, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'instance_id' })
   instance: WorkflowInstance;
 
   @Column({ name: 'instance_id' })
   instanceId: string;
 
-  @ApiProperty({ description: 'Step instance this action relates to', required: false })
+  @ApiProperty({
+    description: 'Step instance this action relates to',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   stepInstanceId: string;
 
@@ -33,7 +38,10 @@ export class WorkflowActionLog {
   @Column({ type: 'varchar' })
   action: WorkflowActionType;
 
-  @ApiProperty({ description: 'User ID who performed this action', required: false })
+  @ApiProperty({
+    description: 'User ID who performed this action',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   actorId: string;
 
@@ -45,11 +53,17 @@ export class WorkflowActionLog {
   @Column({ nullable: true })
   toStatus: string;
 
-  @ApiProperty({ description: 'Comment or note for this action', required: false })
+  @ApiProperty({
+    description: 'Comment or note for this action',
+    required: false,
+  })
   @Column({ type: 'text', nullable: true })
   comment: string;
 
-  @ApiProperty({ description: 'Additional metadata/context for this action', required: false })
+  @ApiProperty({
+    description: 'Additional metadata/context for this action',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 

@@ -55,12 +55,18 @@ export class PermissionGroupsController {
   @Get('export')
   @RequirePermissions({ action: 'read', resourceType: 'permission-group' })
   @ApiOperation({ summary: 'Export all permission groups (JSON or CSV)' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
   async exportPermissionGroups(
     @Query('format') format: string = 'json',
     @Req() req,
   ) {
-    const groups = await this.permissionGroupsService.findAllByCompany(req.user.companyId);
+    const groups = await this.permissionGroupsService.findAllByCompany(
+      req.user.companyId,
+    );
     if (format === 'csv') {
       const { CsvHelper } = await import('../../shared/utils/csv.helper');
       const rows = groups.map((g) => ({
@@ -92,7 +98,12 @@ export class PermissionGroupsController {
     const results = [];
     for (const item of items) {
       const created = await this.permissionGroupsService.create(
-        { name: item.name, description: item.description, memberUserIds: [], permissionRoleIds: [] },
+        {
+          name: item.name,
+          description: item.description,
+          memberUserIds: [],
+          permissionRoleIds: [],
+        },
         req.user.companyId,
       );
       results.push(created);

@@ -16,7 +16,8 @@ export class UserAssigneeResolver implements IAssigneeResolver {
 
   async resolve(
     config: Record<string, any>,
-    _context: AssigneeResolutionContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _context?: AssigneeResolutionContext,
   ): Promise<ResolvedAssignee[]> {
     const userIds: string[] = config?.userIds || [];
     return userIds.map((userId) => ({ userId, resolvedVia: 'user' }));
@@ -90,8 +91,12 @@ export class RoleAssigneeResolver implements IAssigneeResolver {
   ): Promise<ResolvedAssignee[]> {
     // TODO: Integrate with permissions module to resolve users by role
     // For now, check context data for pre-resolved role users
-    const userIds: string[] = config?.userIds || context.contextData?.roleUserIds || [];
-    return userIds.map((userId) => ({ userId, resolvedVia: `role:${config?.roleName}` }));
+    const userIds: string[] =
+      config?.userIds || context.contextData?.roleUserIds || [];
+    return userIds.map((userId) => ({
+      userId,
+      resolvedVia: `role:${config?.roleName}`,
+    }));
   }
 }
 
@@ -108,7 +113,8 @@ export class PermissionGroupAssigneeResolver implements IAssigneeResolver {
     context: AssigneeResolutionContext,
   ): Promise<ResolvedAssignee[]> {
     // TODO: Integrate with PermissionGroup → PermissionGroupMembership
-    const userIds: string[] = config?.userIds || context.contextData?.groupUserIds || [];
+    const userIds: string[] =
+      config?.userIds || context.contextData?.groupUserIds || [];
     return userIds.map((userId) => ({
       userId,
       resolvedVia: `permission_group:${config?.groupId}`,

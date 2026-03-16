@@ -4,7 +4,6 @@ import { UserService } from '../../user/user.service';
 import { CompanyService } from '../../company/services/company.service';
 import { PicklistsService } from '../../picklists/picklists.service';
 import { CustomObjectDefinitionsService } from '../../custom-objects/services/custom-object-definitions.service';
-import { CustomObjectRecordsService } from '../../custom-objects/services/custom-object-records.service';
 import { CustomFieldType } from '../../custom-objects/enums/custom-field-type.enum';
 
 export class CustomObjectsSeeder implements Seeder {
@@ -15,7 +14,6 @@ export class CustomObjectsSeeder implements Seeder {
     const companyService = app.get(CompanyService);
     const picklistsService = app.get(PicklistsService);
     const definitionsService = app.get(CustomObjectDefinitionsService);
-    const recordsService = app.get(CustomObjectRecordsService);
 
     const owners = [
       { email: 'admin@admin.com', label: 'Admin' },
@@ -46,7 +44,8 @@ export class CustomObjectsSeeder implements Seeder {
       // 1. Seed Picklists
       const picklists = await picklistsService.findAll(company.id);
 
-      let conditionPicklist: { id: string; code: string } | undefined = picklists.find((p) => p.code === 'DEVICE_CONDITION');
+      let conditionPicklist: { id: string; code: string } | undefined =
+        picklists.find((p) => p.code === 'DEVICE_CONDITION');
       if (!conditionPicklist) {
         conditionPicklist = await picklistsService.create(company.id, {
           code: 'DEVICE_CONDITION',
@@ -88,7 +87,9 @@ export class CustomObjectsSeeder implements Seeder {
       }
 
       // 2. Seed "Asset Management" Custom Object
-      const existingDefs = await definitionsService.findAll(company.id, { limit: 100 });
+      const existingDefs = await definitionsService.findAll(company.id, {
+        limit: 100,
+      });
       let assetDef = existingDefs.data.find((d) => d.code === 'ASSET_MGMT');
       if (!assetDef) {
         assetDef = await definitionsService.create(
@@ -98,7 +99,12 @@ export class CustomObjectsSeeder implements Seeder {
             description: 'Track company hardware assets',
             baseObjectType: 'EMPLOYEE',
             isActive: true,
-            translations: { tr: { name: 'Zimmet Yönetimi', description: 'Şirket donanımlarını takip et' } },
+            translations: {
+              tr: {
+                name: 'Zimmet Yönetimi',
+                description: 'Şirket donanımlarını takip et',
+              },
+            },
             fields: [
               {
                 code: 'SERIAL_NUMBER',
@@ -129,7 +135,7 @@ export class CustomObjectsSeeder implements Seeder {
                 dataType: CustomFieldType.ATTACHMENT,
                 isRequired: false,
                 sortOrder: 3,
-              }
+              },
             ],
           },
           company.id,

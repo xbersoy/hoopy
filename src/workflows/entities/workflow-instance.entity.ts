@@ -48,7 +48,10 @@ export class WorkflowInstance {
   stateMachineInstance: StateMachineInstance;
 
   // ─── Generic resource binding ───
-  @ApiProperty({ description: 'Type of the resource', example: 'leave_request' })
+  @ApiProperty({
+    description: 'Type of the resource',
+    example: 'leave_request',
+  })
   @Column()
   resourceType: string;
 
@@ -61,25 +64,40 @@ export class WorkflowInstance {
   @Column({ type: 'uuid' })
   initiatorId: string;
 
-  @ApiProperty({ description: 'Employee/user ID who is the subject of this workflow', required: false })
+  @ApiProperty({
+    description: 'Employee/user ID who is the subject of this workflow',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   subjectId: string;
 
   // ─── Status ───
-  @ApiProperty({ description: 'Current workflow status', enum: WorkflowInstanceStatus })
+  @ApiProperty({
+    description: 'Current workflow status',
+    enum: WorkflowInstanceStatus,
+  })
   @Column({ type: 'varchar', default: WorkflowInstanceStatus.PENDING })
   status: WorkflowInstanceStatus;
 
-  @ApiProperty({ description: 'ID of the currently active step instance', required: false })
+  @ApiProperty({
+    description: 'ID of the currently active step instance',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   currentStepId: string;
 
   // ─── Snapshot ───
-  @ApiProperty({ description: 'Snapshot of context data at workflow start', required: false })
+  @ApiProperty({
+    description: 'Snapshot of context data at workflow start',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   contextSnapshot: Record<string, any>;
 
-  @ApiProperty({ description: 'Snapshot of the definition at start time', required: false })
+  @ApiProperty({
+    description: 'Snapshot of the definition at start time',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   definitionSnapshot: Record<string, any>;
 
@@ -92,7 +110,10 @@ export class WorkflowInstance {
   @Column({ type: 'timestamptz', nullable: true })
   slaBreachedAt: Date;
 
-  @ApiProperty({ description: 'When the workflow was completed/terminated', required: false })
+  @ApiProperty({
+    description: 'When the workflow was completed/terminated',
+    required: false,
+  })
   @Column({ type: 'timestamptz', nullable: true })
   completedAt: Date;
 

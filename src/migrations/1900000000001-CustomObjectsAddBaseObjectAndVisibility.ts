@@ -1,7 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CustomObjectsAddBaseObjectAndVisibility1900000000001
-  implements MigrationInterface {
+export class CustomObjectsAddBaseObjectAndVisibility1900000000001 implements MigrationInterface {
   name = 'CustomObjectsAddBaseObjectAndVisibility1900000000001';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -28,9 +27,7 @@ export class CustomObjectsAddBaseObjectAndVisibility1900000000001
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `DROP INDEX IF EXISTS "IDX_cor_base_object_id"`,
-    );
+    await queryRunner.query(`DROP INDEX IF EXISTS "IDX_cor_base_object_id"`);
     await queryRunner.query(`
       ALTER TABLE "custom_object_records"
         DROP COLUMN IF EXISTS "base_object_id"

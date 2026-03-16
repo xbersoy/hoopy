@@ -43,7 +43,7 @@ import { initSupabase } from './supabase/supabase.client';
   controllers: [AppController],
 })
 export class AppModule implements OnModuleInit {
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
 
   onModuleInit() {
     // Initialize Supabase client

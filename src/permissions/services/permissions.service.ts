@@ -29,7 +29,7 @@ export class PermissionsService {
     private readonly permissionGroupRepo: Repository<PermissionGroup>,
     @InjectRepository(Employee)
     private readonly employeeRepo: Repository<Employee>,
-  ) { }
+  ) {}
 
   /**
    * List all available permissions (global).

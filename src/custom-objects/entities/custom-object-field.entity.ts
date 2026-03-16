@@ -62,7 +62,10 @@ export class CustomObjectField {
   @Column({ name: 'data_type', type: 'varchar', length: 20 })
   dataType: CustomFieldType;
 
-  @ApiProperty({ description: 'Whether this field is required', default: false })
+  @ApiProperty({
+    description: 'Whether this field is required',
+    default: false,
+  })
   @Column({ name: 'is_required', type: 'boolean', default: false })
   isRequired: boolean;
 
@@ -87,11 +90,17 @@ export class CustomObjectField {
   @Column({ type: 'jsonb', nullable: true })
   options: string[] | null;
 
-  @ApiProperty({ description: 'Picklist ID for PICKLIST type', required: false })
+  @ApiProperty({
+    description: 'Picklist ID for PICKLIST type',
+    required: false,
+  })
   @Column({ name: 'picklist_id', type: 'uuid', nullable: true })
   picklistId: string | null;
 
-  @ApiProperty({ description: 'Referenced Definition ID for CUSTOM_OBJECT type', required: false })
+  @ApiProperty({
+    description: 'Referenced Definition ID for CUSTOM_OBJECT type',
+    required: false,
+  })
   @Column({ name: 'referenced_definition_id', type: 'uuid', nullable: true })
   referencedDefinitionId: string | null;
 

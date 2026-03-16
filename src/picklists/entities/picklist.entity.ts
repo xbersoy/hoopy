@@ -43,6 +43,8 @@ export class Picklist {
   @OneToMany(() => PicklistI18n, (i18n) => i18n.picklist, { cascade: true })
   translations: PicklistI18n[];
 
-  @OneToMany(() => PicklistOption, (option) => option.picklist, { cascade: true })
+  @OneToMany(() => PicklistOption, (option) => option.picklist, {
+    cascade: true,
+  })
   options: PicklistOption[];
 }

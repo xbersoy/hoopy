@@ -8,7 +8,6 @@ import {
   Delete,
   Query,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -65,10 +64,12 @@ export class EmployeeController {
   @Get('export')
   @RequirePermissions({ action: 'read', resourceType: 'employee' })
   @ApiOperation({ summary: 'Export all employees (JSON or CSV)' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
-  async exportEmployees(
-    @Query('format') format: string = 'json',
-  ) {
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
+  async exportEmployees(@Query('format') format: string = 'json') {
     const employees = await this.employeeService.findAll();
     if (format === 'csv') {
       const { CsvHelper } = await import('../shared/utils/csv.helper');
@@ -89,9 +90,7 @@ export class EmployeeController {
   @Post('import')
   @RequirePermissions({ action: 'create', resourceType: 'employee' })
   @ApiOperation({ summary: 'Import employees (JSON or CSV)' })
-  async importEmployees(
-    @Body() body: { format: string; content: any },
-  ) {
+  async importEmployees(@Body() body: { format: string; content: any }) {
     let items: any[];
     if (body.format === 'csv') {
       const { CsvHelper } = await import('../shared/utils/csv.helper');

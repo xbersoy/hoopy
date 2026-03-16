@@ -77,7 +77,7 @@ export class TypeOrmPicklistI18nRepository implements PicklistI18nRepository {
     locale: string,
     data: { name: string; description?: string },
   ): Promise<PicklistI18n> {
-    let existing = await this.repo.findOne({ where: { picklistId, locale } });
+    const existing = await this.repo.findOne({ where: { picklistId, locale } });
     if (existing) {
       existing.name = data.name;
       existing.description = data.description ?? existing.description;
@@ -161,12 +161,19 @@ export class TypeOrmPicklistOptionI18nRepository implements PicklistOptionI18nRe
     locale: string,
     data: { label: string },
   ): Promise<PicklistOptionI18n> {
-    let existing = await this.repo.findOne({ where: { picklistOptionId, locale } });
+    const existing = await this.repo.findOne({
+      where: { picklistOptionId, locale },
+    });
     if (existing) {
       existing.label = data.label;
       return this.repo.save(existing);
     }
-    const entity = this.repo.create({ companyId, picklistOptionId, locale, label: data.label });
+    const entity = this.repo.create({
+      companyId,
+      picklistOptionId,
+      locale,
+      label: data.label,
+    });
     return this.repo.save(entity);
   }
 }

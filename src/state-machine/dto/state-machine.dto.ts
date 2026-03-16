@@ -33,16 +33,25 @@ export class I18nTranslationDto {
 // ─── State DTO ───
 
 export class CreateStateMachineStateDto {
-  @ApiProperty({ description: 'Stable state code', example: 'pending_approval' })
+  @ApiProperty({
+    description: 'Stable state code',
+    example: 'pending_approval',
+  })
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Whether this is the initial state', required: false })
+  @ApiProperty({
+    description: 'Whether this is the initial state',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isInitial?: boolean;
 
-  @ApiProperty({ description: 'Whether this is a terminal state', required: false })
+  @ApiProperty({
+    description: 'Whether this is a terminal state',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isFinal?: boolean;
@@ -86,7 +95,10 @@ export class CreateStateMachineTransitionDto {
   @IsString()
   fromStateCode: string;
 
-  @ApiProperty({ description: 'Code of the target state', example: 'pending_approval' })
+  @ApiProperty({
+    description: 'Code of the target state',
+    example: 'pending_approval',
+  })
   @IsString()
   toStateCode: string;
 
@@ -115,15 +127,25 @@ export class CreateStateMachineTransitionDto {
 // ─── Definition DTO ───
 
 export class CreateStateMachineDefinitionDto {
-  @ApiProperty({ description: 'Stable machine-readable code', example: 'leave_request_lifecycle' })
+  @ApiProperty({
+    description: 'Stable machine-readable code',
+    example: 'leave_request_lifecycle',
+  })
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Target resource type', example: 'leave_request' })
+  @ApiProperty({
+    description: 'Target resource type',
+    example: 'leave_request',
+  })
   @IsString()
   resourceType: string;
 
-  @ApiProperty({ description: 'Category', enum: StateMachineCategory, required: false })
+  @ApiProperty({
+    description: 'Category',
+    enum: StateMachineCategory,
+    required: false,
+  })
   @IsEnum(StateMachineCategory)
   @IsOptional()
   category?: StateMachineCategory;
@@ -137,7 +159,10 @@ export class CreateStateMachineDefinitionDto {
   @IsOptional()
   metadata?: Record<string, any>;
 
-  @ApiProperty({ description: 'Definition translations', type: [I18nTranslationDto] })
+  @ApiProperty({
+    description: 'Definition translations',
+    type: [I18nTranslationDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => I18nTranslationDto)
@@ -149,7 +174,10 @@ export class CreateStateMachineDefinitionDto {
   @Type(() => CreateStateMachineStateDto)
   states: CreateStateMachineStateDto[];
 
-  @ApiProperty({ description: 'Transitions', type: [CreateStateMachineTransitionDto] })
+  @ApiProperty({
+    description: 'Transitions',
+    type: [CreateStateMachineTransitionDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateStateMachineTransitionDto)
@@ -192,7 +220,10 @@ export class ExecuteTransitionDto {
   @IsOptional()
   comment?: string;
 
-  @ApiProperty({ description: 'Additional context for guard evaluation', required: false })
+  @ApiProperty({
+    description: 'Additional context for guard evaluation',
+    required: false,
+  })
   @IsObject()
   @IsOptional()
   context?: Record<string, any>;

@@ -46,4 +46,4 @@ import { PermissionsModule } from '../permissions/permissions.module';
   ],
   exports: [PicklistsService],
 })
-export class PicklistsModule { }
+export class PicklistsModule {}

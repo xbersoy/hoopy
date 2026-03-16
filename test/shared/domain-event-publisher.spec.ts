@@ -140,8 +140,16 @@ describe('DomainEventPublisher', () => {
     const handler = jest.fn();
     publisher.onAll(handler);
 
-    publisher.publish({ eventType: 'a', actorType: 'system', timestamp: new Date() });
-    publisher.publish({ eventType: 'b', actorType: 'user', timestamp: new Date() });
+    publisher.publish({
+      eventType: 'a',
+      actorType: 'system',
+      timestamp: new Date(),
+    });
+    publisher.publish({
+      eventType: 'b',
+      actorType: 'user',
+      timestamp: new Date(),
+    });
 
     expect(handler).toHaveBeenCalledTimes(2);
   });
@@ -156,7 +164,11 @@ describe('DomainEventPublisher', () => {
 
     publisher.removeAllListeners();
 
-    publisher.publish({ eventType: 'x', actorType: 'system', timestamp: new Date() });
+    publisher.publish({
+      eventType: 'x',
+      actorType: 'system',
+      timestamp: new Date(),
+    });
     expect(h1).not.toHaveBeenCalled();
     expect(h2).not.toHaveBeenCalled();
   });

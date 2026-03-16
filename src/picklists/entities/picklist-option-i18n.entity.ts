@@ -29,7 +29,9 @@ export class PicklistOptionI18n {
   @Column({ name: 'picklist_option_id', type: 'uuid' })
   picklistOptionId: string;
 
-  @ManyToOne(() => PicklistOption, (option) => option.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => PicklistOption, (option) => option.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'picklist_option_id' })
   picklistOption: PicklistOption;
 

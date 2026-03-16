@@ -60,6 +60,10 @@ import { PermissionGroupsController } from './controllers/permission-groups.cont
       useClass: TypeOrmPermissionGroupRepository,
     },
   ],
-  exports: [PermissionsService, PermissionsGuard, CustomObjectPermissionsService],
+  exports: [
+    PermissionsService,
+    PermissionsGuard,
+    CustomObjectPermissionsService,
+  ],
 })
 export class PermissionsModule {}

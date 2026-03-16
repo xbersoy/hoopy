@@ -16,7 +16,11 @@ import { StateMachineState } from './state-machine-state.entity';
 import { StateMachineTransitionHistory } from './state-machine-transition-history.entity';
 
 @Entity('state_machine_instances')
-@Index('IDX_sm_instance_company_resource', ['companyId', 'resourceType', 'resourceId'])
+@Index('IDX_sm_instance_company_resource', [
+  'companyId',
+  'resourceType',
+  'resourceId',
+])
 @Index('IDX_sm_instance_current_state', ['companyId', 'currentStateId'])
 export class StateMachineInstance {
   @ApiProperty({ description: 'Unique identifier' })
@@ -54,15 +58,22 @@ export class StateMachineInstance {
   @JoinColumn({ name: 'current_state_id' })
   currentState: StateMachineState;
 
-  @ApiProperty({ description: 'Whether the instance has reached a final state' })
+  @ApiProperty({
+    description: 'Whether the instance has reached a final state',
+  })
   @Column({ default: false })
   isCompleted: boolean;
 
-  @ApiProperty({ description: 'Snapshot of definition version at instantiation time' })
+  @ApiProperty({
+    description: 'Snapshot of definition version at instantiation time',
+  })
   @Column({ type: 'int' })
   definitionVersion: number;
 
-  @ApiProperty({ description: 'Context data available for guard evaluation', required: false })
+  @ApiProperty({
+    description: 'Context data available for guard evaluation',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   context: Record<string, any>;
 
@@ -70,7 +81,9 @@ export class StateMachineInstance {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  @OneToMany(() => StateMachineTransitionHistory, (h) => h.instance, { cascade: true })
+  @OneToMany(() => StateMachineTransitionHistory, (h) => h.instance, {
+    cascade: true,
+  })
   transitionHistory: StateMachineTransitionHistory[];
 
   @CreateDateColumn({ name: 'created_at' })

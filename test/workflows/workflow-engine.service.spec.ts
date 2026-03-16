@@ -27,8 +27,13 @@ const createMockRepo = () => ({
 
 const createMockManager = () => {
   const mgr: any = {
-    create: jest.fn().mockImplementation((_E: any, data: any) => ({ id: `gen-${Math.random().toString(36).slice(2, 8)}`, ...data })),
-    save: jest.fn().mockImplementation((_E: any, data: any) => Promise.resolve(data)),
+    create: jest.fn().mockImplementation((_E: any, data: any) => ({
+      id: `gen-${Math.random().toString(36).slice(2, 8)}`,
+      ...data,
+    })),
+    save: jest
+      .fn()
+      .mockImplementation((_E: any, data: any) => Promise.resolve(data)),
     findOne: jest.fn(),
     find: jest.fn(),
     delete: jest.fn(),
@@ -108,14 +113,18 @@ describe('WorkflowEngineService', () => {
     };
 
     assigneeResolver = {
-      resolve: jest.fn().mockResolvedValue([{ userId: 'mgr-1', resolvedVia: 'manager' }]),
+      resolve: jest
+        .fn()
+        .mockResolvedValue([{ userId: 'mgr-1', resolvedVia: 'manager' }]),
     };
 
     conditionEvaluator = new ConditionEvaluatorService();
     jest.spyOn(conditionEvaluator, 'evaluate');
 
     stateMachineService = {
-      createInstanceTransactional: jest.fn().mockResolvedValue({ id: 'sm-inst-1' }),
+      createInstanceTransactional: jest
+        .fn()
+        .mockResolvedValue({ id: 'sm-inst-1' }),
       executeTransitionTransactional: jest.fn().mockResolvedValue({}),
     };
 
@@ -142,6 +151,7 @@ describe('WorkflowEngineService', () => {
   });
 
   // Helper to wire up a standard transaction mock
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function setupTransaction(managerOverrides: any = {}) {
     const mockManager = createMockManager();
     Object.assign(mockManager, managerOverrides);
@@ -172,7 +182,10 @@ describe('WorkflowEngineService', () => {
         code: 'leave_approval',
         stateMachineDefinitionId: 'sm-def-1',
       };
-      definitionService.getPublishedVersionByCode.mockResolvedValue({ definition, version });
+      definitionService.getPublishedVersionByCode.mockResolvedValue({
+        definition,
+        version,
+      });
 
       const savedInstance = {
         id: 'wf-inst-1',
@@ -204,9 +217,15 @@ describe('WorkflowEngineService', () => {
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      const result = await service.startWorkflow(companyId, initiatorId, dto as any);
+      const result = await service.startWorkflow(
+        companyId,
+        initiatorId,
+        dto as any,
+      );
 
-      expect(stateMachineService.createInstanceTransactional).toHaveBeenCalled();
+      expect(
+        stateMachineService.createInstanceTransactional,
+      ).toHaveBeenCalled();
       expect(assigneeResolver.resolve).toHaveBeenCalled();
       expect(eventPublisher.emit).toHaveBeenCalledWith(
         expect.objectContaining({ eventType: 'workflow.started' }),
@@ -221,8 +240,15 @@ describe('WorkflowEngineService', () => {
           rules: [{ field: 'days', operator: 'lte', value: 2 }],
         },
       });
-      const definition = { id: 'def-1', code: 'leave_approval', stateMachineDefinitionId: 'sm-def-1' };
-      definitionService.getPublishedVersionByCode.mockResolvedValue({ definition, version });
+      const definition = {
+        id: 'def-1',
+        code: 'leave_approval',
+        stateMachineDefinitionId: 'sm-def-1',
+      };
+      definitionService.getPublishedVersionByCode.mockResolvedValue({
+        definition,
+        version,
+      });
 
       await expect(
         service.startWorkflow(companyId, initiatorId, dto as any),
@@ -277,19 +303,25 @@ describe('WorkflowEngineService', () => {
       const versionData = makeVersion();
       const mockManager = createMockManager();
       mockManager.findOne
-        .mockResolvedValueOnce(instance)   // find workflow instance
+        .mockResolvedValueOnce(instance) // find workflow instance
         .mockResolvedValueOnce(versionData) // processTransitions: find version
-        .mockResolvedValueOnce(instance);  // final return
+        .mockResolvedValueOnce(instance); // final return
       mockManager.find.mockResolvedValue([
         { id: 'asg-1', userId: 'mgr-1', hasActed: true, decision: 'approve' },
       ]);
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      const result = await service.takeStepAction(companyId, actorId, instanceId, stepInstanceId, {
-        decision: 'approve',
-        comment: 'Looks good',
-      } as any);
+      await service.takeStepAction(
+        companyId,
+        actorId,
+        instanceId,
+        stepInstanceId,
+        {
+          decision: 'approve',
+          comment: 'Looks good',
+        } as any,
+      );
 
       expect(mockManager.save).toHaveBeenCalled();
       expect(eventPublisher.emit).toHaveBeenCalledWith(
@@ -323,10 +355,16 @@ describe('WorkflowEngineService', () => {
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      await service.takeStepAction(companyId, actorId, instanceId, stepInstanceId, {
-        decision: 'reject',
-        comment: 'Not approved',
-      } as any);
+      await service.takeStepAction(
+        companyId,
+        actorId,
+        instanceId,
+        stepInstanceId,
+        {
+          decision: 'reject',
+          comment: 'Not approved',
+        } as any,
+      );
 
       expect(eventPublisher.emit).toHaveBeenCalledWith(
         expect.objectContaining({ eventType: 'workflow.step.rejected' }),
@@ -349,7 +387,11 @@ describe('WorkflowEngineService', () => {
         ],
         steps: [
           makeStepDef({ id: 'step-def-0', code: 'initial_step', sortOrder: 0 }),
-          makeStepDef({ id: 'step-def-1', code: 'manager_approval', sortOrder: 1 }),
+          makeStepDef({
+            id: 'step-def-1',
+            code: 'manager_approval',
+            sortOrder: 1,
+          }),
         ],
       });
       const mockManager = createMockManager();
@@ -363,10 +405,16 @@ describe('WorkflowEngineService', () => {
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      await service.takeStepAction(companyId, actorId, instanceId, stepInstanceId, {
-        decision: 'return',
-        comment: 'Please revise',
-      } as any);
+      await service.takeStepAction(
+        companyId,
+        actorId,
+        instanceId,
+        stepInstanceId,
+        {
+          decision: 'return',
+          comment: 'Please revise',
+        } as any,
+      );
 
       expect(eventPublisher.emit).toHaveBeenCalledWith(
         expect.objectContaining({ eventType: 'workflow.step.returned' }),
@@ -403,9 +451,15 @@ describe('WorkflowEngineService', () => {
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
       await expect(
-        service.takeStepAction(companyId, 'stranger-id', instanceId, stepInstanceId, {
-          decision: 'approve',
-        } as any),
+        service.takeStepAction(
+          companyId,
+          'stranger-id',
+          instanceId,
+          stepInstanceId,
+          {
+            decision: 'approve',
+          } as any,
+        ),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -418,7 +472,12 @@ describe('WorkflowEngineService', () => {
             approvalStrategy: ApprovalStrategy.ALL,
             isCommentRequired: false,
             assignees: [
-              { id: 'asg-1', userId: 'mgr-1', hasActed: true, decision: 'approve' },
+              {
+                id: 'asg-1',
+                userId: 'mgr-1',
+                hasActed: true,
+                decision: 'approve',
+              },
             ],
           },
         ],
@@ -445,9 +504,7 @@ describe('WorkflowEngineService', () => {
             isCommentRequired: true,
             metadata: {},
             definitionSnapshot: {},
-            assignees: [
-              { id: 'asg-1', userId: 'mgr-1', hasActed: false },
-            ],
+            assignees: [{ id: 'asg-1', userId: 'mgr-1', hasActed: false }],
           },
         ],
       });
@@ -465,7 +522,9 @@ describe('WorkflowEngineService', () => {
     });
 
     it('rejects action on completed/cancelled workflow', async () => {
-      const instance = makeInstance({ status: WorkflowInstanceStatus.COMPLETED });
+      const instance = makeInstance({
+        status: WorkflowInstanceStatus.COMPLETED,
+      });
       const mockManager = createMockManager();
       mockManager.findOne.mockResolvedValue(instance);
 
@@ -504,14 +563,22 @@ describe('WorkflowEngineService', () => {
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      const result = await service.cancelWorkflow('comp-1', 'user-1', 'wf-1', { reason: 'No longer needed' } as any);
+      const result = await service.cancelWorkflow('comp-1', 'user-1', 'wf-1', {
+        reason: 'No longer needed',
+      } as any);
 
       expect(result.status).toBe(WorkflowInstanceStatus.CANCELLED);
       // Active and Pending steps should be cancelled
-      expect(instance.stepInstances[0].status).toBe(WorkflowStepInstanceStatus.CANCELLED);
-      expect(instance.stepInstances[1].status).toBe(WorkflowStepInstanceStatus.CANCELLED);
+      expect(instance.stepInstances[0].status).toBe(
+        WorkflowStepInstanceStatus.CANCELLED,
+      );
+      expect(instance.stepInstances[1].status).toBe(
+        WorkflowStepInstanceStatus.CANCELLED,
+      );
       // Already-approved step should remain unchanged
-      expect(instance.stepInstances[2].status).toBe(WorkflowStepInstanceStatus.APPROVED);
+      expect(instance.stepInstances[2].status).toBe(
+        WorkflowStepInstanceStatus.APPROVED,
+      );
       expect(eventPublisher.emit).toHaveBeenCalledWith(
         expect.objectContaining({ eventType: 'workflow.cancelled' }),
       );
@@ -624,7 +691,13 @@ describe('WorkflowEngineService', () => {
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      const result = await service.takeStepAction('comp-1', 'u1', 'wf-1', 'step-1', baseDto);
+      const result = await service.takeStepAction(
+        'comp-1',
+        'u1',
+        'wf-1',
+        'step-1',
+        baseDto,
+      );
 
       // Step should NOT be resolved — still waiting for u2
       // The step status should remain ACTIVE since isStepResolved returns false for ALL
@@ -688,7 +761,7 @@ describe('WorkflowEngineService', () => {
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
-      const result = await service.takeStepAction('comp-1', 'u1', 'wf-1', 'step-1', baseDto);
+      await service.takeStepAction('comp-1', 'u1', 'wf-1', 'step-1', baseDto);
 
       // ANY strategy resolves immediately on first approve
       expect(mockManager.save).toHaveBeenCalled();
@@ -713,7 +786,9 @@ describe('WorkflowEngineService', () => {
 
     it('throws NotFoundException when not found', async () => {
       instanceRepo.findOne.mockResolvedValue(null);
-      await expect(service.findInstanceById('comp-1', 'missing')).rejects.toThrow(NotFoundException);
+      await expect(
+        service.findInstanceById('comp-1', 'missing'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -747,7 +822,10 @@ describe('WorkflowEngineService', () => {
         stateMachineDefinitionId: 'sm-def-1',
       };
 
-      definitionService.getPublishedVersionByCode.mockResolvedValue({ definition, version });
+      definitionService.getPublishedVersionByCode.mockResolvedValue({
+        definition,
+        version,
+      });
 
       const savedInstance = {
         id: 'wf-1',
@@ -809,7 +887,10 @@ describe('WorkflowEngineService', () => {
         stateMachineDefinitionId: 'sm-def-1',
       };
 
-      definitionService.getPublishedVersionByCode.mockResolvedValue({ definition, version });
+      definitionService.getPublishedVersionByCode.mockResolvedValue({
+        definition,
+        version,
+      });
 
       const savedInstance = {
         id: 'wf-1',
@@ -826,7 +907,10 @@ describe('WorkflowEngineService', () => {
         if (saveCount === 1) return Promise.resolve(savedInstance);
         return Promise.resolve({ id: `step-${saveCount}`, ...data });
       });
-      mockManager.findOne.mockResolvedValue({ ...savedInstance, stepInstances: [] });
+      mockManager.findOne.mockResolvedValue({
+        ...savedInstance,
+        stepInstances: [],
+      });
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
@@ -863,7 +947,10 @@ describe('WorkflowEngineService', () => {
         stateMachineDefinitionId: 'sm-def-1',
       };
 
-      definitionService.getPublishedVersionByCode.mockResolvedValue({ definition, version });
+      definitionService.getPublishedVersionByCode.mockResolvedValue({
+        definition,
+        version,
+      });
 
       const savedInstance = {
         id: 'wf-1',
@@ -883,7 +970,10 @@ describe('WorkflowEngineService', () => {
         savedSteps.push(saved);
         return Promise.resolve(saved);
       });
-      mockManager.findOne.mockResolvedValue({ ...savedInstance, stepInstances: [] });
+      mockManager.findOne.mockResolvedValue({
+        ...savedInstance,
+        stepInstances: [],
+      });
 
       dataSource.transaction.mockImplementation(async (cb) => cb(mockManager));
 
@@ -900,8 +990,12 @@ describe('WorkflowEngineService', () => {
       const stepWithDueDate = savedSteps.find((s) => s.dueDate);
       if (stepWithDueDate) {
         const dueDate = new Date(stepWithDueDate.dueDate);
-        expect(dueDate.getTime()).toBeGreaterThanOrEqual(before.getTime() + 24 * 60 * 60 * 1000 - 1000);
-        expect(dueDate.getTime()).toBeLessThanOrEqual(after.getTime() + 24 * 60 * 60 * 1000 + 1000);
+        expect(dueDate.getTime()).toBeGreaterThanOrEqual(
+          before.getTime() + 24 * 60 * 60 * 1000 - 1000,
+        );
+        expect(dueDate.getTime()).toBeLessThanOrEqual(
+          after.getTime() + 24 * 60 * 60 * 1000 + 1000,
+        );
       }
     });
   });

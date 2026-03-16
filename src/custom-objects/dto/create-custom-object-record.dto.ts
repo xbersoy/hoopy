@@ -17,12 +17,18 @@ export class CreateCustomObjectRecordDto {
   @IsOptional()
   baseObjectId?: string;
 
-  @ApiProperty({ description: 'Optional User ID who owns this specific record', required: false })
+  @ApiProperty({
+    description: 'Optional User ID who owns this specific record',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   ownerId?: string;
 
-  @ApiProperty({ description: 'Optional Permission Group ID that owns this specific record', required: false })
+  @ApiProperty({
+    description: 'Optional Permission Group ID that owns this specific record',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   ownerGroupId?: string;

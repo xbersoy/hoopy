@@ -229,13 +229,29 @@ export class CreateWorkflowTables1910000000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_action_logs" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_step_assignees" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_step_instances" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_instances" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_transition_definitions" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_step_definitions" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_definition_versions" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "workflow_definitions" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_action_logs" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_step_assignees" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_step_instances" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_instances" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_transition_definitions" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_step_definitions" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_definition_versions" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "workflow_definitions" CASCADE`,
+    );
   }
 }

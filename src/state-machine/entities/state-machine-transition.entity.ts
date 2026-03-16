@@ -24,7 +24,9 @@ export class StateMachineTransition {
   @Column({ name: 'definition_id', type: 'uuid' })
   definitionId: string;
 
-  @ManyToOne(() => StateMachineDefinition, (d) => d.transitions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => StateMachineDefinition, (d) => d.transitions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'definition_id' })
   definition: StateMachineDefinition;
 
@@ -46,11 +48,18 @@ export class StateMachineTransition {
   @JoinColumn({ name: 'to_state_id' })
   toState: StateMachineState;
 
-  @ApiProperty({ description: 'Guard condition (JSON DSL). Transition only allowed if this evaluates true.', required: false })
+  @ApiProperty({
+    description:
+      'Guard condition (JSON DSL). Transition only allowed if this evaluates true.',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   guardCondition: Record<string, any>;
 
-  @ApiProperty({ description: 'Priority for ordering when multiple transitions share from-state (lower = first)' })
+  @ApiProperty({
+    description:
+      'Priority for ordering when multiple transitions share from-state (lower = first)',
+  })
   @Column({ type: 'int', default: 0 })
   priority: number;
 
@@ -58,7 +67,10 @@ export class StateMachineTransition {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  @OneToMany(() => StateMachineTransitionI18n, (i) => i.transition, { cascade: true, eager: false })
+  @OneToMany(() => StateMachineTransitionI18n, (i) => i.transition, {
+    cascade: true,
+    eager: false,
+  })
   translations: StateMachineTransitionI18n[];
 
   @CreateDateColumn({ name: 'created_at' })

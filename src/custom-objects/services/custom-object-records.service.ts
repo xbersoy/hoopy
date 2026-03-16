@@ -26,7 +26,7 @@ export class CustomObjectRecordsService {
     private readonly attachmentsService: AttachmentsService,
     private readonly picklistsService: PicklistsService,
     private readonly permissionsService: PermissionsService,
-  ) { }
+  ) {}
 
   async create(
     dto: CreateCustomObjectRecordDto,
@@ -34,7 +34,10 @@ export class CustomObjectRecordsService {
     userId: string,
   ): Promise<CustomObjectRecord> {
     const definition = await this.definitionsService.findOne(dto.definitionId);
-    const userPermissions = await this.permissionsService.getUserPermissions(userId, companyId);
+    const userPermissions = await this.permissionsService.getUserPermissions(
+      userId,
+      companyId,
+    );
     const userPermissionIds = userPermissions.map((p) => p.id);
 
     await this.enforceEditPermissions(dto.data, definition, userPermissionIds);
@@ -74,11 +77,16 @@ export class CustomObjectRecordsService {
       });
 
     const definition = await this.definitionsService.findOne(definitionId);
-    const userPermissions = await this.permissionsService.getUserPermissions(userId, companyId);
+    const userPermissions = await this.permissionsService.getUserPermissions(
+      userId,
+      companyId,
+    );
     const userPermissionIds = userPermissions.map((p) => p.id);
 
     const filteredData = await Promise.all(
-      data.map((record) => this.filterReadFields(record, definition, userPermissionIds)),
+      data.map((record) =>
+        this.filterReadFields(record, definition, userPermissionIds),
+      ),
     );
 
     return { data: filteredData, total, page, limit };
@@ -93,8 +101,13 @@ export class CustomObjectRecordsService {
     }
 
     if (userId) {
-      const definition = await this.definitionsService.findOne(record.definitionId);
-      const userPermissions = await this.permissionsService.getUserPermissions(userId, record.companyId);
+      const definition = await this.definitionsService.findOne(
+        record.definitionId,
+      );
+      const userPermissions = await this.permissionsService.getUserPermissions(
+        userId,
+        record.companyId,
+      );
       const userPermissionIds = userPermissions.map((p) => p.id);
       return this.filterReadFields(record, definition, userPermissionIds);
     }
@@ -111,7 +124,10 @@ export class CustomObjectRecordsService {
     const definition = await this.definitionsService.findOne(
       record.definitionId,
     );
-    const userPermissions = await this.permissionsService.getUserPermissions(userId, record.companyId);
+    const userPermissions = await this.permissionsService.getUserPermissions(
+      userId,
+      record.companyId,
+    );
     const userPermissionIds = userPermissions.map((p) => p.id);
 
     await this.enforceEditPermissions(dto.data, definition, userPermissionIds);
@@ -137,11 +153,12 @@ export class CustomObjectRecordsService {
   ): Promise<CustomObjectRecord> {
     const filteredData = { ...record.data };
     for (const field of definition.fields) {
-      const hasReadPerm = await this.permissionsService.hasPermissionByResourceType(
-        userPermissionIds,
-        'read',
-        `co:${definition.code}:${field.code}`,
-      );
+      const hasReadPerm =
+        await this.permissionsService.hasPermissionByResourceType(
+          userPermissionIds,
+          'read',
+          `co:${definition.code}:${field.code}`,
+        );
       if (!hasReadPerm) {
         delete filteredData[field.code];
       }
@@ -157,13 +174,16 @@ export class CustomObjectRecordsService {
   ): Promise<void> {
     for (const field of definition.fields) {
       if (data[field.code] !== undefined) {
-        const hasEditPerm = await this.permissionsService.hasPermissionByResourceType(
-          userPermissionIds,
-          'edit',
-          `co:${definition.code}:${field.code}`,
-        );
+        const hasEditPerm =
+          await this.permissionsService.hasPermissionByResourceType(
+            userPermissionIds,
+            'edit',
+            `co:${definition.code}:${field.code}`,
+          );
         if (!hasEditPerm) {
-          throw new BadRequestException(`Insufficient permissions to edit field "${field.code}"`);
+          throw new BadRequestException(
+            `Insufficient permissions to edit field "${field.code}"`,
+          );
         }
       }
     }
@@ -171,7 +191,14 @@ export class CustomObjectRecordsService {
 
   private async validateData(
     data: Record<string, any>,
-    fields: { code: string; dataType: CustomFieldType; isRequired: boolean; options: string[] | null; picklistId?: string | null; referencedDefinitionId?: string | null }[],
+    fields: {
+      code: string;
+      dataType: CustomFieldType;
+      isRequired: boolean;
+      options: string[] | null;
+      picklistId?: string | null;
+      referencedDefinitionId?: string | null;
+    }[],
     companyId: string,
   ): Promise<void> {
     // Reject unknown keys (strict mode)
@@ -187,10 +214,11 @@ export class CustomObjectRecordsService {
     for (const field of fields) {
       const value = data[field.code];
 
-      if (field.isRequired && (value === undefined || value === null || value === '')) {
-        throw new BadRequestException(
-          `Field "${field.code}" is required`,
-        );
+      if (
+        field.isRequired &&
+        (value === undefined || value === null || value === '')
+      ) {
+        throw new BadRequestException(`Field "${field.code}" is required`);
       }
 
       if (value === undefined || value === null) continue;
@@ -211,14 +239,20 @@ export class CustomObjectRecordsService {
           }
           break;
         case CustomFieldType.STRING_ARRAY:
-          if (!Array.isArray(value) || !value.every((v: any) => typeof v === 'string')) {
+          if (
+            !Array.isArray(value) ||
+            !value.every((v: any) => typeof v === 'string')
+          ) {
             throw new BadRequestException(
               `Field "${field.code}" must be an array of strings`,
             );
           }
           break;
         case CustomFieldType.NUMBER_ARRAY:
-          if (!Array.isArray(value) || !value.every((v: any) => typeof v === 'number')) {
+          if (
+            !Array.isArray(value) ||
+            !value.every((v: any) => typeof v === 'number')
+          ) {
             throw new BadRequestException(
               `Field "${field.code}" must be an array of numbers`,
             );
@@ -239,10 +273,7 @@ export class CustomObjectRecordsService {
           }
           break;
         case CustomFieldType.SELECT:
-          if (
-            field.options &&
-            !field.options.includes(value)
-          ) {
+          if (field.options && !field.options.includes(value)) {
             throw new BadRequestException(
               `Field "${field.code}" must be one of: ${field.options.join(', ')}`,
             );
@@ -262,9 +293,15 @@ export class CustomObjectRecordsService {
             );
           }
           if (field.picklistId) {
-            const isValid = await this.picklistsService.isValidOptionCode(field.picklistId, companyId, value);
+            const isValid = await this.picklistsService.isValidOptionCode(
+              field.picklistId,
+              companyId,
+              value,
+            );
             if (!isValid) {
-              throw new BadRequestException(`Field "${field.code}" contains an invalid picklist option code`);
+              throw new BadRequestException(
+                `Field "${field.code}" contains an invalid picklist option code`,
+              );
             }
           }
           break;
@@ -276,8 +313,13 @@ export class CustomObjectRecordsService {
           }
           if (field.referencedDefinitionId) {
             const refRecord = await this.recordRepository.findOne(value);
-            if (!refRecord || refRecord.definitionId !== field.referencedDefinitionId) {
-              throw new BadRequestException(`Field "${field.code}" must reference a valid record of the specified definition`);
+            if (
+              !refRecord ||
+              refRecord.definitionId !== field.referencedDefinitionId
+            ) {
+              throw new BadRequestException(
+                `Field "${field.code}" must reference a valid record of the specified definition`,
+              );
             }
           }
           break;
@@ -289,8 +331,10 @@ export class CustomObjectRecordsService {
           }
           try {
             await this.attachmentsService.findOne(value);
-          } catch (e) {
-            throw new BadRequestException(`Field "${field.code}" must reference a valid uploaded attachment`);
+          } catch {
+            throw new BadRequestException(
+              `Field "${field.code}" must reference a valid uploaded attachment`,
+            );
           }
           break;
       }

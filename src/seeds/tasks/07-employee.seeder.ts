@@ -621,282 +621,753 @@ const EMPLOYEES_BY_TEAM: Record<
 
 // ── Related entities: keyed by "firstName.lastName" ──────────────
 // We attach rich data to ~30 employees to cover all entity types
-const RELATED_DATA: Record<string, {
-  emergencyContacts?: any[];
-  dependents?: any[];
-  workExperiences?: any[];
-  educations?: any[];
-  licensesCertifications?: any[];
-  nationalIds?: any[];
-}> = {
+const RELATED_DATA: Record<
+  string,
+  {
+    emergencyContacts?: any[];
+    dependents?: any[];
+    workExperiences?: any[];
+    educations?: any[];
+    licensesCertifications?: any[];
+    nationalIds?: any[];
+  }
+> = {
   'Aylin.Kaya': {
     emergencyContacts: [
-      { fullName: 'Mehmet Kaya', relationship: Relationship.PARENT, phone: '+905551234567', isPrimary: true },
+      {
+        fullName: 'Mehmet Kaya',
+        relationship: Relationship.PARENT,
+        phone: '+905551234567',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Elif Kaya', relationship: Relationship.CHILD, dateOfBirth: '2019-05-10', gender: Gender.FEMALE },
+      {
+        fullName: 'Elif Kaya',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2019-05-10',
+        gender: Gender.FEMALE,
+      },
     ],
     educations: [
-      { institution: 'Bogazici University', degree: 'Bachelor of Science', fieldOfStudy: 'Computer Engineering', startDate: '2013-09-01', endDate: '2017-06-15' },
+      {
+        institution: 'Bogazici University',
+        degree: 'Bachelor of Science',
+        fieldOfStudy: 'Computer Engineering',
+        startDate: '2013-09-01',
+        endDate: '2017-06-15',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.NATIONAL_ID, idNumber: '12345678901', country: 'TR' },
+      {
+        idType: NationalIdType.NATIONAL_ID,
+        idNumber: '12345678901',
+        country: 'TR',
+      },
     ],
   },
   'Emre.Demir': {
     emergencyContacts: [
-      { fullName: 'Zeynep Demir', relationship: Relationship.SPOUSE, phone: '+905559876543', isPrimary: true },
-      { fullName: 'Ali Demir', relationship: Relationship.PARENT, phone: '+905551112233' },
+      {
+        fullName: 'Zeynep Demir',
+        relationship: Relationship.SPOUSE,
+        phone: '+905559876543',
+        isPrimary: true,
+      },
+      {
+        fullName: 'Ali Demir',
+        relationship: Relationship.PARENT,
+        phone: '+905551112233',
+      },
     ],
     dependents: [
-      { fullName: 'Zeynep Demir', relationship: Relationship.SPOUSE, dateOfBirth: '1992-03-22', gender: Gender.FEMALE },
-      { fullName: 'Can Demir', relationship: Relationship.CHILD, dateOfBirth: '2021-08-14', gender: Gender.MALE },
+      {
+        fullName: 'Zeynep Demir',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1992-03-22',
+        gender: Gender.FEMALE,
+      },
+      {
+        fullName: 'Can Demir',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2021-08-14',
+        gender: Gender.MALE,
+      },
     ],
     workExperiences: [
-      { companyName: 'TechCorp', jobTitle: 'Backend Developer', startDate: '2017-06-01', endDate: '2020-10-30', location: 'Ankara', reasonForLeaving: 'Career growth' },
+      {
+        companyName: 'TechCorp',
+        jobTitle: 'Backend Developer',
+        startDate: '2017-06-01',
+        endDate: '2020-10-30',
+        location: 'Ankara',
+        reasonForLeaving: 'Career growth',
+      },
     ],
     educations: [
-      { institution: 'METU', degree: 'Master of Science', fieldOfStudy: 'Software Engineering', startDate: '2015-09-01', endDate: '2017-06-01' },
+      {
+        institution: 'METU',
+        degree: 'Master of Science',
+        fieldOfStudy: 'Software Engineering',
+        startDate: '2015-09-01',
+        endDate: '2017-06-01',
+      },
     ],
     licensesCertifications: [
-      { name: 'AWS Solutions Architect', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'Amazon Web Services', issueDate: '2022-03-15', expirationDate: '2025-03-15', credentialId: 'AWS-SA-PRO-12345' },
+      {
+        name: 'AWS Solutions Architect',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'Amazon Web Services',
+        issueDate: '2022-03-15',
+        expirationDate: '2025-03-15',
+        credentialId: 'AWS-SA-PRO-12345',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.NATIONAL_ID, idNumber: '98765432101', country: 'TR' },
-      { idType: NationalIdType.PASSPORT, idNumber: 'U12345678', country: 'TR', issueDate: '2021-01-10', expirationDate: '2031-01-10' },
+      {
+        idType: NationalIdType.NATIONAL_ID,
+        idNumber: '98765432101',
+        country: 'TR',
+      },
+      {
+        idType: NationalIdType.PASSPORT,
+        idNumber: 'U12345678',
+        country: 'TR',
+        issueDate: '2021-01-10',
+        expirationDate: '2031-01-10',
+      },
     ],
   },
   'Viktor.Petrov': {
     emergencyContacts: [
-      { fullName: 'Natasha Petrova', relationship: Relationship.SPOUSE, phone: '+359888123456', isPrimary: true },
+      {
+        fullName: 'Natasha Petrova',
+        relationship: Relationship.SPOUSE,
+        phone: '+359888123456',
+        isPrimary: true,
+      },
     ],
     workExperiences: [
-      { companyName: 'CloudBase GmbH', jobTitle: 'Systems Administrator', startDate: '2016-03-01', endDate: '2020-08-31', location: 'Berlin' },
+      {
+        companyName: 'CloudBase GmbH',
+        jobTitle: 'Systems Administrator',
+        startDate: '2016-03-01',
+        endDate: '2020-08-31',
+        location: 'Berlin',
+      },
     ],
     licensesCertifications: [
-      { name: 'Certified Kubernetes Administrator', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'CNCF', issueDate: '2021-11-01', expirationDate: '2024-11-01', credentialId: 'CKA-4567' },
-      { name: 'Terraform Associate', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'HashiCorp', issueDate: '2022-05-20' },
+      {
+        name: 'Certified Kubernetes Administrator',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'CNCF',
+        issueDate: '2021-11-01',
+        expirationDate: '2024-11-01',
+        credentialId: 'CKA-4567',
+      },
+      {
+        name: 'Terraform Associate',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'HashiCorp',
+        issueDate: '2022-05-20',
+      },
     ],
   },
   'Mila.Novak': {
     emergencyContacts: [
-      { fullName: 'Stefan Novak', relationship: Relationship.SIBLING, phone: '+385911234567', isPrimary: true },
+      {
+        fullName: 'Stefan Novak',
+        relationship: Relationship.SIBLING,
+        phone: '+385911234567',
+        isPrimary: true,
+      },
     ],
     educations: [
-      { institution: 'Royal College of Art', degree: 'Master of Arts', fieldOfStudy: 'Design', startDate: '2016-09-01', endDate: '2018-06-30' },
+      {
+        institution: 'Royal College of Art',
+        degree: 'Master of Arts',
+        fieldOfStudy: 'Design',
+        startDate: '2016-09-01',
+        endDate: '2018-06-30',
+      },
     ],
     licensesCertifications: [
-      { name: 'Google UX Design Certificate', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'Google', issueDate: '2020-02-01' },
+      {
+        name: 'Google UX Design Certificate',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'Google',
+        issueDate: '2020-02-01',
+      },
     ],
   },
   'Aisha.Ibrahim': {
     emergencyContacts: [
-      { fullName: 'Yusuf Ibrahim', relationship: Relationship.SPOUSE, phone: '+234801234567', isPrimary: true },
+      {
+        fullName: 'Yusuf Ibrahim',
+        relationship: Relationship.SPOUSE,
+        phone: '+234801234567',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Yusuf Ibrahim', relationship: Relationship.SPOUSE, dateOfBirth: '1988-11-30', gender: Gender.MALE },
-      { fullName: 'Amina Ibrahim', relationship: Relationship.CHILD, dateOfBirth: '2020-04-12', gender: Gender.FEMALE },
-      { fullName: 'Omar Ibrahim', relationship: Relationship.CHILD, dateOfBirth: '2022-09-05', gender: Gender.MALE },
+      {
+        fullName: 'Yusuf Ibrahim',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1988-11-30',
+        gender: Gender.MALE,
+      },
+      {
+        fullName: 'Amina Ibrahim',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2020-04-12',
+        gender: Gender.FEMALE,
+      },
+      {
+        fullName: 'Omar Ibrahim',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2022-09-05',
+        gender: Gender.MALE,
+      },
     ],
     workExperiences: [
-      { companyName: 'Andela', jobTitle: 'Product Manager', startDate: '2017-01-01', endDate: '2020-03-31', location: 'Lagos' },
+      {
+        companyName: 'Andela',
+        jobTitle: 'Product Manager',
+        startDate: '2017-01-01',
+        endDate: '2020-03-31',
+        location: 'Lagos',
+      },
     ],
     educations: [
-      { institution: 'University of Lagos', degree: 'Bachelor of Science', fieldOfStudy: 'Business Administration', startDate: '2008-09-01', endDate: '2012-06-30' },
-      { institution: 'Stanford University', degree: 'MBA', startDate: '2014-09-01', endDate: '2016-06-15' },
+      {
+        institution: 'University of Lagos',
+        degree: 'Bachelor of Science',
+        fieldOfStudy: 'Business Administration',
+        startDate: '2008-09-01',
+        endDate: '2012-06-30',
+      },
+      {
+        institution: 'Stanford University',
+        degree: 'MBA',
+        startDate: '2014-09-01',
+        endDate: '2016-06-15',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.PASSPORT, idNumber: 'A12345678', country: 'NG', issueDate: '2020-06-01', expirationDate: '2030-06-01' },
+      {
+        idType: NationalIdType.PASSPORT,
+        idNumber: 'A12345678',
+        country: 'NG',
+        issueDate: '2020-06-01',
+        expirationDate: '2030-06-01',
+      },
     ],
   },
   'James.Taylor': {
     emergencyContacts: [
-      { fullName: 'Susan Taylor', relationship: Relationship.SPOUSE, phone: '+447911234567', isPrimary: true },
+      {
+        fullName: 'Susan Taylor',
+        relationship: Relationship.SPOUSE,
+        phone: '+447911234567',
+        isPrimary: true,
+      },
     ],
     workExperiences: [
-      { companyName: 'Salesforce', jobTitle: 'Account Executive', startDate: '2015-04-01', endDate: '2020-02-28', location: 'London', reasonForLeaving: 'Relocated' },
+      {
+        companyName: 'Salesforce',
+        jobTitle: 'Account Executive',
+        startDate: '2015-04-01',
+        endDate: '2020-02-28',
+        location: 'London',
+        reasonForLeaving: 'Relocated',
+      },
     ],
     licensesCertifications: [
-      { name: 'Salesforce Certified Administrator', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'Salesforce', issueDate: '2016-07-01' },
+      {
+        name: 'Salesforce Certified Administrator',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'Salesforce',
+        issueDate: '2016-07-01',
+      },
     ],
   },
   'Margaret.Wilson': {
     emergencyContacts: [
-      { fullName: 'Robert Wilson', relationship: Relationship.SPOUSE, phone: '+12025551234', isPrimary: true },
+      {
+        fullName: 'Robert Wilson',
+        relationship: Relationship.SPOUSE,
+        phone: '+12025551234',
+        isPrimary: true,
+      },
     ],
     educations: [
-      { institution: 'London School of Economics', degree: 'Bachelor of Science', fieldOfStudy: 'Accounting & Finance', startDate: '2012-09-01', endDate: '2015-06-30' },
+      {
+        institution: 'London School of Economics',
+        degree: 'Bachelor of Science',
+        fieldOfStudy: 'Accounting & Finance',
+        startDate: '2012-09-01',
+        endDate: '2015-06-30',
+      },
     ],
     licensesCertifications: [
-      { name: 'CPA', type: LicenseCertificationType.LICENSE, issuingOrganization: 'AICPA', issueDate: '2016-04-01' },
-      { name: 'ACCA', type: LicenseCertificationType.LICENSE, issuingOrganization: 'Association of Chartered Certified Accountants', issueDate: '2017-09-01' },
+      {
+        name: 'CPA',
+        type: LicenseCertificationType.LICENSE,
+        issuingOrganization: 'AICPA',
+        issueDate: '2016-04-01',
+      },
+      {
+        name: 'ACCA',
+        type: LicenseCertificationType.LICENSE,
+        issuingOrganization: 'Association of Chartered Certified Accountants',
+        issueDate: '2017-09-01',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.SOCIAL_SECURITY, idNumber: '123-45-6789', country: 'US' },
+      {
+        idType: NationalIdType.SOCIAL_SECURITY,
+        idNumber: '123-45-6789',
+        country: 'US',
+      },
     ],
   },
   'Victoria.Stenberg': {
     emergencyContacts: [
-      { fullName: 'Erik Stenberg', relationship: Relationship.PARENT, phone: '+46701234567', isPrimary: true },
+      {
+        fullName: 'Erik Stenberg',
+        relationship: Relationship.PARENT,
+        phone: '+46701234567',
+        isPrimary: true,
+      },
     ],
     educations: [
-      { institution: 'Uppsala University', degree: 'Master of Laws', fieldOfStudy: 'Corporate Law', startDate: '2012-09-01', endDate: '2017-06-30' },
+      {
+        institution: 'Uppsala University',
+        degree: 'Master of Laws',
+        fieldOfStudy: 'Corporate Law',
+        startDate: '2012-09-01',
+        endDate: '2017-06-30',
+      },
     ],
     licensesCertifications: [
-      { name: 'Bar Admission - Sweden', type: LicenseCertificationType.LICENSE, issuingOrganization: 'Swedish Bar Association', issueDate: '2018-01-15' },
+      {
+        name: 'Bar Admission - Sweden',
+        type: LicenseCertificationType.LICENSE,
+        issuingOrganization: 'Swedish Bar Association',
+        issueDate: '2018-01-15',
+      },
     ],
   },
   'Ravi.Patel': {
     emergencyContacts: [
-      { fullName: 'Meera Patel', relationship: Relationship.SPOUSE, phone: '+919876543210', isPrimary: true },
+      {
+        fullName: 'Meera Patel',
+        relationship: Relationship.SPOUSE,
+        phone: '+919876543210',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Meera Patel', relationship: Relationship.SPOUSE, dateOfBirth: '1993-07-15', gender: Gender.FEMALE },
+      {
+        fullName: 'Meera Patel',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1993-07-15',
+        gender: Gender.FEMALE,
+      },
     ],
     workExperiences: [
-      { companyName: 'Flipkart', jobTitle: 'Mobile Developer', startDate: '2016-07-01', endDate: '2021-01-31', location: 'Bangalore', reasonForLeaving: 'New opportunity' },
+      {
+        companyName: 'Flipkart',
+        jobTitle: 'Mobile Developer',
+        startDate: '2016-07-01',
+        endDate: '2021-01-31',
+        location: 'Bangalore',
+        reasonForLeaving: 'New opportunity',
+      },
     ],
     educations: [
-      { institution: 'IIT Bombay', degree: 'Bachelor of Technology', fieldOfStudy: 'Computer Science', startDate: '2012-07-01', endDate: '2016-05-30' },
+      {
+        institution: 'IIT Bombay',
+        degree: 'Bachelor of Technology',
+        fieldOfStudy: 'Computer Science',
+        startDate: '2012-07-01',
+        endDate: '2016-05-30',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.NATIONAL_ID, idNumber: 'ABCDE1234F', country: 'IN' },
-      { idType: NationalIdType.PASSPORT, idNumber: 'L1234567', country: 'IN', issueDate: '2019-03-10', expirationDate: '2029-03-10' },
+      {
+        idType: NationalIdType.NATIONAL_ID,
+        idNumber: 'ABCDE1234F',
+        country: 'IN',
+      },
+      {
+        idType: NationalIdType.PASSPORT,
+        idNumber: 'L1234567',
+        country: 'IN',
+        issueDate: '2019-03-10',
+        expirationDate: '2029-03-10',
+      },
     ],
   },
   'Carmen.Delgado': {
     emergencyContacts: [
-      { fullName: 'Maria Delgado', relationship: Relationship.PARENT, phone: '+34612345678', isPrimary: true },
+      {
+        fullName: 'Maria Delgado',
+        relationship: Relationship.PARENT,
+        phone: '+34612345678',
+        isPrimary: true,
+      },
     ],
     workExperiences: [
-      { companyName: 'LinkedIn', jobTitle: 'Technical Recruiter', startDate: '2017-09-01', endDate: '2020-09-30', location: 'Dublin' },
+      {
+        companyName: 'LinkedIn',
+        jobTitle: 'Technical Recruiter',
+        startDate: '2017-09-01',
+        endDate: '2020-09-30',
+        location: 'Dublin',
+      },
     ],
     licensesCertifications: [
-      { name: 'AIRS Certified Recruiter', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'AIRS', issueDate: '2018-04-01' },
+      {
+        name: 'AIRS Certified Recruiter',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'AIRS',
+        issueDate: '2018-04-01',
+      },
     ],
   },
   'Lena.Bergstrom': {
     emergencyContacts: [
-      { fullName: 'Olaf Bergstrom', relationship: Relationship.SPOUSE, phone: '+46709876543', isPrimary: true },
+      {
+        fullName: 'Olaf Bergstrom',
+        relationship: Relationship.SPOUSE,
+        phone: '+46709876543',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Olaf Bergstrom', relationship: Relationship.SPOUSE, dateOfBirth: '1988-02-14', gender: Gender.MALE },
-      { fullName: 'Astrid Bergstrom', relationship: Relationship.CHILD, dateOfBirth: '2018-12-25', gender: Gender.FEMALE },
+      {
+        fullName: 'Olaf Bergstrom',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1988-02-14',
+        gender: Gender.MALE,
+      },
+      {
+        fullName: 'Astrid Bergstrom',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2018-12-25',
+        gender: Gender.FEMALE,
+      },
     ],
     educations: [
-      { institution: 'Stockholm University', degree: 'Master of Science', fieldOfStudy: 'Human Resources Management', startDate: '2010-09-01', endDate: '2012-06-30' },
+      {
+        institution: 'Stockholm University',
+        degree: 'Master of Science',
+        fieldOfStudy: 'Human Resources Management',
+        startDate: '2010-09-01',
+        endDate: '2012-06-30',
+      },
     ],
     licensesCertifications: [
-      { name: 'SHRM-SCP', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'SHRM', issueDate: '2019-06-01' },
+      {
+        name: 'SHRM-SCP',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'SHRM',
+        issueDate: '2019-06-01',
+      },
     ],
   },
   'Omar.Farooq': {
     emergencyContacts: [
-      { fullName: 'Fatima Farooq', relationship: Relationship.SPOUSE, phone: '+923001234567', isPrimary: true },
+      {
+        fullName: 'Fatima Farooq',
+        relationship: Relationship.SPOUSE,
+        phone: '+923001234567',
+        isPrimary: true,
+      },
     ],
     workExperiences: [
-      { companyName: 'Palantir', jobTitle: 'Security Analyst', startDate: '2016-02-01', endDate: '2020-04-30', location: 'London' },
+      {
+        companyName: 'Palantir',
+        jobTitle: 'Security Analyst',
+        startDate: '2016-02-01',
+        endDate: '2020-04-30',
+        location: 'London',
+      },
     ],
     licensesCertifications: [
-      { name: 'CISSP', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'ISC2', issueDate: '2019-08-01', expirationDate: '2025-08-01', credentialId: 'CISSP-567890' },
-      { name: 'CEH', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'EC-Council', issueDate: '2018-03-01' },
+      {
+        name: 'CISSP',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'ISC2',
+        issueDate: '2019-08-01',
+        expirationDate: '2025-08-01',
+        credentialId: 'CISSP-567890',
+      },
+      {
+        name: 'CEH',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'EC-Council',
+        issueDate: '2018-03-01',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.NATIONAL_ID, idNumber: '42101-1234567-8', country: 'PK' },
+      {
+        idType: NationalIdType.NATIONAL_ID,
+        idNumber: '42101-1234567-8',
+        country: 'PK',
+      },
     ],
   },
   'Isabelle.Moreau': {
     emergencyContacts: [
-      { fullName: 'Pierre Moreau', relationship: Relationship.PARENT, phone: '+33612345678', isPrimary: true },
+      {
+        fullName: 'Pierre Moreau',
+        relationship: Relationship.PARENT,
+        phone: '+33612345678',
+        isPrimary: true,
+      },
     ],
     educations: [
-      { institution: 'HEC Paris', degree: 'Master in Marketing', fieldOfStudy: 'Digital Marketing', startDate: '2014-09-01', endDate: '2016-06-30' },
+      {
+        institution: 'HEC Paris',
+        degree: 'Master in Marketing',
+        fieldOfStudy: 'Digital Marketing',
+        startDate: '2014-09-01',
+        endDate: '2016-06-30',
+      },
     ],
     licensesCertifications: [
-      { name: 'Google Analytics Certification', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'Google', issueDate: '2021-01-15' },
-      { name: 'HubSpot Inbound Marketing', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'HubSpot', issueDate: '2020-05-01' },
+      {
+        name: 'Google Analytics Certification',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'Google',
+        issueDate: '2021-01-15',
+      },
+      {
+        name: 'HubSpot Inbound Marketing',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'HubSpot',
+        issueDate: '2020-05-01',
+      },
     ],
   },
   'Tomoko.Sato': {
     emergencyContacts: [
-      { fullName: 'Kenji Sato', relationship: Relationship.SPOUSE, phone: '+81901234567', isPrimary: true },
+      {
+        fullName: 'Kenji Sato',
+        relationship: Relationship.SPOUSE,
+        phone: '+81901234567',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Yui Sato', relationship: Relationship.CHILD, dateOfBirth: '2017-11-02', gender: Gender.FEMALE },
+      {
+        fullName: 'Yui Sato',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2017-11-02',
+        gender: Gender.FEMALE,
+      },
     ],
     workExperiences: [
-      { companyName: 'Sony Interactive Entertainment', jobTitle: 'QA Lead', startDate: '2014-04-01', endDate: '2020-05-31', location: 'Tokyo' },
+      {
+        companyName: 'Sony Interactive Entertainment',
+        jobTitle: 'QA Lead',
+        startDate: '2014-04-01',
+        endDate: '2020-05-31',
+        location: 'Tokyo',
+      },
     ],
     licensesCertifications: [
-      { name: 'ISTQB Advanced Test Analyst', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'ISTQB', issueDate: '2017-09-01' },
+      {
+        name: 'ISTQB Advanced Test Analyst',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'ISTQB',
+        issueDate: '2017-09-01',
+      },
     ],
   },
   'Camille.Bernard': {
     educations: [
-      { institution: 'Sciences Po Paris', degree: 'Master of Arts', fieldOfStudy: 'Cognitive Science', startDate: '2014-09-01', endDate: '2016-06-30' },
-      { institution: 'University of Michigan', degree: 'PhD', fieldOfStudy: 'Human-Computer Interaction', startDate: '2016-09-01', endDate: '2020-12-15' },
+      {
+        institution: 'Sciences Po Paris',
+        degree: 'Master of Arts',
+        fieldOfStudy: 'Cognitive Science',
+        startDate: '2014-09-01',
+        endDate: '2016-06-30',
+      },
+      {
+        institution: 'University of Michigan',
+        degree: 'PhD',
+        fieldOfStudy: 'Human-Computer Interaction',
+        startDate: '2016-09-01',
+        endDate: '2020-12-15',
+      },
     ],
     licensesCertifications: [
-      { name: 'UXPA Certified Usability Analyst', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'UXPA International', issueDate: '2021-06-01' },
+      {
+        name: 'UXPA Certified Usability Analyst',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'UXPA International',
+        issueDate: '2021-06-01',
+      },
     ],
   },
   'Pavel.Kowalski': {
     emergencyContacts: [
-      { fullName: 'Anna Kowalska', relationship: Relationship.SPOUSE, phone: '+48501234567', isPrimary: true },
+      {
+        fullName: 'Anna Kowalska',
+        relationship: Relationship.SPOUSE,
+        phone: '+48501234567',
+        isPrimary: true,
+      },
     ],
     licensesCertifications: [
-      { name: 'CompTIA A+', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'CompTIA', issueDate: '2018-01-15' },
-      { name: 'ITIL Foundation', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'Axelos', issueDate: '2019-04-01' },
+      {
+        name: 'CompTIA A+',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'CompTIA',
+        issueDate: '2018-01-15',
+      },
+      {
+        name: 'ITIL Foundation',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'Axelos',
+        issueDate: '2019-04-01',
+      },
     ],
   },
   'Hassan.ElAmin': {
     emergencyContacts: [
-      { fullName: 'Layla El-Amin', relationship: Relationship.SPOUSE, phone: '+971501234567', isPrimary: true },
+      {
+        fullName: 'Layla El-Amin',
+        relationship: Relationship.SPOUSE,
+        phone: '+971501234567',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Layla El-Amin', relationship: Relationship.SPOUSE, dateOfBirth: '1991-06-20', gender: Gender.FEMALE },
-      { fullName: 'Adam El-Amin', relationship: Relationship.CHILD, dateOfBirth: '2020-01-15', gender: Gender.MALE },
+      {
+        fullName: 'Layla El-Amin',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1991-06-20',
+        gender: Gender.FEMALE,
+      },
+      {
+        fullName: 'Adam El-Amin',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2020-01-15',
+        gender: Gender.MALE,
+      },
     ],
     workExperiences: [
-      { companyName: 'Careem', jobTitle: 'Business Development Manager', startDate: '2015-06-01', endDate: '2020-06-30', location: 'Dubai', reasonForLeaving: 'Joined Hoopy' },
+      {
+        companyName: 'Careem',
+        jobTitle: 'Business Development Manager',
+        startDate: '2015-06-01',
+        endDate: '2020-06-30',
+        location: 'Dubai',
+        reasonForLeaving: 'Joined Hoopy',
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.NATIONAL_ID, idNumber: '784-1990-1234567-1', country: 'AE' },
+      {
+        idType: NationalIdType.NATIONAL_ID,
+        idNumber: '784-1990-1234567-1',
+        country: 'AE',
+      },
     ],
   },
   'Olivia.Johnson': {
     emergencyContacts: [
-      { fullName: 'Michael Johnson', relationship: Relationship.PARENT, phone: '+12025559876', isPrimary: true },
+      {
+        fullName: 'Michael Johnson',
+        relationship: Relationship.PARENT,
+        phone: '+12025559876',
+        isPrimary: true,
+      },
     ],
     educations: [
-      { institution: 'MIT', degree: 'Bachelor of Science', fieldOfStudy: 'Computer Science', startDate: '2014-09-01', endDate: '2018-06-15' },
+      {
+        institution: 'MIT',
+        degree: 'Bachelor of Science',
+        fieldOfStudy: 'Computer Science',
+        startDate: '2014-09-01',
+        endDate: '2018-06-15',
+      },
     ],
     workExperiences: [
-      { companyName: 'Stripe', jobTitle: 'Software Engineer', startDate: '2018-07-01', endDate: '2021-05-10', location: 'San Francisco' },
+      {
+        companyName: 'Stripe',
+        jobTitle: 'Software Engineer',
+        startDate: '2018-07-01',
+        endDate: '2021-05-10',
+        location: 'San Francisco',
+      },
     ],
   },
   'Noah.Williams': {
     emergencyContacts: [
-      { fullName: 'Sarah Williams', relationship: Relationship.SPOUSE, phone: '+447123456789', isPrimary: true },
+      {
+        fullName: 'Sarah Williams',
+        relationship: Relationship.SPOUSE,
+        phone: '+447123456789',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Sarah Williams', relationship: Relationship.SPOUSE, dateOfBirth: '1991-09-12', gender: Gender.FEMALE },
+      {
+        fullName: 'Sarah Williams',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1991-09-12',
+        gender: Gender.FEMALE,
+      },
     ],
     licensesCertifications: [
-      { name: 'Google Cloud Professional Architect', type: LicenseCertificationType.CERTIFICATION, issuingOrganization: 'Google Cloud', issueDate: '2022-08-01', expirationDate: '2024-08-01' },
+      {
+        name: 'Google Cloud Professional Architect',
+        type: LicenseCertificationType.CERTIFICATION,
+        issuingOrganization: 'Google Cloud',
+        issueDate: '2022-08-01',
+        expirationDate: '2024-08-01',
+      },
     ],
   },
   'Rosa.Hernandez': {
     emergencyContacts: [
-      { fullName: 'Carlos Hernandez', relationship: Relationship.SPOUSE, phone: '+525512345678', isPrimary: true },
+      {
+        fullName: 'Carlos Hernandez',
+        relationship: Relationship.SPOUSE,
+        phone: '+525512345678',
+        isPrimary: true,
+      },
     ],
     dependents: [
-      { fullName: 'Carlos Hernandez', relationship: Relationship.SPOUSE, dateOfBirth: '1987-04-18', gender: Gender.MALE },
-      { fullName: 'Lucia Hernandez', relationship: Relationship.CHILD, dateOfBirth: '2015-07-30', gender: Gender.FEMALE },
-      { fullName: 'Miguel Hernandez', relationship: Relationship.CHILD, dateOfBirth: '2018-02-14', gender: Gender.MALE },
+      {
+        fullName: 'Carlos Hernandez',
+        relationship: Relationship.SPOUSE,
+        dateOfBirth: '1987-04-18',
+        gender: Gender.MALE,
+      },
+      {
+        fullName: 'Lucia Hernandez',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2015-07-30',
+        gender: Gender.FEMALE,
+      },
+      {
+        fullName: 'Miguel Hernandez',
+        relationship: Relationship.CHILD,
+        dateOfBirth: '2018-02-14',
+        gender: Gender.MALE,
+      },
     ],
     nationalIds: [
-      { idType: NationalIdType.NATIONAL_ID, idNumber: 'HERM870418HDFRRS09', country: 'MX' },
+      {
+        idType: NationalIdType.NATIONAL_ID,
+        idNumber: 'HERM870418HDFRRS09',
+        country: 'MX',
+      },
     ],
   },
 };

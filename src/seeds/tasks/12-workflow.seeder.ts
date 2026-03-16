@@ -40,7 +40,9 @@ export class WorkflowSeeder implements Seeder {
       where: { companyId: company.id, code: 'leave_request_approval' },
     });
     if (existing) {
-      this.logger.log('Workflow "leave_request_approval" already exists — skipping.');
+      this.logger.log(
+        'Workflow "leave_request_approval" already exists — skipping.',
+      );
       return;
     }
 
@@ -49,7 +51,9 @@ export class WorkflowSeeder implements Seeder {
       where: { companyId: company.id, code: 'leave_request_lifecycle' },
     });
     if (!smDef) {
-      this.logger.warn('State machine "leave_request_lifecycle" not found — skipping workflow seed.');
+      this.logger.warn(
+        'State machine "leave_request_lifecycle" not found — skipping workflow seed.',
+      );
       return;
     }
 
@@ -61,8 +65,16 @@ export class WorkflowSeeder implements Seeder {
       priority: 0,
       stateMachineDefinitionId: smDef.id,
       translations: [
-        { locale: 'en', name: 'Leave Request Approval', description: 'Two-step approval workflow for leave requests' },
-        { locale: 'tr', name: 'İzin Talebi Onayı', description: 'İzin talepleri için iki aşamalı onay iş akışı' },
+        {
+          locale: 'en',
+          name: 'Leave Request Approval',
+          description: 'Two-step approval workflow for leave requests',
+        },
+        {
+          locale: 'tr',
+          name: 'İzin Talebi Onayı',
+          description: 'İzin talepleri için iki aşamalı onay iş akışı',
+        },
       ],
       triggerMode: 'manual' as any,
       slaConfig: { defaultDurationHours: 48 },
@@ -80,8 +92,17 @@ export class WorkflowSeeder implements Seeder {
           isSkippable: false,
           isAutoComplete: false,
           translations: [
-            { locale: 'en', name: 'Manager Review', description: 'Direct manager reviews and approves the leave request' },
-            { locale: 'tr', name: 'Yönetici İncelemesi', description: 'Direkt yönetici izin talebini inceler ve onaylar' },
+            {
+              locale: 'en',
+              name: 'Manager Review',
+              description:
+                'Direct manager reviews and approves the leave request',
+            },
+            {
+              locale: 'tr',
+              name: 'Yönetici İncelemesi',
+              description: 'Direkt yönetici izin talebini inceler ve onaylar',
+            },
           ],
         },
         {
@@ -103,8 +124,16 @@ export class WorkflowSeeder implements Seeder {
             ],
           },
           translations: [
-            { locale: 'en', name: 'HR Review', description: 'HR reviews requests longer than 3 days' },
-            { locale: 'tr', name: 'İK İncelemesi', description: 'İK 3 günden uzun talepleri inceler' },
+            {
+              locale: 'en',
+              name: 'HR Review',
+              description: 'HR reviews requests longer than 3 days',
+            },
+            {
+              locale: 'tr',
+              name: 'İK İncelemesi',
+              description: 'İK 3 günden uzun talepleri inceler',
+            },
           ],
         },
       ],

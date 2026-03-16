@@ -20,10 +20,17 @@ import {
   WorkflowActionType,
   TransitionAction,
 } from '../enums/workflow.enums';
-import { StartWorkflowDto, WorkflowStepActionDto, CancelWorkflowDto } from '../dto/workflow-instance.dto';
+import {
+  StartWorkflowDto,
+  WorkflowStepActionDto,
+  CancelWorkflowDto,
+} from '../dto/workflow-instance.dto';
 import { WorkflowDefinitionService } from './workflow-definition.service';
 import { WorkflowAssigneeResolverService } from './workflow-assignee-resolver.service';
-import { ConditionEvaluatorService, ConditionGroup } from '../../state-machine/services/condition-evaluator.service';
+import {
+  ConditionEvaluatorService,
+  ConditionGroup,
+} from '../../state-machine/services/condition-evaluator.service';
 import { StateMachineService } from '../../state-machine/services/state-machine.service';
 import { AssigneeResolutionContext } from '../resolvers/assignee-resolver.interface';
 import { DomainEventPublisher } from '../../shared/events';
@@ -54,10 +61,11 @@ export class WorkflowEngineService {
     initiatorId: string,
     dto: StartWorkflowDto,
   ): Promise<WorkflowInstance> {
-    const { definition, version } = await this.definitionService.getPublishedVersionByCode(
-      companyId,
-      dto.workflowCode,
-    );
+    const { definition, version } =
+      await this.definitionService.getPublishedVersionByCode(
+        companyId,
+        dto.workflowCode,
+      );
 
     // Check entry criteria
     const context = dto.context || {};
@@ -75,14 +83,15 @@ export class WorkflowEngineService {
 
     return this.dataSource.transaction(async (manager) => {
       // Create the backing state machine instance
-      const smInstance = await this.stateMachineService.createInstanceTransactional(
-        manager,
-        companyId,
-        definition.stateMachineDefinitionId,
-        dto.resourceType,
-        dto.resourceId,
-        context,
-      );
+      const smInstance =
+        await this.stateMachineService.createInstanceTransactional(
+          manager,
+          companyId,
+          definition.stateMachineDefinitionId,
+          dto.resourceType,
+          dto.resourceId,
+          context,
+        );
 
       // Create workflow instance
       const instance = manager.create(WorkflowInstance, {
@@ -105,7 +114,9 @@ export class WorkflowEngineService {
       const savedInstance = await manager.save(WorkflowInstance, instance);
 
       // Sort steps by sortOrder
-      const sortedSteps = [...version.steps].sort((a, b) => a.sortOrder - b.sortOrder);
+      const sortedSteps = [...version.steps].sort(
+        (a, b) => a.sortOrder - b.sortOrder,
+      );
 
       // Create step instances for all steps
       const stepInstances: WorkflowStepInstance[] = [];
@@ -133,7 +144,9 @@ export class WorkflowEngineService {
             transitionCode: stepDef.transitionCode,
           },
         });
-        stepInstances.push(await manager.save(WorkflowStepInstance, stepInstance));
+        stepInstances.push(
+          await manager.save(WorkflowStepInstance, stepInstance),
+        );
       }
 
       // Log workflow start
@@ -143,7 +156,10 @@ export class WorkflowEngineService {
         actorId: initiatorId,
         fromStatus: null,
         toStatus: WorkflowInstanceStatus.PENDING,
-        metadata: { workflowCode: definition.code, resourceType: dto.resourceType },
+        metadata: {
+          workflowCode: definition.code,
+          resourceType: dto.resourceType,
+        },
       });
 
       // Activate the first eligible step
@@ -197,14 +213,20 @@ export class WorkflowEngineService {
         instance.status !== WorkflowInstanceStatus.IN_PROGRESS &&
         instance.status !== WorkflowInstanceStatus.PENDING
       ) {
-        throw new BadRequestException(`Cannot act on a workflow with status "${instance.status}"`);
+        throw new BadRequestException(
+          `Cannot act on a workflow with status "${instance.status}"`,
+        );
       }
 
-      const stepInstance = instance.stepInstances.find((s) => s.id === stepInstanceId);
+      const stepInstance = instance.stepInstances.find(
+        (s) => s.id === stepInstanceId,
+      );
       if (!stepInstance) throw new NotFoundException('Step instance not found');
 
       if (stepInstance.status !== WorkflowStepInstanceStatus.ACTIVE) {
-        throw new BadRequestException(`Step is not active (current status: "${stepInstance.status}")`);
+        throw new BadRequestException(
+          `Step is not active (current status: "${stepInstance.status}")`,
+        );
       }
 
       // Verify the actor is an assignee
@@ -233,7 +255,11 @@ export class WorkflowEngineService {
         where: { stepInstanceId: stepInstance.id },
       });
 
-      const stepResolved = this.isStepResolved(stepInstance, allAssignees, dto.decision);
+      const stepResolved = this.isStepResolved(
+        stepInstance,
+        allAssignees,
+        dto.decision,
+      );
 
       if (!stepResolved) {
         await this.logAction(manager, {
@@ -276,7 +302,8 @@ export class WorkflowEngineService {
       });
 
       // Execute state machine transition if step has a transitionCode
-      const transitionCode = (stepInstance.definitionSnapshot as any)?.transitionCode;
+      const transitionCode = (stepInstance.definitionSnapshot as any)
+        ?.transitionCode;
       if (transitionCode && instance.stateMachineInstanceId) {
         try {
           await this.stateMachineService.executeTransitionTransactional(
@@ -341,7 +368,9 @@ export class WorkflowEngineService {
         instance.status === WorkflowInstanceStatus.COMPLETED ||
         instance.status === WorkflowInstanceStatus.CANCELLED
       ) {
-        throw new BadRequestException(`Cannot cancel a workflow with status "${instance.status}"`);
+        throw new BadRequestException(
+          `Cannot cancel a workflow with status "${instance.status}"`,
+        );
       }
 
       const prevStatus = instance.status;
@@ -386,12 +415,15 @@ export class WorkflowEngineService {
 
   // ─── Query Methods ───
 
-  async findInstancesByCompany(companyId: string, filters?: {
-    status?: WorkflowInstanceStatus;
-    resourceType?: string;
-    resourceId?: string;
-    initiatorId?: string;
-  }): Promise<WorkflowInstance[]> {
+  async findInstancesByCompany(
+    companyId: string,
+    filters?: {
+      status?: WorkflowInstanceStatus;
+      resourceType?: string;
+      resourceId?: string;
+      initiatorId?: string;
+    },
+  ): Promise<WorkflowInstance[]> {
     const where: any = { companyId };
     if (filters?.status) where.status = filters.status;
     if (filters?.resourceType) where.resourceType = filters.resourceType;
@@ -405,7 +437,10 @@ export class WorkflowEngineService {
     });
   }
 
-  async findInstanceById(companyId: string, instanceId: string): Promise<WorkflowInstance> {
+  async findInstanceById(
+    companyId: string,
+    instanceId: string,
+  ): Promise<WorkflowInstance> {
     const instance = await this.instanceRepo.findOne({
       where: { id: instanceId, companyId },
       relations: ['stepInstances', 'stepInstances.assignees', 'actionLogs'],
@@ -414,7 +449,10 @@ export class WorkflowEngineService {
     return instance;
   }
 
-  async findMyPendingTasks(companyId: string, userId: string): Promise<WorkflowStepInstance[]> {
+  async findMyPendingTasks(
+    companyId: string,
+    userId: string,
+  ): Promise<WorkflowStepInstance[]> {
     return this.stepInstanceRepo
       .createQueryBuilder('step')
       .innerJoin('step.instance', 'instance')
@@ -422,7 +460,9 @@ export class WorkflowEngineService {
       .where('instance.companyId = :companyId', { companyId })
       .andWhere('assignee.userId = :userId', { userId })
       .andWhere('assignee.hasActed = false')
-      .andWhere('step.status = :status', { status: WorkflowStepInstanceStatus.ACTIVE })
+      .andWhere('step.status = :status', {
+        status: WorkflowStepInstanceStatus.ACTIVE,
+      })
       .leftJoinAndSelect('step.assignees', 'allAssignees')
       .leftJoinAndSelect('step.instance', 'inst')
       .orderBy('step.createdAt', 'ASC')
@@ -476,7 +516,9 @@ export class WorkflowEngineService {
     }
 
     // Find the step definition for this step instance
-    const stepDef = stepDefinitions.find((d) => d.id === nextStep.stepDefinitionId);
+    const stepDef = stepDefinitions.find(
+      (d) => d.id === nextStep.stepDefinitionId,
+    );
 
     // Check entry condition
     if (stepDef?.entryCondition) {
@@ -501,8 +543,16 @@ export class WorkflowEngineService {
 
         // Recurse to find next step
         return this.activateNextStep(
-          manager, instance, stepInstances, stepDefinitions,
-          context, companyId, initiatorId, subjectId, resourceType, resourceId,
+          manager,
+          instance,
+          stepInstances,
+          stepDefinitions,
+          context,
+          companyId,
+          initiatorId,
+          subjectId,
+          resourceType,
+          resourceId,
         );
       }
     }
@@ -528,8 +578,16 @@ export class WorkflowEngineService {
         });
 
         return this.activateNextStep(
-          manager, instance, stepInstances, stepDefinitions,
-          context, companyId, initiatorId, subjectId, resourceType, resourceId,
+          manager,
+          instance,
+          stepInstances,
+          stepDefinitions,
+          context,
+          companyId,
+          initiatorId,
+          subjectId,
+          resourceType,
+          resourceId,
         );
       }
     }
@@ -623,7 +681,11 @@ export class WorkflowEngineService {
     if (!version) return;
 
     const transitions = version.transitions
-      .filter((t) => t.fromStepId === completedStep.stepDefinitionId && t.action === action)
+      .filter(
+        (t) =>
+          t.fromStepId === completedStep.stepDefinitionId &&
+          t.action === action,
+      )
       .sort((a, b) => a.priority - b.priority);
 
     // Find matching transition (first whose condition is met, or default)
@@ -632,7 +694,10 @@ export class WorkflowEngineService {
 
     for (const trans of transitions) {
       if (trans.condition) {
-        const met = this.conditionEvaluator.evaluate(trans.condition as ConditionGroup, context);
+        const met = this.conditionEvaluator.evaluate(
+          trans.condition as ConditionGroup,
+          context,
+        );
         if (met) {
           matchedTransition = trans;
           break;
@@ -692,7 +757,9 @@ export class WorkflowEngineService {
       nextStepInstance.comment = null;
       await manager.save(WorkflowStepInstance, nextStepInstance);
 
-      await manager.delete(WorkflowStepAssignee, { stepInstanceId: nextStepInstance.id });
+      await manager.delete(WorkflowStepAssignee, {
+        stepInstanceId: nextStepInstance.id,
+      });
 
       instance.status = WorkflowInstanceStatus.RETURNED;
       await manager.save(WorkflowInstance, instance);
@@ -712,7 +779,11 @@ export class WorkflowEngineService {
     await this.activateNextStep(
       manager,
       instance,
-      allStepInstances.filter((s) => s.id === nextStepInstance.id || s.status === WorkflowStepInstanceStatus.PENDING),
+      allStepInstances.filter(
+        (s) =>
+          s.id === nextStepInstance.id ||
+          s.status === WorkflowStepInstanceStatus.PENDING,
+      ),
       stepDefs,
       instance.contextSnapshot || {},
       instance.companyId,
@@ -751,37 +822,67 @@ export class WorkflowEngineService {
   } {
     switch (decision) {
       case 'approve':
-        return { actionType: WorkflowActionType.APPROVED, stepStatus: WorkflowStepInstanceStatus.APPROVED };
+        return {
+          actionType: WorkflowActionType.APPROVED,
+          stepStatus: WorkflowStepInstanceStatus.APPROVED,
+        };
       case 'reject':
-        return { actionType: WorkflowActionType.REJECTED, stepStatus: WorkflowStepInstanceStatus.REJECTED };
+        return {
+          actionType: WorkflowActionType.REJECTED,
+          stepStatus: WorkflowStepInstanceStatus.REJECTED,
+        };
       case 'return':
-        return { actionType: WorkflowActionType.RETURNED, stepStatus: WorkflowStepInstanceStatus.RETURNED };
+        return {
+          actionType: WorkflowActionType.RETURNED,
+          stepStatus: WorkflowStepInstanceStatus.RETURNED,
+        };
       case 'complete':
-        return { actionType: WorkflowActionType.COMPLETED, stepStatus: WorkflowStepInstanceStatus.COMPLETED };
+        return {
+          actionType: WorkflowActionType.COMPLETED,
+          stepStatus: WorkflowStepInstanceStatus.COMPLETED,
+        };
       case 'skip':
-        return { actionType: WorkflowActionType.SKIPPED, stepStatus: WorkflowStepInstanceStatus.SKIPPED };
+        return {
+          actionType: WorkflowActionType.SKIPPED,
+          stepStatus: WorkflowStepInstanceStatus.SKIPPED,
+        };
       default:
-        return { actionType: WorkflowActionType.COMPLETED, stepStatus: WorkflowStepInstanceStatus.COMPLETED };
+        return {
+          actionType: WorkflowActionType.COMPLETED,
+          stepStatus: WorkflowStepInstanceStatus.COMPLETED,
+        };
     }
   }
 
   private mapDecisionToTransitionAction(decision: string): TransitionAction {
     switch (decision) {
-      case 'approve': return TransitionAction.APPROVE;
-      case 'reject': return TransitionAction.REJECT;
-      case 'return': return TransitionAction.RETURN;
-      case 'complete': return TransitionAction.COMPLETE;
-      case 'skip': return TransitionAction.SKIP;
-      default: return TransitionAction.COMPLETE;
+      case 'approve':
+        return TransitionAction.APPROVE;
+      case 'reject':
+        return TransitionAction.REJECT;
+      case 'return':
+        return TransitionAction.RETURN;
+      case 'complete':
+        return TransitionAction.COMPLETE;
+      case 'skip':
+        return TransitionAction.SKIP;
+      default:
+        return TransitionAction.COMPLETE;
     }
   }
 
-  private mapDecisionToWorkflowStatus(decision: string): WorkflowInstanceStatus {
+  private mapDecisionToWorkflowStatus(
+    decision: string,
+  ): WorkflowInstanceStatus {
     switch (decision) {
-      case 'approve': return WorkflowInstanceStatus.APPROVED;
-      case 'reject': return WorkflowInstanceStatus.REJECTED;
-      case 'return': return WorkflowInstanceStatus.RETURNED;
-      default: return WorkflowInstanceStatus.COMPLETED;
+      case 'approve':
+        return WorkflowInstanceStatus.APPROVED;
+      case 'reject':
+        return WorkflowInstanceStatus.REJECTED;
+      case 'return':
+        return WorkflowInstanceStatus.RETURNED;
+      default:
+        return WorkflowInstanceStatus.COMPLETED;
     }
   }
 

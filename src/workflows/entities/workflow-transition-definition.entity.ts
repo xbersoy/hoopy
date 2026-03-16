@@ -19,7 +19,9 @@ export class WorkflowTransitionDefinition {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => WorkflowDefinitionVersion, (v) => v.transitions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkflowDefinitionVersion, (v) => v.transitions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'version_id' })
   version: WorkflowDefinitionVersion;
 
@@ -33,34 +35,48 @@ export class WorkflowTransitionDefinition {
   @Column({ name: 'from_step_id' })
   fromStepId: string;
 
-  @ManyToOne(() => WorkflowStepDefinition, { onDelete: 'CASCADE', nullable: true })
+  @ManyToOne(() => WorkflowStepDefinition, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
   @JoinColumn({ name: 'to_step_id' })
   toStep: WorkflowStepDefinition;
 
   @Column({ name: 'to_step_id', nullable: true })
   toStepId: string;
 
-  @ApiProperty({ description: 'Triggering action for this transition', enum: TransitionAction })
+  @ApiProperty({
+    description: 'Triggering action for this transition',
+    enum: TransitionAction,
+  })
   @Column({ type: 'varchar' })
   action: TransitionAction;
 
   @ApiProperty({
-    description: 'Condition DSL: transition is taken only if condition evaluates true',
+    description:
+      'Condition DSL: transition is taken only if condition evaluates true',
     required: false,
   })
   @Column({ type: 'jsonb', nullable: true })
   condition: Record<string, any>;
 
-  @ApiProperty({ description: 'Priority/order for evaluating transitions (lower = first)', default: 0 })
+  @ApiProperty({
+    description: 'Priority/order for evaluating transitions (lower = first)',
+    default: 0,
+  })
   @Column({ type: 'int', default: 0 })
   priority: number;
 
-  @ApiProperty({ description: 'Whether this is the default/fallback transition', default: false })
+  @ApiProperty({
+    description: 'Whether this is the default/fallback transition',
+    default: false,
+  })
   @Column({ default: false })
   isDefault: boolean;
 
   @ApiProperty({
-    description: 'Optional label for this transition (e.g., "Approve & Forward", "Reject")',
+    description:
+      'Optional label for this transition (e.g., "Approve & Forward", "Reject")',
     required: false,
   })
   @Column({ nullable: true })

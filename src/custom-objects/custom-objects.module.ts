@@ -63,4 +63,4 @@ import { PicklistsModule } from '../picklists/picklists.module';
   ],
   exports: [CustomObjectDefinitionsService, CustomObjectRecordsService],
 })
-export class CustomObjectsModule { }
+export class CustomObjectsModule {}

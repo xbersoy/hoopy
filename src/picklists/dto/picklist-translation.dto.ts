@@ -2,7 +2,10 @@ import { IsString, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class PicklistTranslationDto {
-  @ApiProperty({ description: 'Localized display name', example: 'Departments' })
+  @ApiProperty({
+    description: 'Localized display name',
+    example: 'Departments',
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)

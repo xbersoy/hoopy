@@ -27,7 +27,9 @@ export class StateMachineController {
   // ─── Definitions ───
 
   @Get('definitions')
-  @ApiOperation({ summary: 'List all state machine definitions for the company' })
+  @ApiOperation({
+    summary: 'List all state machine definitions for the company',
+  })
   listDefinitions(@Req() req) {
     return this.smService.findDefinitionsByCompany(req.user.companyId);
   }

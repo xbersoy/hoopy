@@ -1,4 +1,9 @@
-export { IAssigneeResolver, AssigneeResolutionContext, ResolvedAssignee, ASSIGNEE_RESOLVERS } from './assignee-resolver.interface';
+export {
+  IAssigneeResolver,
+  AssigneeResolutionContext,
+  ResolvedAssignee,
+  ASSIGNEE_RESOLVERS,
+} from './assignee-resolver.interface';
 export {
   UserAssigneeResolver,
   InitiatorAssigneeResolver,

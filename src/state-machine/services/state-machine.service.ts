@@ -112,38 +112,47 @@ export class StateMachineService {
 
       // Save definition translations
       for (const t of input.translations) {
-        await manager.save(StateMachineDefinitionI18n, manager.create(StateMachineDefinitionI18n, {
-          companyId,
-          definitionId: savedDef.id,
-          locale: t.locale,
-          name: t.name,
-          description: t.description,
-        }));
+        await manager.save(
+          StateMachineDefinitionI18n,
+          manager.create(StateMachineDefinitionI18n, {
+            companyId,
+            definitionId: savedDef.id,
+            locale: t.locale,
+            name: t.name,
+            description: t.description,
+          }),
+        );
       }
 
       // Create states
       const stateCodeToId = new Map<string, string>();
       for (const s of input.states) {
-        const state = await manager.save(StateMachineState, manager.create(StateMachineState, {
-          definitionId: savedDef.id,
-          code: s.code,
-          isInitial: s.isInitial ?? false,
-          isFinal: s.isFinal ?? false,
-          sortOrder: s.sortOrder ?? 0,
-          color: s.color,
-          icon: s.icon,
-          metadata: s.metadata,
-        }));
+        const state = await manager.save(
+          StateMachineState,
+          manager.create(StateMachineState, {
+            definitionId: savedDef.id,
+            code: s.code,
+            isInitial: s.isInitial ?? false,
+            isFinal: s.isFinal ?? false,
+            sortOrder: s.sortOrder ?? 0,
+            color: s.color,
+            icon: s.icon,
+            metadata: s.metadata,
+          }),
+        );
         stateCodeToId.set(s.code, state.id);
 
         for (const t of s.translations) {
-          await manager.save(StateMachineStateI18n, manager.create(StateMachineStateI18n, {
-            companyId,
-            stateId: state.id,
-            locale: t.locale,
-            name: t.name,
-            description: t.description,
-          }));
+          await manager.save(
+            StateMachineStateI18n,
+            manager.create(StateMachineStateI18n, {
+              companyId,
+              stateId: state.id,
+              locale: t.locale,
+              name: t.name,
+              description: t.description,
+            }),
+          );
         }
       }
 
@@ -151,31 +160,47 @@ export class StateMachineService {
       for (const tr of input.transitions) {
         const fromStateId = stateCodeToId.get(tr.fromStateCode);
         const toStateId = stateCodeToId.get(tr.toStateCode);
-        if (!fromStateId) throw new BadRequestException(`Unknown from state code: "${tr.fromStateCode}"`);
-        if (!toStateId) throw new BadRequestException(`Unknown to state code: "${tr.toStateCode}"`);
+        if (!fromStateId)
+          throw new BadRequestException(
+            `Unknown from state code: "${tr.fromStateCode}"`,
+          );
+        if (!toStateId)
+          throw new BadRequestException(
+            `Unknown to state code: "${tr.toStateCode}"`,
+          );
 
-        const transition = await manager.save(StateMachineTransition, manager.create(StateMachineTransition, {
-          definitionId: savedDef.id,
-          code: tr.code,
-          fromStateId,
-          toStateId,
-          guardCondition: tr.guardCondition,
-          priority: tr.priority ?? 0,
-          metadata: tr.metadata,
-        }));
+        const transition = await manager.save(
+          StateMachineTransition,
+          manager.create(StateMachineTransition, {
+            definitionId: savedDef.id,
+            code: tr.code,
+            fromStateId,
+            toStateId,
+            guardCondition: tr.guardCondition,
+            priority: tr.priority ?? 0,
+            metadata: tr.metadata,
+          }),
+        );
 
         for (const t of tr.translations) {
-          await manager.save(StateMachineTransitionI18n, manager.create(StateMachineTransitionI18n, {
-            companyId,
-            transitionId: transition.id,
-            locale: t.locale,
-            name: t.name,
-            description: t.description,
-          }));
+          await manager.save(
+            StateMachineTransitionI18n,
+            manager.create(StateMachineTransitionI18n, {
+              companyId,
+              transitionId: transition.id,
+              locale: t.locale,
+              name: t.name,
+              description: t.description,
+            }),
+          );
         }
       }
 
-      const result = await this.findDefinitionById(companyId, savedDef.id, manager);
+      const result = await this.findDefinitionById(
+        companyId,
+        savedDef.id,
+        manager,
+      );
       this.eventPublisher.emit({
         eventType: 'state_machine.definition.created',
         actor: actor ?? { type: 'system', service: 'state-machine' },
@@ -186,7 +211,9 @@ export class StateMachineService {
     });
   }
 
-  async findDefinitionsByCompany(companyId: string): Promise<StateMachineDefinition[]> {
+  async findDefinitionsByCompany(
+    companyId: string,
+  ): Promise<StateMachineDefinition[]> {
     return this.definitionRepo.find({
       where: { companyId },
       relations: ['translations'],
@@ -194,40 +221,62 @@ export class StateMachineService {
     });
   }
 
-  async findDefinitionById(companyId: string, id: string, entityManager?: EntityManager): Promise<StateMachineDefinition> {
-    const repo = entityManager ? entityManager.getRepository(StateMachineDefinition) : this.definitionRepo;
+  async findDefinitionById(
+    companyId: string,
+    id: string,
+    entityManager?: EntityManager,
+  ): Promise<StateMachineDefinition> {
+    const repo = entityManager
+      ? entityManager.getRepository(StateMachineDefinition)
+      : this.definitionRepo;
     const def = await repo.findOne({
       where: { id, companyId },
       relations: [
         'translations',
-        'states', 'states.translations',
-        'transitions', 'transitions.translations',
+        'states',
+        'states.translations',
+        'transitions',
+        'transitions.translations',
       ],
     });
     if (!def) throw new NotFoundException('State machine definition not found');
     return def;
   }
 
-  async findDefinitionByCode(companyId: string, code: string): Promise<StateMachineDefinition> {
+  async findDefinitionByCode(
+    companyId: string,
+    code: string,
+  ): Promise<StateMachineDefinition> {
     const def = await this.definitionRepo.findOne({
       where: { code, companyId },
       relations: [
         'translations',
-        'states', 'states.translations',
-        'transitions', 'transitions.translations',
+        'states',
+        'states.translations',
+        'transitions',
+        'transitions.translations',
       ],
     });
-    if (!def) throw new NotFoundException(`State machine definition "${code}" not found`);
+    if (!def)
+      throw new NotFoundException(
+        `State machine definition "${code}" not found`,
+      );
     return def;
   }
 
-  async publishDefinition(companyId: string, id: string, actor?: ActorContext): Promise<StateMachineDefinition> {
+  async publishDefinition(
+    companyId: string,
+    id: string,
+    actor?: ActorContext,
+  ): Promise<StateMachineDefinition> {
     const def = await this.findDefinitionById(companyId, id);
     if (def.status !== StateMachineDefinitionStatus.DRAFT) {
       throw new BadRequestException('Only draft definitions can be published');
     }
     if (!def.states?.length) {
-      throw new BadRequestException('Cannot publish a definition with no states');
+      throw new BadRequestException(
+        'Cannot publish a definition with no states',
+      );
     }
     def.status = StateMachineDefinitionStatus.PUBLISHED;
     const result = await this.definitionRepo.save(def);
@@ -239,7 +288,11 @@ export class StateMachineService {
     return result;
   }
 
-  async archiveDefinition(companyId: string, id: string, actor?: ActorContext): Promise<StateMachineDefinition> {
+  async archiveDefinition(
+    companyId: string,
+    id: string,
+    actor?: ActorContext,
+  ): Promise<StateMachineDefinition> {
     const def = await this.findDefinitionById(companyId, id);
     def.status = StateMachineDefinitionStatus.ARCHIVED;
     const result = await this.definitionRepo.save(def);
@@ -269,13 +322,22 @@ export class StateMachineService {
     metadata?: Record<string, any>,
   ): Promise<StateMachineInstance> {
     const definition = await this.findDefinitionById(companyId, definitionId);
-    if (definition.status !== StateMachineDefinitionStatus.PUBLISHED && definition.status !== StateMachineDefinitionStatus.DRAFT) {
-      throw new BadRequestException('State machine definition must be published or draft to create instances');
+    if (
+      definition.status !== StateMachineDefinitionStatus.PUBLISHED &&
+      definition.status !== StateMachineDefinitionStatus.DRAFT
+    ) {
+      throw new BadRequestException(
+        'State machine definition must be published or draft to create instances',
+      );
     }
 
-    const initialState = definition.states.find((s) => s.code === definition.initialStateCode);
+    const initialState = definition.states.find(
+      (s) => s.code === definition.initialStateCode,
+    );
     if (!initialState) {
-      throw new BadRequestException(`Initial state "${definition.initialStateCode}" not found in definition`);
+      throw new BadRequestException(
+        `Initial state "${definition.initialStateCode}" not found in definition`,
+      );
     }
 
     const instance = this.instanceRepo.create({
@@ -310,11 +372,16 @@ export class StateMachineService {
       where: { id: definitionId, companyId },
       relations: ['states'],
     });
-    if (!definition) throw new NotFoundException('State machine definition not found');
+    if (!definition)
+      throw new NotFoundException('State machine definition not found');
 
-    const initialState = definition.states.find((s) => s.code === definition.initialStateCode);
+    const initialState = definition.states.find(
+      (s) => s.code === definition.initialStateCode,
+    );
     if (!initialState) {
-      throw new BadRequestException(`Initial state "${definition.initialStateCode}" not found`);
+      throw new BadRequestException(
+        `Initial state "${definition.initialStateCode}" not found`,
+      );
     }
 
     const instance = manager.create(StateMachineInstance, {
@@ -332,12 +399,16 @@ export class StateMachineService {
     return manager.save(StateMachineInstance, instance);
   }
 
-  async findInstanceById(companyId: string, id: string): Promise<StateMachineInstance> {
+  async findInstanceById(
+    companyId: string,
+    id: string,
+  ): Promise<StateMachineInstance> {
     const instance = await this.instanceRepo.findOne({
       where: { id, companyId },
       relations: ['definition', 'currentState', 'transitionHistory'],
     });
-    if (!instance) throw new NotFoundException('State machine instance not found');
+    if (!instance)
+      throw new NotFoundException('State machine instance not found');
     return instance;
   }
 
@@ -370,14 +441,20 @@ export class StateMachineService {
     if (instance.isCompleted) return [];
 
     const transitions = await this.transitionRepo.find({
-      where: { definitionId: instance.definitionId, fromStateId: instance.currentStateId },
+      where: {
+        definitionId: instance.definitionId,
+        fromStateId: instance.currentStateId,
+      },
       relations: ['translations', 'toState'],
       order: { priority: 'ASC' },
     });
 
     const context = { ...instance.context, ...additionalContext };
     return transitions.filter((t) =>
-      this.conditionEvaluator.evaluate(t.guardCondition as ConditionGroup, context),
+      this.conditionEvaluator.evaluate(
+        t.guardCondition as ConditionGroup,
+        context,
+      ),
     );
   }
 
@@ -392,7 +469,12 @@ export class StateMachineService {
     input: TransitionInstanceInput,
   ): Promise<StateMachineInstance> {
     return this.dataSource.transaction(async (manager) => {
-      return this.executeTransitionTransactional(manager, companyId, instanceId, input);
+      return this.executeTransitionTransactional(
+        manager,
+        companyId,
+        instanceId,
+        input,
+      );
     });
   }
 
@@ -410,8 +492,10 @@ export class StateMachineService {
       where: { id: instanceId, companyId },
       relations: ['currentState'],
     });
-    if (!instance) throw new NotFoundException('State machine instance not found');
-    if (instance.isCompleted) throw new BadRequestException('Instance has already completed');
+    if (!instance)
+      throw new NotFoundException('State machine instance not found');
+    if (instance.isCompleted)
+      throw new BadRequestException('Instance has already completed');
 
     // Find the transition
     const transition = await manager.findOne(StateMachineTransition, {

@@ -19,9 +19,15 @@ export interface CustomObjectDefinitionRepository {
     page: number;
     limit: number;
   }): Promise<{ data: CustomObjectDefinition[]; total: number }>;
-  findByBaseObjectType(companyId: string, baseObjectType: string): Promise<CustomObjectDefinition[]>;
+  findByBaseObjectType(
+    companyId: string,
+    baseObjectType: string,
+  ): Promise<CustomObjectDefinition[]>;
   findAllWithFields(): Promise<CustomObjectDefinition[]>;
-  findOneWithFields(id: string, companyId?: string): Promise<CustomObjectDefinition | null>;
+  findOneWithFields(
+    id: string,
+    companyId?: string,
+  ): Promise<CustomObjectDefinition | null>;
   remove(definition: CustomObjectDefinition): Promise<CustomObjectDefinition>;
 }
 
@@ -36,7 +42,11 @@ export interface CustomObjectDefinitionI18nRepository {
     companyId: string,
     definitionId: string,
     locale: string,
-    data: { name: string; description?: string | null; pluralName?: string | null },
+    data: {
+      name: string;
+      description?: string | null;
+      pluralName?: string | null;
+    },
   ): Promise<CustomObjectDefinitionI18n>;
 }
 
@@ -66,8 +76,7 @@ export interface CustomObjectRecordRepository {
 // --- Implementations ---
 
 @Injectable()
-export class TypeOrmCustomObjectDefinitionRepository
-  implements CustomObjectDefinitionRepository {
+export class TypeOrmCustomObjectDefinitionRepository implements CustomObjectDefinitionRepository {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
@@ -81,9 +90,7 @@ export class TypeOrmCustomObjectDefinitionRepository
     return this.repo.create(data);
   }
 
-  save(
-    definition: CustomObjectDefinition,
-  ): Promise<CustomObjectDefinition> {
+  save(definition: CustomObjectDefinition): Promise<CustomObjectDefinition> {
     return this.repo.save(definition);
   }
 
@@ -103,9 +110,9 @@ export class TypeOrmCustomObjectDefinitionRepository
 
     const where: FindOptionsWhere<CustomObjectDefinition>[] = search
       ? [
-        { ...whereBase, label: ILike(`%${search}%`) },
-        { ...whereBase, code: ILike(`%${search}%`) },
-      ]
+          { ...whereBase, label: ILike(`%${search}%`) },
+          { ...whereBase, code: ILike(`%${search}%`) },
+        ]
       : [whereBase];
 
     const [data, total] = await this.repo.findAndCount({
@@ -119,7 +126,10 @@ export class TypeOrmCustomObjectDefinitionRepository
     return { data, total };
   }
 
-  async findByBaseObjectType(companyId: string, baseObjectType: string): Promise<CustomObjectDefinition[]> {
+  async findByBaseObjectType(
+    companyId: string,
+    baseObjectType: string,
+  ): Promise<CustomObjectDefinition[]> {
     return this.repo.find({
       where: { companyId, baseObjectType, isActive: true },
       relations: ['translations', 'fields', 'fields.translations'],
@@ -133,7 +143,10 @@ export class TypeOrmCustomObjectDefinitionRepository
     });
   }
 
-  findOneWithFields(id: string, companyId?: string): Promise<CustomObjectDefinition | null> {
+  findOneWithFields(
+    id: string,
+    companyId?: string,
+  ): Promise<CustomObjectDefinition | null> {
     const where: FindOptionsWhere<CustomObjectDefinition> = { id };
     if (companyId) {
       where.companyId = companyId;
@@ -144,16 +157,13 @@ export class TypeOrmCustomObjectDefinitionRepository
     });
   }
 
-  remove(
-    definition: CustomObjectDefinition,
-  ): Promise<CustomObjectDefinition> {
+  remove(definition: CustomObjectDefinition): Promise<CustomObjectDefinition> {
     return this.repo.remove(definition);
   }
 }
 
 @Injectable()
-export class TypeOrmCustomObjectFieldRepository
-  implements CustomObjectFieldRepository {
+export class TypeOrmCustomObjectFieldRepository implements CustomObjectFieldRepository {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
@@ -184,15 +194,33 @@ export class TypeOrmCustomObjectDefinitionI18nRepository implements CustomObject
     this.repo = this.dataSource.getRepository(CustomObjectDefinitionI18n);
   }
 
-  async upsertForDefinition(companyId: string, definitionId: string, locale: string, data: { name: string; description?: string | null; pluralName?: string | null }): Promise<CustomObjectDefinitionI18n> {
-    let existing = await this.repo.findOne({ where: { definitionId, locale } });
+  async upsertForDefinition(
+    companyId: string,
+    definitionId: string,
+    locale: string,
+    data: {
+      name: string;
+      description?: string | null;
+      pluralName?: string | null;
+    },
+  ): Promise<CustomObjectDefinitionI18n> {
+    const existing = await this.repo.findOne({
+      where: { definitionId, locale },
+    });
     if (existing) {
       existing.name = data.name;
       existing.description = data.description ?? existing.description;
       existing.pluralName = data.pluralName ?? existing.pluralName;
       return this.repo.save(existing);
     }
-    const entity = this.repo.create({ companyId, definitionId, locale, name: data.name, description: data.description ?? null, pluralName: data.pluralName ?? null });
+    const entity = this.repo.create({
+      companyId,
+      definitionId,
+      locale,
+      name: data.name,
+      description: data.description ?? null,
+      pluralName: data.pluralName ?? null,
+    });
     return this.repo.save(entity);
   }
 }
@@ -205,21 +233,31 @@ export class TypeOrmCustomObjectFieldI18nRepository implements CustomObjectField
     this.repo = this.dataSource.getRepository(CustomObjectFieldI18n);
   }
 
-  async upsertForField(companyId: string, fieldId: string, locale: string, data: { label: string; description?: string | null }): Promise<CustomObjectFieldI18n> {
-    let existing = await this.repo.findOne({ where: { fieldId, locale } });
+  async upsertForField(
+    companyId: string,
+    fieldId: string,
+    locale: string,
+    data: { label: string; description?: string | null },
+  ): Promise<CustomObjectFieldI18n> {
+    const existing = await this.repo.findOne({ where: { fieldId, locale } });
     if (existing) {
       existing.label = data.label;
       existing.description = data.description ?? existing.description;
       return this.repo.save(existing);
     }
-    const entity = this.repo.create({ companyId, fieldId, locale, label: data.label, description: data.description ?? null });
+    const entity = this.repo.create({
+      companyId,
+      fieldId,
+      locale,
+      label: data.label,
+      description: data.description ?? null,
+    });
     return this.repo.save(entity);
   }
 }
 
 @Injectable()
-export class TypeOrmCustomObjectRecordRepository
-  implements CustomObjectRecordRepository {
+export class TypeOrmCustomObjectRecordRepository implements CustomObjectRecordRepository {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
@@ -246,7 +284,10 @@ export class TypeOrmCustomObjectRecordRepository
   }): Promise<{ data: CustomObjectRecord[]; total: number }> {
     const { definitionId, companyId, baseObjectId, page, limit } = options;
 
-    const where: FindOptionsWhere<CustomObjectRecord> = { definitionId, companyId };
+    const where: FindOptionsWhere<CustomObjectRecord> = {
+      definitionId,
+      companyId,
+    };
     if (baseObjectId) {
       where.baseObjectId = baseObjectId;
     }

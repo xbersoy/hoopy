@@ -23,19 +23,30 @@ export class StateMachineState {
   @Column({ name: 'definition_id', type: 'uuid' })
   definitionId: string;
 
-  @ManyToOne(() => StateMachineDefinition, (d) => d.states, { onDelete: 'CASCADE' })
+  @ManyToOne(() => StateMachineDefinition, (d) => d.states, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'definition_id' })
   definition: StateMachineDefinition;
 
-  @ApiProperty({ description: 'Stable state code', example: 'pending_approval' })
+  @ApiProperty({
+    description: 'Stable state code',
+    example: 'pending_approval',
+  })
   @Column({ type: 'varchar', length: 255 })
   code: string;
 
-  @ApiProperty({ description: 'Whether this is a terminal/final state', default: false })
+  @ApiProperty({
+    description: 'Whether this is a terminal/final state',
+    default: false,
+  })
   @Column({ default: false })
   isFinal: boolean;
 
-  @ApiProperty({ description: 'Whether this is the initial state', default: false })
+  @ApiProperty({
+    description: 'Whether this is the initial state',
+    default: false,
+  })
   @Column({ default: false })
   isInitial: boolean;
 
@@ -55,7 +66,10 @@ export class StateMachineState {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  @OneToMany(() => StateMachineStateI18n, (i) => i.state, { cascade: true, eager: false })
+  @OneToMany(() => StateMachineStateI18n, (i) => i.state, {
+    cascade: true,
+    eager: false,
+  })
   translations: StateMachineStateI18n[];
 
   @CreateDateColumn({ name: 'created_at' })

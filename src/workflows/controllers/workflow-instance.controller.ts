@@ -8,7 +8,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { WorkflowEngineService } from '../services/workflow-engine.service';
 import {
@@ -56,7 +61,10 @@ export class WorkflowInstanceController {
   @Get('my-tasks')
   @ApiOperation({ summary: 'Get pending tasks assigned to the current user' })
   getMyTasks(@Req() req) {
-    return this.engineService.findMyPendingTasks(req.user.companyId, req.user.id);
+    return this.engineService.findMyPendingTasks(
+      req.user.companyId,
+      req.user.id,
+    );
   }
 
   @Get('by-resource/:resourceType/:resourceId')
@@ -80,7 +88,9 @@ export class WorkflowInstanceController {
   }
 
   @Post(':id/steps/:stepId/action')
-  @ApiOperation({ summary: 'Take action on a workflow step (approve, reject, return, etc.)' })
+  @ApiOperation({
+    summary: 'Take action on a workflow step (approve, reject, return, etc.)',
+  })
   takeAction(
     @Req() req,
     @Param('id') id: string,
@@ -98,11 +108,7 @@ export class WorkflowInstanceController {
 
   @Post(':id/cancel')
   @ApiOperation({ summary: 'Cancel a workflow instance' })
-  cancel(
-    @Req() req,
-    @Param('id') id: string,
-    @Body() dto: CancelWorkflowDto,
-  ) {
+  cancel(@Req() req, @Param('id') id: string, @Body() dto: CancelWorkflowDto) {
     return this.engineService.cancelWorkflow(
       req.user.companyId,
       req.user.id,

@@ -31,9 +31,7 @@ import { PaginationDto, PaginatedResponse } from '../../shared/dto';
 @Controller('custom-object-records')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class CustomObjectRecordsController {
-  constructor(
-    private readonly recordsService: CustomObjectRecordsService,
-  ) { }
+  constructor(private readonly recordsService: CustomObjectRecordsService) {}
 
   @Post()
   @RequirePermissions({
@@ -48,11 +46,7 @@ export class CustomObjectRecordsController {
     @Body() dto: CreateCustomObjectRecordDto,
     @Req() req,
   ): Promise<CustomObjectRecord> {
-    return this.recordsService.create(
-      dto,
-      req.user.companyId,
-      req.user.sub,
-    );
+    return this.recordsService.create(dto, req.user.companyId, req.user.sub);
   }
 
   @Get()
@@ -79,7 +73,13 @@ export class CustomObjectRecordsController {
     @Query() query: PaginationDto,
     @Req() req,
   ): Promise<PaginatedResponse<CustomObjectRecord>> {
-    return this.recordsService.findAll(definitionId, req.user.companyId, query, req.user.sub, baseObjectId);
+    return this.recordsService.findAll(
+      definitionId,
+      req.user.companyId,
+      query,
+      req.user.sub,
+      baseObjectId,
+    );
   }
 
   @Get(':id')
@@ -139,7 +139,12 @@ export class CustomObjectRecordsController {
     @Query('format') format: string = 'json',
     @Req() req,
   ) {
-    const result = await this.recordsService.findAll(definitionId, req.user.companyId, { page: 1, limit: 10000 }, req.user.sub);
+    const result = await this.recordsService.findAll(
+      definitionId,
+      req.user.companyId,
+      { page: 1, limit: 10000 },
+      req.user.sub,
+    );
     if (format === 'csv') {
       const { CsvHelper } = await import('../../shared/utils/csv.helper');
       const rows = result.data.map((r) => ({
@@ -167,7 +172,8 @@ export class CustomObjectRecordsController {
       const { CsvHelper } = await import('../../shared/utils/csv.helper');
       const rows = CsvHelper.fromCsv(body.content);
       records = rows.map((row) => {
-        const { baseObjectId, id, ...data } = row;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { baseObjectId, id: _id, ...data } = row;
         // Convert numeric strings back to numbers where possible
         const parsedData: Record<string, any> = {};
         for (const [key, val] of Object.entries(data)) {
@@ -191,7 +197,11 @@ export class CustomObjectRecordsController {
 
     const results: CustomObjectRecord[] = [];
     for (const rec of records) {
-      const created = await this.recordsService.create(rec, req.user.companyId, req.user.sub);
+      const created = await this.recordsService.create(
+        rec,
+        req.user.companyId,
+        req.user.sub,
+      );
       results.push(created);
     }
     return { imported: results.length, records: results };

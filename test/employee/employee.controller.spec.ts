@@ -43,7 +43,10 @@ describe('EmployeeController', () => {
       controllers: [EmployeeController],
       providers: [
         { provide: EmployeeService, useValue: employeeService },
-        { provide: PermissionsService, useValue: { userCan: jest.fn().mockResolvedValue(true) } },
+        {
+          provide: PermissionsService,
+          useValue: { userCan: jest.fn().mockResolvedValue(true) },
+        },
       ],
     }).compile();
 

@@ -7,7 +7,6 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
-  Index,
   Unique,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -34,20 +33,37 @@ export class StateMachineDefinition {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @ApiProperty({ description: 'Stable machine-readable code', example: 'leave_request_lifecycle' })
+  @ApiProperty({
+    description: 'Stable machine-readable code',
+    example: 'leave_request_lifecycle',
+  })
   @Column({ type: 'varchar', length: 255 })
   code: string;
 
-  @ApiProperty({ description: 'Target resource type this machine applies to', example: 'leave_request' })
+  @ApiProperty({
+    description: 'Target resource type this machine applies to',
+    example: 'leave_request',
+  })
   @Column({ type: 'varchar', length: 255 })
   resourceType: string;
 
   @ApiProperty({ description: 'Category hint', enum: StateMachineCategory })
-  @Column({ type: 'varchar', length: 50, default: StateMachineCategory.LIFECYCLE })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: StateMachineCategory.LIFECYCLE,
+  })
   category: StateMachineCategory;
 
-  @ApiProperty({ description: 'Publishing status', enum: StateMachineDefinitionStatus })
-  @Column({ type: 'varchar', length: 50, default: StateMachineDefinitionStatus.DRAFT })
+  @ApiProperty({
+    description: 'Publishing status',
+    enum: StateMachineDefinitionStatus,
+  })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: StateMachineDefinitionStatus.DRAFT,
+  })
   status: StateMachineDefinitionStatus;
 
   @ApiProperty({ description: 'Version number (increment on publish)' })
@@ -66,13 +82,18 @@ export class StateMachineDefinition {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  @OneToMany(() => StateMachineDefinitionI18n, (i) => i.definition, { cascade: true, eager: false })
+  @OneToMany(() => StateMachineDefinitionI18n, (i) => i.definition, {
+    cascade: true,
+    eager: false,
+  })
   translations: StateMachineDefinitionI18n[];
 
   @OneToMany(() => StateMachineState, (s) => s.definition, { cascade: true })
   states: StateMachineState[];
 
-  @OneToMany(() => StateMachineTransition, (t) => t.definition, { cascade: true })
+  @OneToMany(() => StateMachineTransition, (t) => t.definition, {
+    cascade: true,
+  })
   transitions: StateMachineTransition[];
 
   @CreateDateColumn({ name: 'created_at' })

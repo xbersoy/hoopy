@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsUUID, IsObject } from 'class-validator';
 
 export class StartWorkflowDto {
-  @ApiProperty({ description: 'Workflow definition code', example: 'leave_request_approval' })
+  @ApiProperty({
+    description: 'Workflow definition code',
+    example: 'leave_request_approval',
+  })
   @IsString()
   workflowCode: string;
 
@@ -14,19 +17,28 @@ export class StartWorkflowDto {
   @IsUUID()
   resourceId: string;
 
-  @ApiProperty({ description: 'Subject employee/user ID (if applicable)', required: false })
+  @ApiProperty({
+    description: 'Subject employee/user ID (if applicable)',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   subjectId?: string;
 
-  @ApiProperty({ description: 'Context data for condition evaluation and assignee resolution', required: false })
+  @ApiProperty({
+    description:
+      'Context data for condition evaluation and assignee resolution',
+    required: false,
+  })
   @IsObject()
   @IsOptional()
   context?: Record<string, any>;
 }
 
 export class WorkflowStepActionDto {
-  @ApiProperty({ description: 'Decision: approve, reject, return, complete, skip' })
+  @ApiProperty({
+    description: 'Decision: approve, reject, return, complete, skip',
+  })
   @IsString()
   decision: string;
 
@@ -35,7 +47,10 @@ export class WorkflowStepActionDto {
   @IsOptional()
   comment?: string;
 
-  @ApiProperty({ description: 'Additional metadata/form data', required: false })
+  @ApiProperty({
+    description: 'Additional metadata/form data',
+    required: false,
+  })
   @IsObject()
   @IsOptional()
   metadata?: Record<string, any>;

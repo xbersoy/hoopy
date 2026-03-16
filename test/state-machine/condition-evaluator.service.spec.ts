@@ -23,7 +23,11 @@ describe('ConditionEvaluatorService', () => {
   });
 
   it('returns true for empty rules and groups', () => {
-    const condition: ConditionGroup = { logic: ConditionLogic.AND, rules: [], groups: [] };
+    const condition: ConditionGroup = {
+      logic: ConditionLogic.AND,
+      rules: [],
+      groups: [],
+    };
     expect(service.evaluate(condition, {})).toBe(true);
   });
 
@@ -37,7 +41,13 @@ describe('ConditionEvaluatorService', () => {
   it('EQUALS returns true on match', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'status', operator: ConditionOperator.EQUALS, value: 'active' }],
+      rules: [
+        {
+          field: 'status',
+          operator: ConditionOperator.EQUALS,
+          value: 'active',
+        },
+      ],
     };
     expect(service.evaluate(condition, { status: 'active' })).toBe(true);
   });
@@ -45,7 +55,13 @@ describe('ConditionEvaluatorService', () => {
   it('EQUALS returns false on mismatch', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'status', operator: ConditionOperator.EQUALS, value: 'active' }],
+      rules: [
+        {
+          field: 'status',
+          operator: ConditionOperator.EQUALS,
+          value: 'active',
+        },
+      ],
     };
     expect(service.evaluate(condition, { status: 'inactive' })).toBe(false);
   });
@@ -55,7 +71,13 @@ describe('ConditionEvaluatorService', () => {
   it('NOT_EQUALS returns true when values differ', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'role', operator: ConditionOperator.NOT_EQUALS, value: 'admin' }],
+      rules: [
+        {
+          field: 'role',
+          operator: ConditionOperator.NOT_EQUALS,
+          value: 'admin',
+        },
+      ],
     };
     expect(service.evaluate(condition, { role: 'user' })).toBe(true);
   });
@@ -63,7 +85,13 @@ describe('ConditionEvaluatorService', () => {
   it('NOT_EQUALS returns false when values match', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'role', operator: ConditionOperator.NOT_EQUALS, value: 'admin' }],
+      rules: [
+        {
+          field: 'role',
+          operator: ConditionOperator.NOT_EQUALS,
+          value: 'admin',
+        },
+      ],
     };
     expect(service.evaluate(condition, { role: 'admin' })).toBe(false);
   });
@@ -73,7 +101,9 @@ describe('ConditionEvaluatorService', () => {
   it('GREATER_THAN returns true when field > value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'age', operator: ConditionOperator.GREATER_THAN, value: 18 }],
+      rules: [
+        { field: 'age', operator: ConditionOperator.GREATER_THAN, value: 18 },
+      ],
     };
     expect(service.evaluate(condition, { age: 25 })).toBe(true);
     expect(service.evaluate(condition, { age: 18 })).toBe(false);
@@ -82,7 +112,13 @@ describe('ConditionEvaluatorService', () => {
   it('GREATER_THAN_OR_EQUAL returns true when field >= value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'age', operator: ConditionOperator.GREATER_THAN_OR_EQUAL, value: 18 }],
+      rules: [
+        {
+          field: 'age',
+          operator: ConditionOperator.GREATER_THAN_OR_EQUAL,
+          value: 18,
+        },
+      ],
     };
     expect(service.evaluate(condition, { age: 18 })).toBe(true);
     expect(service.evaluate(condition, { age: 17 })).toBe(false);
@@ -91,7 +127,9 @@ describe('ConditionEvaluatorService', () => {
   it('LESS_THAN returns true when field < value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'score', operator: ConditionOperator.LESS_THAN, value: 50 }],
+      rules: [
+        { field: 'score', operator: ConditionOperator.LESS_THAN, value: 50 },
+      ],
     };
     expect(service.evaluate(condition, { score: 30 })).toBe(true);
     expect(service.evaluate(condition, { score: 50 })).toBe(false);
@@ -100,7 +138,13 @@ describe('ConditionEvaluatorService', () => {
   it('LESS_THAN_OR_EQUAL returns true when field <= value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'score', operator: ConditionOperator.LESS_THAN_OR_EQUAL, value: 50 }],
+      rules: [
+        {
+          field: 'score',
+          operator: ConditionOperator.LESS_THAN_OR_EQUAL,
+          value: 50,
+        },
+      ],
     };
     expect(service.evaluate(condition, { score: 50 })).toBe(true);
     expect(service.evaluate(condition, { score: 51 })).toBe(false);
@@ -111,7 +155,13 @@ describe('ConditionEvaluatorService', () => {
   it('IN returns true when field value is in the array', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'dept', operator: ConditionOperator.IN, value: ['hr', 'eng', 'sales'] }],
+      rules: [
+        {
+          field: 'dept',
+          operator: ConditionOperator.IN,
+          value: ['hr', 'eng', 'sales'],
+        },
+      ],
     };
     expect(service.evaluate(condition, { dept: 'eng' })).toBe(true);
   });
@@ -119,7 +169,9 @@ describe('ConditionEvaluatorService', () => {
   it('IN returns false when field value is not in the array', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'dept', operator: ConditionOperator.IN, value: ['hr', 'eng'] }],
+      rules: [
+        { field: 'dept', operator: ConditionOperator.IN, value: ['hr', 'eng'] },
+      ],
     };
     expect(service.evaluate(condition, { dept: 'finance' })).toBe(false);
   });
@@ -127,7 +179,13 @@ describe('ConditionEvaluatorService', () => {
   it('NOT_IN returns true when field value is not in the array', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'dept', operator: ConditionOperator.NOT_IN, value: ['hr', 'eng'] }],
+      rules: [
+        {
+          field: 'dept',
+          operator: ConditionOperator.NOT_IN,
+          value: ['hr', 'eng'],
+        },
+      ],
     };
     expect(service.evaluate(condition, { dept: 'finance' })).toBe(true);
   });
@@ -135,7 +193,13 @@ describe('ConditionEvaluatorService', () => {
   it('NOT_IN returns false when field value is in the array', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'dept', operator: ConditionOperator.NOT_IN, value: ['hr', 'eng'] }],
+      rules: [
+        {
+          field: 'dept',
+          operator: ConditionOperator.NOT_IN,
+          value: ['hr', 'eng'],
+        },
+      ],
     };
     expect(service.evaluate(condition, { dept: 'hr' })).toBe(false);
   });
@@ -145,7 +209,9 @@ describe('ConditionEvaluatorService', () => {
   it('CONTAINS returns true when string field contains value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'name', operator: ConditionOperator.CONTAINS, value: 'ohn' }],
+      rules: [
+        { field: 'name', operator: ConditionOperator.CONTAINS, value: 'ohn' },
+      ],
     };
     expect(service.evaluate(condition, { name: 'John Doe' })).toBe(true);
   });
@@ -153,7 +219,9 @@ describe('ConditionEvaluatorService', () => {
   it('CONTAINS returns false when string does not contain value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'name', operator: ConditionOperator.CONTAINS, value: 'xyz' }],
+      rules: [
+        { field: 'name', operator: ConditionOperator.CONTAINS, value: 'xyz' },
+      ],
     };
     expect(service.evaluate(condition, { name: 'John Doe' })).toBe(false);
   });
@@ -161,7 +229,9 @@ describe('ConditionEvaluatorService', () => {
   it('CONTAINS returns false for non-string fields', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'count', operator: ConditionOperator.CONTAINS, value: '1' }],
+      rules: [
+        { field: 'count', operator: ConditionOperator.CONTAINS, value: '1' },
+      ],
     };
     expect(service.evaluate(condition, { count: 123 })).toBe(false);
   });
@@ -171,17 +241,33 @@ describe('ConditionEvaluatorService', () => {
   it('STARTS_WITH returns true when string starts with value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'email', operator: ConditionOperator.STARTS_WITH, value: 'admin' }],
+      rules: [
+        {
+          field: 'email',
+          operator: ConditionOperator.STARTS_WITH,
+          value: 'admin',
+        },
+      ],
     };
-    expect(service.evaluate(condition, { email: 'admin@example.com' })).toBe(true);
+    expect(service.evaluate(condition, { email: 'admin@example.com' })).toBe(
+      true,
+    );
   });
 
   it('STARTS_WITH returns false when string does not start with value', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [{ field: 'email', operator: ConditionOperator.STARTS_WITH, value: 'admin' }],
+      rules: [
+        {
+          field: 'email',
+          operator: ConditionOperator.STARTS_WITH,
+          value: 'admin',
+        },
+      ],
     };
-    expect(service.evaluate(condition, { email: 'user@example.com' })).toBe(false);
+    expect(service.evaluate(condition, { email: 'user@example.com' })).toBe(
+      false,
+    );
   });
 
   // ─── IS_NULL / IS_NOT_NULL ───
@@ -277,7 +363,11 @@ describe('ConditionEvaluatorService', () => {
       logic: ConditionLogic.OR,
       rules: [
         { field: 'role', operator: ConditionOperator.EQUALS, value: 'admin' },
-        { field: 'role', operator: ConditionOperator.EQUALS, value: 'superadmin' },
+        {
+          field: 'role',
+          operator: ConditionOperator.EQUALS,
+          value: 'superadmin',
+        },
       ],
     };
     expect(service.evaluate(condition, { role: 'admin' })).toBe(true);
@@ -288,7 +378,11 @@ describe('ConditionEvaluatorService', () => {
       logic: ConditionLogic.OR,
       rules: [
         { field: 'role', operator: ConditionOperator.EQUALS, value: 'admin' },
-        { field: 'role', operator: ConditionOperator.EQUALS, value: 'superadmin' },
+        {
+          field: 'role',
+          operator: ConditionOperator.EQUALS,
+          value: 'superadmin',
+        },
       ],
     };
     expect(service.evaluate(condition, { role: 'user' })).toBe(false);
@@ -299,9 +393,7 @@ describe('ConditionEvaluatorService', () => {
   it('nested groups: AND containing OR group', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
-      rules: [
-        { field: 'active', operator: ConditionOperator.IS_TRUE },
-      ],
+      rules: [{ field: 'active', operator: ConditionOperator.IS_TRUE }],
       groups: [
         {
           logic: ConditionLogic.OR,
@@ -312,9 +404,15 @@ describe('ConditionEvaluatorService', () => {
         },
       ],
     };
-    expect(service.evaluate(condition, { active: true, dept: 'eng' })).toBe(true);
-    expect(service.evaluate(condition, { active: true, dept: 'finance' })).toBe(false);
-    expect(service.evaluate(condition, { active: false, dept: 'eng' })).toBe(false);
+    expect(service.evaluate(condition, { active: true, dept: 'eng' })).toBe(
+      true,
+    );
+    expect(service.evaluate(condition, { active: true, dept: 'finance' })).toBe(
+      false,
+    );
+    expect(service.evaluate(condition, { active: false, dept: 'eng' })).toBe(
+      false,
+    );
   });
 
   // ─── Dot-path field resolution ───
@@ -323,11 +421,19 @@ describe('ConditionEvaluatorService', () => {
     const condition: ConditionGroup = {
       logic: ConditionLogic.AND,
       rules: [
-        { field: 'employee.department', operator: ConditionOperator.EQUALS, value: 'eng' },
+        {
+          field: 'employee.department',
+          operator: ConditionOperator.EQUALS,
+          value: 'eng',
+        },
       ],
     };
-    expect(service.evaluate(condition, { employee: { department: 'eng' } })).toBe(true);
-    expect(service.evaluate(condition, { employee: { department: 'hr' } })).toBe(false);
+    expect(
+      service.evaluate(condition, { employee: { department: 'eng' } }),
+    ).toBe(true);
+    expect(
+      service.evaluate(condition, { employee: { department: 'hr' } }),
+    ).toBe(false);
   });
 
   it('resolves deeply nested dot-path fields', () => {

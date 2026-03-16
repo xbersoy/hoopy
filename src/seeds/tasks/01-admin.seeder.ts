@@ -106,7 +106,9 @@ export class AdminSeeder implements Seeder {
     if (company) {
       try {
         const allEmployees = await employeeService.findAll();
-        const hasEmployee = allEmployees.some((e: any) => e.email === adminEmail);
+        const hasEmployee = allEmployees.some(
+          (e: any) => e.email === adminEmail,
+        );
         if (!hasEmployee) {
           this.logger.log('Creating admin employee record...');
           await employeeService.create({

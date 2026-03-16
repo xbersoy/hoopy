@@ -29,7 +29,9 @@ export class CustomObjectFieldI18n {
   @Column({ name: 'field_id', type: 'uuid' })
   fieldId: string;
 
-  @ManyToOne(() => CustomObjectField, (field) => field.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => CustomObjectField, (field) => field.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'field_id' })
   field: CustomObjectField;
 

@@ -94,65 +94,149 @@ export class AddPicklistsAndAdvancedCustomFields1900000000002 implements Migrati
     `);
 
     // 2. Add Foreign Keys for Picklists
-    await queryRunner.query(`ALTER TABLE "picklists" ADD CONSTRAINT "FK_picklists_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "picklist_i18n" ADD CONSTRAINT "FK_picklist_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "picklist_i18n" ADD CONSTRAINT "FK_picklist_i18n_picklist" FOREIGN KEY ("picklist_id") REFERENCES "picklists"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "picklist_options" ADD CONSTRAINT "FK_picklist_options_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "picklist_options" ADD CONSTRAINT "FK_picklist_options_picklist" FOREIGN KEY ("picklist_id") REFERENCES "picklists"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "picklist_option_i18n" ADD CONSTRAINT "FK_picklist_option_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "picklist_option_i18n" ADD CONSTRAINT "FK_picklist_option_i18n_option" FOREIGN KEY ("picklist_option_id") REFERENCES "picklist_options"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    await queryRunner.query(
+      `ALTER TABLE "picklists" ADD CONSTRAINT "FK_picklists_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_i18n" ADD CONSTRAINT "FK_picklist_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_i18n" ADD CONSTRAINT "FK_picklist_i18n_picklist" FOREIGN KEY ("picklist_id") REFERENCES "picklists"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_options" ADD CONSTRAINT "FK_picklist_options_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_options" ADD CONSTRAINT "FK_picklist_options_picklist" FOREIGN KEY ("picklist_id") REFERENCES "picklists"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_option_i18n" ADD CONSTRAINT "FK_picklist_option_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_option_i18n" ADD CONSTRAINT "FK_picklist_option_i18n_option" FOREIGN KEY ("picklist_option_id") REFERENCES "picklist_options"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
 
-    await queryRunner.query(`ALTER TABLE "custom_object_definition_i18n" ADD CONSTRAINT "FK_cod_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "custom_object_definition_i18n" ADD CONSTRAINT "FK_cod_i18n_definition" FOREIGN KEY ("definition_id") REFERENCES "custom_object_definitions"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "custom_object_field_i18n" ADD CONSTRAINT "FK_cof_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-    await queryRunner.query(`ALTER TABLE "custom_object_field_i18n" ADD CONSTRAINT "FK_cof_i18n_field" FOREIGN KEY ("field_id") REFERENCES "custom_object_fields"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_definition_i18n" ADD CONSTRAINT "FK_cod_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_definition_i18n" ADD CONSTRAINT "FK_cod_i18n_definition" FOREIGN KEY ("definition_id") REFERENCES "custom_object_definitions"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_field_i18n" ADD CONSTRAINT "FK_cof_i18n_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_field_i18n" ADD CONSTRAINT "FK_cof_i18n_field" FOREIGN KEY ("field_id") REFERENCES "custom_object_fields"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
 
     // Indexes
-    await queryRunner.query(`CREATE INDEX "IDX_picklist_i18n_company_locale" ON "picklist_i18n" ("company_id", "locale")`);
-    await queryRunner.query(`CREATE INDEX "IDX_picklist_opt_i18n_company_locale" ON "picklist_option_i18n" ("company_id", "locale")`);
-    await queryRunner.query(`CREATE INDEX "IDX_cod_i18n_company_locale" ON "custom_object_definition_i18n" ("company_id", "locale")`);
-    await queryRunner.query(`CREATE INDEX "IDX_cof_i18n_company_locale" ON "custom_object_field_i18n" ("company_id", "locale")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_picklist_i18n_company_locale" ON "picklist_i18n" ("company_id", "locale")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_picklist_opt_i18n_company_locale" ON "picklist_option_i18n" ("company_id", "locale")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_cod_i18n_company_locale" ON "custom_object_definition_i18n" ("company_id", "locale")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_cof_i18n_company_locale" ON "custom_object_field_i18n" ("company_id", "locale")`,
+    );
 
     // 3. Add Advanced Columns to CustomObjectField
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" ADD "picklist_id" uuid`);
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" ADD "referenced_definition_id" uuid`);
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" ADD "read_permission_group_id" uuid`);
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" ADD "edit_permission_group_id" uuid`);
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" ADD "picklist_id" uuid`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" ADD "referenced_definition_id" uuid`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" ADD "read_permission_group_id" uuid`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" ADD "edit_permission_group_id" uuid`,
+    );
 
     // 4. Add Instance-Level RBP Columns to CustomObjectRecord
-    await queryRunner.query(`ALTER TABLE "custom_object_records" ADD "owner_id" uuid`);
-    await queryRunner.query(`ALTER TABLE "custom_object_records" ADD "owner_group_id" uuid`);
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_records" ADD "owner_id" uuid`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_records" ADD "owner_group_id" uuid`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // 0. Remove Instance-Level RBP Columns from CustomObjectRecord
-    await queryRunner.query(`ALTER TABLE "custom_object_records" DROP COLUMN "owner_group_id"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_records" DROP COLUMN "owner_id"`);
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_records" DROP COLUMN "owner_group_id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_records" DROP COLUMN "owner_id"`,
+    );
 
     // 1. Remove Advanced Columns from CustomObjectField
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" DROP COLUMN "edit_permission_group_id"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" DROP COLUMN "read_permission_group_id"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" DROP COLUMN "referenced_definition_id"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_fields" DROP COLUMN "picklist_id"`);
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" DROP COLUMN "edit_permission_group_id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" DROP COLUMN "read_permission_group_id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" DROP COLUMN "referenced_definition_id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_fields" DROP COLUMN "picklist_id"`,
+    );
 
     // 2. Drop Foreign Keys for Picklists & Custom Objects I18n
-    await queryRunner.query(`ALTER TABLE "custom_object_field_i18n" DROP CONSTRAINT "FK_cof_i18n_field"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_field_i18n" DROP CONSTRAINT "FK_cof_i18n_company"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_definition_i18n" DROP CONSTRAINT "FK_cod_i18n_definition"`);
-    await queryRunner.query(`ALTER TABLE "custom_object_definition_i18n" DROP CONSTRAINT "FK_cod_i18n_company"`);
-    await queryRunner.query(`ALTER TABLE "picklist_option_i18n" DROP CONSTRAINT "FK_picklist_option_i18n_option"`);
-    await queryRunner.query(`ALTER TABLE "picklist_option_i18n" DROP CONSTRAINT "FK_picklist_option_i18n_company"`);
-    await queryRunner.query(`ALTER TABLE "picklist_options" DROP CONSTRAINT "FK_picklist_options_picklist"`);
-    await queryRunner.query(`ALTER TABLE "picklist_options" DROP CONSTRAINT "FK_picklist_options_company"`);
-    await queryRunner.query(`ALTER TABLE "picklist_i18n" DROP CONSTRAINT "FK_picklist_i18n_picklist"`);
-    await queryRunner.query(`ALTER TABLE "picklist_i18n" DROP CONSTRAINT "FK_picklist_i18n_company"`);
-    await queryRunner.query(`ALTER TABLE "picklists" DROP CONSTRAINT "FK_picklists_company"`);
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_field_i18n" DROP CONSTRAINT "FK_cof_i18n_field"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_field_i18n" DROP CONSTRAINT "FK_cof_i18n_company"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_definition_i18n" DROP CONSTRAINT "FK_cod_i18n_definition"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "custom_object_definition_i18n" DROP CONSTRAINT "FK_cod_i18n_company"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_option_i18n" DROP CONSTRAINT "FK_picklist_option_i18n_option"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_option_i18n" DROP CONSTRAINT "FK_picklist_option_i18n_company"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_options" DROP CONSTRAINT "FK_picklist_options_picklist"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_options" DROP CONSTRAINT "FK_picklist_options_company"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_i18n" DROP CONSTRAINT "FK_picklist_i18n_picklist"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklist_i18n" DROP CONSTRAINT "FK_picklist_i18n_company"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "picklists" DROP CONSTRAINT "FK_picklists_company"`,
+    );
 
     // 3. Drop Picklists Tables
-    await queryRunner.query(`DROP INDEX "public"."IDX_cof_i18n_company_locale"`);
-    await queryRunner.query(`DROP INDEX "public"."IDX_cod_i18n_company_locale"`);
-    await queryRunner.query(`DROP INDEX "public"."IDX_picklist_opt_i18n_company_locale"`);
-    await queryRunner.query(`DROP INDEX "public"."IDX_picklist_i18n_company_locale"`);
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_cof_i18n_company_locale"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_cod_i18n_company_locale"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_picklist_opt_i18n_company_locale"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_picklist_i18n_company_locale"`,
+    );
     await queryRunner.query(`DROP TABLE "custom_object_field_i18n"`);
     await queryRunner.query(`DROP TABLE "custom_object_definition_i18n"`);
     await queryRunner.query(`DROP TABLE "picklist_option_i18n"`);

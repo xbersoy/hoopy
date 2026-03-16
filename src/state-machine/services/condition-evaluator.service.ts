@@ -44,7 +44,10 @@ export interface ConditionGroup {
  */
 @Injectable()
 export class ConditionEvaluatorService {
-  evaluate(condition: ConditionGroup | null | undefined, context: Record<string, any>): boolean {
+  evaluate(
+    condition: ConditionGroup | null | undefined,
+    context: Record<string, any>,
+  ): boolean {
     if (!condition) return true;
     if (!condition.rules?.length && !condition.groups?.length) return true;
 
@@ -67,7 +70,10 @@ export class ConditionEvaluatorService {
       : results.some((r) => r);
   }
 
-  private evaluateRule(rule: ConditionRule, context: Record<string, any>): boolean {
+  private evaluateRule(
+    rule: ConditionRule,
+    context: Record<string, any>,
+  ): boolean {
     const fieldValue = this.resolveFieldValue(rule.field, context);
 
     switch (rule.operator) {
@@ -88,9 +94,13 @@ export class ConditionEvaluatorService {
       case ConditionOperator.NOT_IN:
         return Array.isArray(rule.value) && !rule.value.includes(fieldValue);
       case ConditionOperator.CONTAINS:
-        return typeof fieldValue === 'string' && fieldValue.includes(rule.value);
+        return (
+          typeof fieldValue === 'string' && fieldValue.includes(rule.value)
+        );
       case ConditionOperator.STARTS_WITH:
-        return typeof fieldValue === 'string' && fieldValue.startsWith(rule.value);
+        return (
+          typeof fieldValue === 'string' && fieldValue.startsWith(rule.value)
+        );
       case ConditionOperator.IS_NULL:
         return fieldValue === null || fieldValue === undefined;
       case ConditionOperator.IS_NOT_NULL:

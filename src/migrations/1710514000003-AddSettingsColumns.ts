@@ -14,8 +14,12 @@ export class AddSettingsColumns1710514000003 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE IF EXISTS accounts DROP COLUMN IF EXISTS settings;`);
-    await queryRunner.query(`ALTER TABLE IF EXISTS companies DROP COLUMN IF EXISTS settings;`);
+    await queryRunner.query(
+      `ALTER TABLE IF EXISTS accounts DROP COLUMN IF EXISTS settings;`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE IF EXISTS companies DROP COLUMN IF EXISTS settings;`,
+    );
     await queryRunner.query(`ALTER TABLE users DROP COLUMN settings;`);
   }
 }

@@ -48,7 +48,10 @@ export class CreateCustomObjectFieldDto {
   @IsEnum(CustomFieldType)
   dataType: CustomFieldType;
 
-  @ApiProperty({ description: 'Whether this field is required', required: false })
+  @ApiProperty({
+    description: 'Whether this field is required',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isRequired?: boolean;
@@ -79,18 +82,25 @@ export class CreateCustomObjectFieldDto {
   @IsOptional()
   options?: string[];
 
-  @ApiProperty({ description: 'Picklist ID for PICKLIST type', required: false })
+  @ApiProperty({
+    description: 'Picklist ID for PICKLIST type',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   picklistId?: string;
 
-  @ApiProperty({ description: 'Referenced Definition ID for CUSTOM_OBJECT type', required: false })
+  @ApiProperty({
+    description: 'Referenced Definition ID for CUSTOM_OBJECT type',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   referencedDefinitionId?: string;
 
   @ApiProperty({
-    description: 'Locale-specific translations (e.g. { "tr": { "label": "Araç ID" } })',
+    description:
+      'Locale-specific translations (e.g. { "tr": { "label": "Araç ID" } })',
     required: false,
     example: { tr: { label: 'Araç ID' } },
   })

@@ -31,7 +31,9 @@ export class WorkflowDefinitionI18n {
   @Column({ name: 'definition_id', type: 'uuid' })
   definitionId: string;
 
-  @ManyToOne(() => WorkflowDefinition, (d) => d.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkflowDefinition, (d) => d.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'definition_id' })
   definition: WorkflowDefinition;
 
@@ -39,7 +41,10 @@ export class WorkflowDefinitionI18n {
   @Column({ type: 'varchar', length: 35 })
   locale: string;
 
-  @ApiProperty({ description: 'Localized name', example: 'Leave Request Approval' })
+  @ApiProperty({
+    description: 'Localized name',
+    example: 'Leave Request Approval',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 

@@ -93,12 +93,20 @@ export class OrgUnitTypeController {
   @RequirePermissions({ action: 'read', resourceType: 'org-unit-type' })
   @ApiOperation({ summary: 'Export all org unit types (JSON or CSV)' })
   @ApiParam({ name: 'companyId', type: 'string', format: 'uuid' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
   async exportOrgUnitTypes(
     @Param('companyId') companyId: string,
     @Query('format') format: string = 'json',
   ) {
-    const types = await this.orgUnitTypeService.findAll(companyId, undefined, true);
+    const types = await this.orgUnitTypeService.findAll(
+      companyId,
+      undefined,
+      true,
+    );
     if (format === 'csv') {
       const { CsvHelper } = await import('../../shared/utils/csv.helper');
       const rows = types.map((t) => ({

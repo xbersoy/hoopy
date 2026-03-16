@@ -32,7 +32,9 @@ export class PicklistOption {
   @Index()
   picklistId: string;
 
-  @ManyToOne(() => Picklist, (picklist) => picklist.options, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Picklist, (picklist) => picklist.options, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'picklist_id' })
   picklist: Picklist;
 
@@ -51,6 +53,8 @@ export class PicklistOption {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @OneToMany(() => PicklistOptionI18n, (i18n) => i18n.picklistOption, { cascade: true })
+  @OneToMany(() => PicklistOptionI18n, (i18n) => i18n.picklistOption, {
+    cascade: true,
+  })
   translations: PicklistOptionI18n[];
 }

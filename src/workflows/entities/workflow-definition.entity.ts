@@ -7,7 +7,6 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
-  Index,
   Unique,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -30,11 +29,17 @@ export class WorkflowDefinition {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @ApiProperty({ description: 'Unique code within the company', example: 'leave_request_approval' })
+  @ApiProperty({
+    description: 'Unique code within the company',
+    example: 'leave_request_approval',
+  })
   @Column({ type: 'varchar', length: 255 })
   code: string;
 
-  @ApiProperty({ description: 'Target resource type', example: 'leave_request' })
+  @ApiProperty({
+    description: 'Target resource type',
+    example: 'leave_request',
+  })
   @Column({ type: 'varchar', length: 255 })
   resourceType: string;
 
@@ -46,7 +51,10 @@ export class WorkflowDefinition {
   @Column({ default: true })
   isActive: boolean;
 
-  @ApiProperty({ description: 'Priority when multiple workflows match (lower = higher priority)' })
+  @ApiProperty({
+    description:
+      'Priority when multiple workflows match (lower = higher priority)',
+  })
   @Column({ type: 'int', default: 0 })
   priority: number;
 
@@ -58,10 +66,15 @@ export class WorkflowDefinition {
   @JoinColumn({ name: 'state_machine_definition_id' })
   stateMachineDefinition: StateMachineDefinition;
 
-  @OneToMany(() => WorkflowDefinitionI18n, (i) => i.definition, { cascade: true, eager: false })
+  @OneToMany(() => WorkflowDefinitionI18n, (i) => i.definition, {
+    cascade: true,
+    eager: false,
+  })
   translations: WorkflowDefinitionI18n[];
 
-  @OneToMany(() => WorkflowDefinitionVersion, (v) => v.definition, { cascade: true })
+  @OneToMany(() => WorkflowDefinitionVersion, (v) => v.definition, {
+    cascade: true,
+  })
   versions: WorkflowDefinitionVersion[];
 
   @CreateDateColumn({ name: 'created_at' })

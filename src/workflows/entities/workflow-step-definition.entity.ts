@@ -25,18 +25,27 @@ export class WorkflowStepDefinition {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => WorkflowDefinitionVersion, (v) => v.steps, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkflowDefinitionVersion, (v) => v.steps, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'version_id' })
   version: WorkflowDefinitionVersion;
 
   @Column({ name: 'version_id' })
   versionId: string;
 
-  @ApiProperty({ description: 'Unique step code within the version', example: 'manager_approval' })
+  @ApiProperty({
+    description: 'Unique step code within the version',
+    example: 'manager_approval',
+  })
   @Column()
   code: string;
 
-  @ApiProperty({ description: 'Corresponding state machine transition code that this step handles', required: false })
+  @ApiProperty({
+    description:
+      'Corresponding state machine transition code that this step handles',
+    required: false,
+  })
   @Column({ type: 'varchar', length: 255, nullable: true })
   transitionCode: string;
 
@@ -44,23 +53,38 @@ export class WorkflowStepDefinition {
   @Column({ type: 'varchar', default: WorkflowStepType.APPROVAL })
   type: WorkflowStepType;
 
-  @ApiProperty({ description: 'Order in the sequence (lower = earlier)', example: 1 })
+  @ApiProperty({
+    description: 'Order in the sequence (lower = earlier)',
+    example: 1,
+  })
   @Column({ type: 'int' })
   sortOrder: number;
 
-  @ApiProperty({ description: 'Assignee resolution strategy', enum: AssigneeStrategy })
+  @ApiProperty({
+    description: 'Assignee resolution strategy',
+    enum: AssigneeStrategy,
+  })
   @Column({ type: 'varchar' })
   assigneeStrategy: AssigneeStrategy;
 
-  @ApiProperty({ description: 'Configuration for the assignee strategy', required: false })
+  @ApiProperty({
+    description: 'Configuration for the assignee strategy',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   assigneeConfig: Record<string, any>;
 
-  @ApiProperty({ description: 'Approval strategy for multi-assignee steps', enum: ApprovalStrategy })
+  @ApiProperty({
+    description: 'Approval strategy for multi-assignee steps',
+    enum: ApprovalStrategy,
+  })
   @Column({ type: 'varchar', default: ApprovalStrategy.ANY })
   approvalStrategy: ApprovalStrategy;
 
-  @ApiProperty({ description: 'Entry condition (JSON DSL): if not met, step is skipped', required: false })
+  @ApiProperty({
+    description: 'Entry condition (JSON DSL): if not met, step is skipped',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   entryCondition: Record<string, any>;
 
@@ -76,15 +100,24 @@ export class WorkflowStepDefinition {
   @Column({ default: false })
   isCommentRequired: boolean;
 
-  @ApiProperty({ description: 'Whether attachment is required', default: false })
+  @ApiProperty({
+    description: 'Whether attachment is required',
+    default: false,
+  })
   @Column({ default: false })
   isAttachmentRequired: boolean;
 
-  @ApiProperty({ description: 'Whether step can be skipped by admin', default: false })
+  @ApiProperty({
+    description: 'Whether step can be skipped by admin',
+    default: false,
+  })
   @Column({ default: false })
   isSkippable: boolean;
 
-  @ApiProperty({ description: 'Whether step auto-completes if conditions met', default: false })
+  @ApiProperty({
+    description: 'Whether step auto-completes if conditions met',
+    default: false,
+  })
   @Column({ default: false })
   isAutoComplete: boolean;
 
@@ -100,7 +133,10 @@ export class WorkflowStepDefinition {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  @OneToMany(() => WorkflowStepI18n, (i) => i.step, { cascade: true, eager: false })
+  @OneToMany(() => WorkflowStepI18n, (i) => i.step, {
+    cascade: true,
+    eager: false,
+  })
   translations: WorkflowStepI18n[];
 
   @CreateDateColumn()

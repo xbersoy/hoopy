@@ -31,7 +31,9 @@ export class StateMachineStateI18n {
   @Column({ name: 'state_id', type: 'uuid' })
   stateId: string;
 
-  @ManyToOne(() => StateMachineState, (s) => s.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => StateMachineState, (s) => s.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'state_id' })
   state: StateMachineState;
 
@@ -39,7 +41,10 @@ export class StateMachineStateI18n {
   @Column({ type: 'varchar', length: 35 })
   locale: string;
 
-  @ApiProperty({ description: 'Localized state name', example: 'Pending Approval' })
+  @ApiProperty({
+    description: 'Localized state name',
+    example: 'Pending Approval',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 

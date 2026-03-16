@@ -1,4 +1,13 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, MaxLength, IsObject, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsBoolean,
+  IsOptional,
+  MaxLength,
+  IsObject,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { PicklistTranslationDto } from './picklist-translation.dto';
@@ -25,7 +34,8 @@ export class CreatePicklistDto {
   isActive?: boolean;
 
   @ApiProperty({
-    description: 'Translations keyed by BCP-47 locale. At least one locale required.',
+    description:
+      'Translations keyed by BCP-47 locale. At least one locale required.',
     example: {
       en: { name: 'Departments' },
       tr: { name: 'Departmanlar' },

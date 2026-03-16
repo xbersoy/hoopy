@@ -47,8 +47,7 @@ export class AdminAccessController {
 
   @Get('eligible-users')
   @ApiOperation({
-    summary:
-      'List users in the same company that can be granted admin access',
+    summary: 'List users in the same company that can be granted admin access',
   })
   @ApiResponse({ status: 200, description: 'List of eligible users' })
   getEligibleUsers(@Req() req) {

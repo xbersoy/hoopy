@@ -3,7 +3,6 @@ import { Seeder } from '../seeder.interface';
 import { StateMachineService } from '../../state-machine/services/state-machine.service';
 import { CompanyService } from '../../company/services/company.service';
 import { UserService } from '../../user/user.service';
-import { StateMachineDefinitionStatus } from '../../state-machine/enums/state-machine.enums';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { StateMachineDefinition } from '../../state-machine/entities/state-machine-definition.entity';
 import { Repository } from 'typeorm';
@@ -28,7 +27,9 @@ export class StateMachineSeeder implements Seeder {
 
     const company = await companyService.findByOwner(admin.id);
     if (!company) {
-      this.logger.warn('Admin company not found — skipping state machine seed.');
+      this.logger.warn(
+        'Admin company not found — skipping state machine seed.',
+      );
       return;
     }
 
@@ -37,7 +38,9 @@ export class StateMachineSeeder implements Seeder {
       where: { companyId: company.id, code: 'leave_request_lifecycle' },
     });
     if (existing) {
-      this.logger.log('State machine "leave_request_lifecycle" already exists — skipping.');
+      this.logger.log(
+        'State machine "leave_request_lifecycle" already exists — skipping.',
+      );
       return;
     }
 
@@ -49,8 +52,16 @@ export class StateMachineSeeder implements Seeder {
       initialStateCode: 'draft',
       metadata: { description: 'Lifecycle for employee leave requests' },
       translations: [
-        { locale: 'en', name: 'Leave Request Lifecycle', description: 'Manages the lifecycle of leave request approvals' },
-        { locale: 'tr', name: 'İzin Talebi Yaşam Döngüsü', description: 'İzin talebi onay süreçlerini yönetir' },
+        {
+          locale: 'en',
+          name: 'Leave Request Lifecycle',
+          description: 'Manages the lifecycle of leave request approvals',
+        },
+        {
+          locale: 'tr',
+          name: 'İzin Talebi Yaşam Döngüsü',
+          description: 'İzin talebi onay süreçlerini yönetir',
+        },
       ],
       states: [
         {
@@ -60,7 +71,11 @@ export class StateMachineSeeder implements Seeder {
           sortOrder: 0,
           color: '#6B7280',
           translations: [
-            { locale: 'en', name: 'Draft', description: 'Request is being prepared' },
+            {
+              locale: 'en',
+              name: 'Draft',
+              description: 'Request is being prepared',
+            },
             { locale: 'tr', name: 'Taslak', description: 'Talep hazırlanıyor' },
           ],
         },
@@ -71,8 +86,16 @@ export class StateMachineSeeder implements Seeder {
           sortOrder: 1,
           color: '#3B82F6',
           translations: [
-            { locale: 'en', name: 'Submitted', description: 'Request submitted for approval' },
-            { locale: 'tr', name: 'Gönderildi', description: 'Talep onay için gönderildi' },
+            {
+              locale: 'en',
+              name: 'Submitted',
+              description: 'Request submitted for approval',
+            },
+            {
+              locale: 'tr',
+              name: 'Gönderildi',
+              description: 'Talep onay için gönderildi',
+            },
           ],
         },
         {
@@ -82,8 +105,16 @@ export class StateMachineSeeder implements Seeder {
           sortOrder: 2,
           color: '#8B5CF6',
           translations: [
-            { locale: 'en', name: 'Manager Approved', description: 'Approved by direct manager' },
-            { locale: 'tr', name: 'Yönetici Onayladı', description: 'Direkt yönetici tarafından onaylandı' },
+            {
+              locale: 'en',
+              name: 'Manager Approved',
+              description: 'Approved by direct manager',
+            },
+            {
+              locale: 'tr',
+              name: 'Yönetici Onayladı',
+              description: 'Direkt yönetici tarafından onaylandı',
+            },
           ],
         },
         {
@@ -93,8 +124,16 @@ export class StateMachineSeeder implements Seeder {
           sortOrder: 3,
           color: '#10B981',
           translations: [
-            { locale: 'en', name: 'Approved', description: 'Request fully approved' },
-            { locale: 'tr', name: 'Onaylandı', description: 'Talep tamamen onaylandı' },
+            {
+              locale: 'en',
+              name: 'Approved',
+              description: 'Request fully approved',
+            },
+            {
+              locale: 'tr',
+              name: 'Onaylandı',
+              description: 'Talep tamamen onaylandı',
+            },
           ],
         },
         {
@@ -104,8 +143,16 @@ export class StateMachineSeeder implements Seeder {
           sortOrder: 4,
           color: '#EF4444',
           translations: [
-            { locale: 'en', name: 'Rejected', description: 'Request has been rejected' },
-            { locale: 'tr', name: 'Reddedildi', description: 'Talep reddedildi' },
+            {
+              locale: 'en',
+              name: 'Rejected',
+              description: 'Request has been rejected',
+            },
+            {
+              locale: 'tr',
+              name: 'Reddedildi',
+              description: 'Talep reddedildi',
+            },
           ],
         },
         {
@@ -115,8 +162,16 @@ export class StateMachineSeeder implements Seeder {
           sortOrder: 5,
           color: '#9CA3AF',
           translations: [
-            { locale: 'en', name: 'Cancelled', description: 'Request cancelled by requester' },
-            { locale: 'tr', name: 'İptal Edildi', description: 'Talep, talep eden tarafından iptal edildi' },
+            {
+              locale: 'en',
+              name: 'Cancelled',
+              description: 'Request cancelled by requester',
+            },
+            {
+              locale: 'tr',
+              name: 'İptal Edildi',
+              description: 'Talep, talep eden tarafından iptal edildi',
+            },
           ],
         },
       ],
@@ -126,8 +181,16 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'draft',
           toStateCode: 'submitted',
           translations: [
-            { locale: 'en', name: 'Submit', description: 'Submit request for approval' },
-            { locale: 'tr', name: 'Gönder', description: 'Talebi onaya gönder' },
+            {
+              locale: 'en',
+              name: 'Submit',
+              description: 'Submit request for approval',
+            },
+            {
+              locale: 'tr',
+              name: 'Gönder',
+              description: 'Talebi onaya gönder',
+            },
           ],
         },
         {
@@ -135,8 +198,16 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'submitted',
           toStateCode: 'manager_approved',
           translations: [
-            { locale: 'en', name: 'Manager Approve', description: 'Manager approves the request' },
-            { locale: 'tr', name: 'Yönetici Onayla', description: 'Yönetici talebi onaylar' },
+            {
+              locale: 'en',
+              name: 'Manager Approve',
+              description: 'Manager approves the request',
+            },
+            {
+              locale: 'tr',
+              name: 'Yönetici Onayla',
+              description: 'Yönetici talebi onaylar',
+            },
           ],
         },
         {
@@ -144,8 +215,16 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'manager_approved',
           toStateCode: 'approved',
           translations: [
-            { locale: 'en', name: 'HR Approve', description: 'HR gives final approval' },
-            { locale: 'tr', name: 'İK Onayla', description: 'İK nihai onayı verir' },
+            {
+              locale: 'en',
+              name: 'HR Approve',
+              description: 'HR gives final approval',
+            },
+            {
+              locale: 'tr',
+              name: 'İK Onayla',
+              description: 'İK nihai onayı verir',
+            },
           ],
         },
         {
@@ -153,8 +232,16 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'submitted',
           toStateCode: 'rejected',
           translations: [
-            { locale: 'en', name: 'Reject', description: 'Manager rejects the request' },
-            { locale: 'tr', name: 'Reddet', description: 'Yönetici talebi reddeder' },
+            {
+              locale: 'en',
+              name: 'Reject',
+              description: 'Manager rejects the request',
+            },
+            {
+              locale: 'tr',
+              name: 'Reddet',
+              description: 'Yönetici talebi reddeder',
+            },
           ],
         },
         {
@@ -162,7 +249,11 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'manager_approved',
           toStateCode: 'rejected',
           translations: [
-            { locale: 'en', name: 'Reject', description: 'HR rejects the request' },
+            {
+              locale: 'en',
+              name: 'Reject',
+              description: 'HR rejects the request',
+            },
             { locale: 'tr', name: 'Reddet', description: 'İK talebi reddeder' },
           ],
         },
@@ -171,8 +262,16 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'draft',
           toStateCode: 'cancelled',
           translations: [
-            { locale: 'en', name: 'Cancel', description: 'Cancel the draft request' },
-            { locale: 'tr', name: 'İptal Et', description: 'Taslak talebi iptal et' },
+            {
+              locale: 'en',
+              name: 'Cancel',
+              description: 'Cancel the draft request',
+            },
+            {
+              locale: 'tr',
+              name: 'İptal Et',
+              description: 'Taslak talebi iptal et',
+            },
           ],
         },
         {
@@ -180,8 +279,16 @@ export class StateMachineSeeder implements Seeder {
           fromStateCode: 'submitted',
           toStateCode: 'cancelled',
           translations: [
-            { locale: 'en', name: 'Cancel', description: 'Cancel the submitted request' },
-            { locale: 'tr', name: 'İptal Et', description: 'Gönderilmiş talebi iptal et' },
+            {
+              locale: 'en',
+              name: 'Cancel',
+              description: 'Cancel the submitted request',
+            },
+            {
+              locale: 'tr',
+              name: 'İptal Et',
+              description: 'Gönderilmiş talebi iptal et',
+            },
           ],
         },
       ],
@@ -189,6 +296,8 @@ export class StateMachineSeeder implements Seeder {
 
     // Publish the definition so it can be used
     await smService.publishDefinition(company.id, definition.id);
-    this.logger.log(`Created and published state machine: leave_request_lifecycle`);
+    this.logger.log(
+      `Created and published state machine: leave_request_lifecycle`,
+    );
   }
 }

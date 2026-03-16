@@ -1,4 +1,10 @@
-import { Inject, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { CreateCustomObjectDefinitionDto } from '../dto/create-custom-object-definition.dto';
 import { UpdateCustomObjectDefinitionDto } from '../dto/update-custom-object-definition.dto';
 import { QueryCustomObjectDefinitionDto } from '../dto/query-custom-object-definition.dto';
@@ -30,13 +36,15 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
     private readonly fieldI18nRepo: CustomObjectFieldI18nRepository,
 
     private readonly customObjectPermissionsService: CustomObjectPermissionsService,
-  ) { }
+  ) {}
 
   async onModuleInit(): Promise<void> {
     const definitions = await this.definitionRepository.findAllWithFields();
     if (!definitions.length) return;
 
-    this.logger.log(`Syncing permissions for ${definitions.length} custom object definition(s)...`);
+    this.logger.log(
+      `Syncing permissions for ${definitions.length} custom object definition(s)...`,
+    );
     for (const def of definitions) {
       await this.syncPermissions(def);
     }
@@ -60,7 +68,12 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
 
     if (translations) {
       for (const [locale, tDto] of Object.entries(translations)) {
-        await this.definitionI18nRepo.upsertForDefinition(companyId, savedDefinition.id, locale, tDto);
+        await this.definitionI18nRepo.upsertForDefinition(
+          companyId,
+          savedDefinition.id,
+          locale,
+          tDto,
+        );
       }
     }
 
@@ -75,7 +88,12 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
 
         if (fieldTranslations) {
           for (const [locale, ftDto] of Object.entries(fieldTranslations)) {
-            await this.fieldI18nRepo.upsertForField(companyId, savedField.id, locale, ftDto);
+            await this.fieldI18nRepo.upsertForField(
+              companyId,
+              savedField.id,
+              locale,
+              ftDto,
+            );
           }
         }
       }
@@ -100,7 +118,9 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
       limit,
     });
 
-    const mappedData = data.map((d) => this.mapTranslations(d)) as CustomObjectDefinition[];
+    const mappedData = data.map((d) =>
+      this.mapTranslations(d),
+    ) as CustomObjectDefinition[];
     return { data: mappedData, total, page, limit };
   }
 
@@ -108,7 +128,10 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
     companyId: string,
     baseObjectType: string,
   ): Promise<CustomObjectDefinition[]> {
-    const data = await this.definitionRepository.findByBaseObjectType(companyId, baseObjectType);
+    const data = await this.definitionRepository.findByBaseObjectType(
+      companyId,
+      baseObjectType,
+    );
     return data.map((d) => this.mapTranslations(d)) as CustomObjectDefinition[];
   }
 
@@ -144,7 +167,12 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
 
     if (translations) {
       for (const [locale, tDto] of Object.entries(translations)) {
-        await this.definitionI18nRepo.upsertForDefinition(companyId, id, locale, tDto);
+        await this.definitionI18nRepo.upsertForDefinition(
+          companyId,
+          id,
+          locale,
+          tDto,
+        );
       }
     }
 
@@ -157,11 +185,18 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
             ...fieldData,
             definitionId: id,
           });
-          const [savedField] = await this.fieldRepository.saveAll([fieldEntity]);
+          const [savedField] = await this.fieldRepository.saveAll([
+            fieldEntity,
+          ]);
 
           if (fieldTranslations) {
             for (const [locale, ftDto] of Object.entries(fieldTranslations)) {
-              await this.fieldI18nRepo.upsertForField(companyId, savedField.id, locale, ftDto);
+              await this.fieldI18nRepo.upsertForField(
+                companyId,
+                savedField.id,
+                locale,
+                ftDto,
+              );
             }
           }
         }
@@ -173,12 +208,11 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
     return result;
   }
 
-  async remove(
-    id: string,
-    companyId: string,
-  ): Promise<CustomObjectDefinition> {
+  async remove(id: string, companyId: string): Promise<CustomObjectDefinition> {
     const definition = await this.findOne(id, companyId);
-    await this.customObjectPermissionsService.removePermissionsForDefinition(definition.code);
+    await this.customObjectPermissionsService.removePermissionsForDefinition(
+      definition.code,
+    );
     await this.definitionRepository.remove(definition);
     return { ...definition, id };
   }
@@ -214,7 +248,9 @@ export class CustomObjectDefinitionsService implements OnModuleInit {
     return definition;
   }
 
-  private async syncPermissions(definition: CustomObjectDefinition): Promise<void> {
+  private async syncPermissions(
+    definition: CustomObjectDefinition,
+  ): Promise<void> {
     const fields = (definition.fields ?? []).map((f) => ({
       code: f.code,
       label: f.label,

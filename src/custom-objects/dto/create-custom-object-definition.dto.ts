@@ -78,7 +78,8 @@ export class CreateCustomObjectDefinitionDto {
   fields?: CreateCustomObjectFieldDto[];
 
   @ApiProperty({
-    description: 'Locale-specific translations (e.g. { "tr": { "name": "Araç Ataması", "pluralName": "Araç Atamaları" } })',
+    description:
+      'Locale-specific translations (e.g. { "tr": { "name": "Araç Ataması", "pluralName": "Araç Atamaları" } })',
     required: false,
     example: { tr: { name: 'Araç Ataması', pluralName: 'Araç Atamaları' } },
   })

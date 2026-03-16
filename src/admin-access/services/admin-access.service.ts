@@ -103,9 +103,7 @@ export class AdminAccessService {
       where: { user: { id: userId }, company: { id: companyId } },
     });
     if (!employee) {
-      throw new BadRequestException(
-        'User does not belong to your company.',
-      );
+      throw new BadRequestException('User does not belong to your company.');
     }
 
     const existing = await this.findByUserAndAccount(userId, accountId);

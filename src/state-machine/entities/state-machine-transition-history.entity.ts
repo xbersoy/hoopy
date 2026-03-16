@@ -22,7 +22,9 @@ export class StateMachineTransitionHistory {
   @Column({ name: 'instance_id', type: 'uuid' })
   instanceId: string;
 
-  @ManyToOne(() => StateMachineInstance, (i) => i.transitionHistory, { onDelete: 'CASCADE' })
+  @ManyToOne(() => StateMachineInstance, (i) => i.transitionHistory, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'instance_id' })
   instance: StateMachineInstance;
 
@@ -47,7 +49,10 @@ export class StateMachineTransitionHistory {
   @JoinColumn({ name: 'to_state_id' })
   toState: StateMachineState;
 
-  @ApiProperty({ description: 'User who triggered the transition', required: false })
+  @ApiProperty({
+    description: 'User who triggered the transition',
+    required: false,
+  })
   @Column({ type: 'uuid', nullable: true })
   actorId: string;
 
@@ -55,7 +60,10 @@ export class StateMachineTransitionHistory {
   @Column({ type: 'text', nullable: true })
   comment: string;
 
-  @ApiProperty({ description: 'Context snapshot at the moment of transition', required: false })
+  @ApiProperty({
+    description: 'Context snapshot at the moment of transition',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   contextSnapshot: Record<string, any>;
 

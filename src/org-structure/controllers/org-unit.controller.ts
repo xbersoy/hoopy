@@ -81,9 +81,7 @@ export class OrgUnitController {
     description: 'All org units (flat list)',
     type: [OrgUnit],
   })
-  findAll(
-    @Param('companyId') companyId: string,
-  ): Promise<OrgUnit[]> {
+  findAll(@Param('companyId') companyId: string): Promise<OrgUnit[]> {
     return this.orgUnitService.findAll(companyId);
   }
 
@@ -91,7 +89,11 @@ export class OrgUnitController {
   @RequirePermissions({ action: 'read', resourceType: 'org-unit' })
   @ApiOperation({ summary: 'Export all org units (JSON or CSV)' })
   @ApiParam({ name: 'companyId', type: 'string', format: 'uuid' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
   async exportOrgUnits(
     @Param('companyId') companyId: string,
     @Query('format') format: string = 'json',

@@ -55,12 +55,18 @@ export class PermissionRolesController {
   @Get('export')
   @RequirePermissions({ action: 'read', resourceType: 'permission-role' })
   @ApiOperation({ summary: 'Export all permission roles (JSON or CSV)' })
-  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    description: 'json or csv (default: json)',
+  })
   async exportPermissionRoles(
     @Query('format') format: string = 'json',
     @Req() req,
   ) {
-    const roles = await this.permissionRolesService.findAllByCompany(req.user.companyId);
+    const roles = await this.permissionRolesService.findAllByCompany(
+      req.user.companyId,
+    );
     if (format === 'csv') {
       const { CsvHelper } = await import('../../shared/utils/csv.helper');
       const rows = roles.map((r) => ({
@@ -94,7 +100,11 @@ export class PermissionRolesController {
     const results = [];
     for (const item of items) {
       const created = await this.permissionRolesService.create(
-        { name: item.name, description: item.description, permissionIds: item.permissionIds },
+        {
+          name: item.name,
+          description: item.description,
+          permissionIds: item.permissionIds,
+        },
         req.user.companyId,
       );
       results.push(created);

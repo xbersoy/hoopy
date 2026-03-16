@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, Like } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Permission } from '../entities/permission.entity';
 
 const INSTANCE_ACTIONS = ['create', 'read', 'update', 'delete'];
@@ -89,7 +89,9 @@ export class CustomObjectPermissionsService {
     for (const perm of allFieldPerms) {
       if (!expectedFieldResourceTypes.has(perm.resourceType)) {
         await this.permissionRepo.remove(perm);
-        this.logger.log(`Removed stale permission: ${perm.action}:${perm.resourceType}`);
+        this.logger.log(
+          `Removed stale permission: ${perm.action}:${perm.resourceType}`,
+        );
       }
     }
   }
@@ -117,7 +119,9 @@ export class CustomObjectPermissionsService {
       await this.permissionRepo.remove(fieldPerms);
     }
 
-    this.logger.log(`Removed all permissions for definition: ${definitionCode}`);
+    this.logger.log(
+      `Removed all permissions for definition: ${definitionCode}`,
+    );
   }
 
   /**

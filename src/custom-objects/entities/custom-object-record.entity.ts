@@ -60,11 +60,19 @@ export class CustomObjectRecord {
   @Column({ type: 'uuid', nullable: true })
   updatedBy: string | null;
 
-  @ApiProperty({ description: 'Optional User ID who owns this specific record for RBP instance-level access', required: false })
+  @ApiProperty({
+    description:
+      'Optional User ID who owns this specific record for RBP instance-level access',
+    required: false,
+  })
   @Column({ name: 'owner_id', type: 'uuid', nullable: true })
   ownerId: string | null;
 
-  @ApiProperty({ description: 'Optional Permission Group ID that owns this specific record for RBP instance-level access', required: false })
+  @ApiProperty({
+    description:
+      'Optional Permission Group ID that owns this specific record for RBP instance-level access',
+    required: false,
+  })
   @Column({ name: 'owner_group_id', type: 'uuid', nullable: true })
   ownerGroupId: string | null;
 

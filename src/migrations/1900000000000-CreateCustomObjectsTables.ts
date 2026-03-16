@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateCustomObjectsTables1900000000000
-  implements MigrationInterface
-{
+export class CreateCustomObjectsTables1900000000000 implements MigrationInterface {
   name = 'CreateCustomObjectsTables1900000000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -90,8 +88,6 @@ export class CreateCustomObjectsTables1900000000000
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE IF EXISTS "custom_object_records"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "custom_object_fields"`);
-    await queryRunner.query(
-      `DROP TABLE IF EXISTS "custom_object_definitions"`,
-    );
+    await queryRunner.query(`DROP TABLE IF EXISTS "custom_object_definitions"`);
   }
 }

@@ -23,9 +23,7 @@ import {
 @Controller('workflows/definitions')
 @UseGuards(JwtAuthGuard)
 export class WorkflowDefinitionController {
-  constructor(
-    private readonly definitionService: WorkflowDefinitionService,
-  ) {}
+  constructor(private readonly definitionService: WorkflowDefinitionService) {}
 
   @Get()
   @ApiOperation({ summary: 'List all workflow definitions for the company' })
@@ -40,14 +38,20 @@ export class WorkflowDefinitionController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new workflow definition with initial draft version' })
+  @ApiOperation({
+    summary: 'Create a new workflow definition with initial draft version',
+  })
   create(@Req() req, @Body() dto: CreateWorkflowDefinitionDto) {
     return this.definitionService.create(req.user.companyId, dto);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update workflow definition metadata' })
-  update(@Req() req, @Param('id') id: string, @Body() dto: UpdateWorkflowDefinitionDto) {
+  update(
+    @Req() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateWorkflowDefinitionDto,
+  ) {
     return this.definitionService.update(req.user.companyId, id, dto);
   }
 
@@ -82,24 +86,38 @@ export class WorkflowDefinitionController {
   }
 
   @Patch(':id/versions/:versionId')
-  @ApiOperation({ summary: 'Update a draft version (steps, transitions, config)' })
+  @ApiOperation({
+    summary: 'Update a draft version (steps, transitions, config)',
+  })
   updateVersion(
     @Req() req,
     @Param('id') id: string,
     @Param('versionId') versionId: string,
     @Body() dto: UpdateWorkflowVersionDraftDto,
   ) {
-    return this.definitionService.updateVersionDraft(req.user.companyId, id, versionId, dto);
+    return this.definitionService.updateVersionDraft(
+      req.user.companyId,
+      id,
+      versionId,
+      dto,
+    );
   }
 
   @Post(':id/versions/:versionId/publish')
-  @ApiOperation({ summary: 'Publish a draft version (archives any currently published version)' })
+  @ApiOperation({
+    summary:
+      'Publish a draft version (archives any currently published version)',
+  })
   publishVersion(
     @Req() req,
     @Param('id') id: string,
     @Param('versionId') versionId: string,
   ) {
-    return this.definitionService.publishVersion(req.user.companyId, id, versionId);
+    return this.definitionService.publishVersion(
+      req.user.companyId,
+      id,
+      versionId,
+    );
   }
 
   @Post(':id/versions/:versionId/archive')
@@ -109,6 +127,10 @@ export class WorkflowDefinitionController {
     @Param('id') id: string,
     @Param('versionId') versionId: string,
   ) {
-    return this.definitionService.archiveVersion(req.user.companyId, id, versionId);
+    return this.definitionService.archiveVersion(
+      req.user.companyId,
+      id,
+      versionId,
+    );
   }
 }

@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { AssigneeStrategy } from '../enums/workflow.enums';
 import {
   IAssigneeResolver,
@@ -16,9 +21,7 @@ import {
 export class WorkflowAssigneeResolverService {
   private resolverMap: Map<AssigneeStrategy, IAssigneeResolver>;
 
-  constructor(
-    @Inject(ASSIGNEE_RESOLVERS) resolvers: IAssigneeResolver[],
-  ) {
+  constructor(@Inject(ASSIGNEE_RESOLVERS) resolvers: IAssigneeResolver[]) {
     this.resolverMap = new Map();
     for (const resolver of resolvers) {
       this.resolverMap.set(resolver.strategy, resolver);
@@ -32,7 +35,9 @@ export class WorkflowAssigneeResolverService {
   ): Promise<ResolvedAssignee[]> {
     const resolver = this.resolverMap.get(strategy);
     if (!resolver) {
-      throw new BadRequestException(`No assignee resolver registered for strategy: ${strategy}`);
+      throw new BadRequestException(
+        `No assignee resolver registered for strategy: ${strategy}`,
+      );
     }
 
     const assignees = await resolver.resolve(config, context);

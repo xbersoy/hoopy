@@ -61,7 +61,12 @@ export class CustomObjectDefinition {
     required: false,
     enum: ['EMPLOYEE', 'POSITION'],
   })
-  @Column({ name: 'base_object_type', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'base_object_type',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   baseObjectType: string | null;
 
   @ApiProperty({ description: 'Whether this object is active', default: true })
