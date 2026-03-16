@@ -14,6 +14,7 @@ const RESOURCE_TYPES = [
   'user',
   'employee',
   'company',
+  'account',
   'contact',
   'org-unit',
   'org-unit-type',
@@ -22,6 +23,7 @@ const RESOURCE_TYPES = [
   'attachment',
   'picklist',
   'custom-object-definition',
+  'custom-object-record',
 ];
 
 const ACTIONS = ['create', 'read', 'update', 'delete'];
@@ -49,6 +51,7 @@ const ROLE_DEFINITIONS: Array<{
       'permission-group': ['read', 'update'],
       picklist: ['create', 'read', 'update', 'delete'],
       'custom-object-definition': ['create', 'read', 'update', 'delete'],
+      'custom-object-record': ['create', 'read', 'update', 'delete'],
       company: ['read'],
       user: ['read'],
       contact: ['read'],
@@ -73,6 +76,14 @@ const ROLE_DEFINITIONS: Array<{
       company: ['read', 'update'],
       contact: ['create', 'read', 'update', 'delete'],
       attachment: ['create', 'read', 'update', 'delete'],
+    },
+  },
+  {
+    name: 'Account Admin',
+    description: 'Manage account-level settings and preferences',
+    permissions: {
+      account: ['create', 'read', 'update', 'delete'],
+      company: ['read', 'update'],
     },
   },
 ];
@@ -137,6 +148,11 @@ const GROUP_DEFINITIONS: Array<{
     name: 'All Employees',
     description: 'Every employee in the company',
     roleNames: ['Employee Viewer'],
+  },
+  {
+    name: 'Account Admins',
+    description: 'Users who manage account-level settings',
+    roleNames: ['Account Admin'],
   },
 ];
 
