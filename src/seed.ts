@@ -12,6 +12,8 @@ import { EmployeeSeeder } from './seeds/tasks/07-employee.seeder';
 import { PermissionsSeeder } from './seeds/tasks/08-permissions.seeder';
 import { CustomObjectsSeeder } from './seeds/tasks/09-custom-objects.seeder';
 import { PicklistsSeeder } from './seeds/tasks/10-picklists.seeder';
+import { StateMachineSeeder } from './seeds/tasks/11-state-machine.seeder';
+import { WorkflowSeeder } from './seeds/tasks/12-workflow.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
@@ -33,6 +35,8 @@ async function bootstrap() {
       new PermissionsSeeder(),
       new CustomObjectsSeeder(),
       new PicklistsSeeder(),
+      new StateMachineSeeder(),
+      new WorkflowSeeder(),
     ];
 
     for (const seeder of seeders) {

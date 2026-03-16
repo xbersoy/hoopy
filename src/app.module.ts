@@ -14,6 +14,8 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { CustomObjectsModule } from './custom-objects/custom-objects.module';
 import { PicklistsModule } from './picklists/picklists.module';
 import { AdminAccessModule } from './admin-access/admin-access.module';
+import { WorkflowsModule } from './workflows/workflows.module';
+import { StateMachineModule } from './state-machine/state-machine.module';
 import { ConfigService } from '@nestjs/config';
 import { initSupabase } from './supabase/supabase.client';
 
@@ -35,6 +37,8 @@ import { initSupabase } from './supabase/supabase.client';
     CustomObjectsModule,
     PicklistsModule,
     AdminAccessModule,
+    StateMachineModule,
+    WorkflowsModule,
   ],
   controllers: [AppController],
 })

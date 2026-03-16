@@ -24,6 +24,9 @@ const RESOURCE_TYPES = [
   'picklist',
   'custom-object-definition',
   'custom-object-record',
+  'state-machine-definition',
+  'workflow-definition',
+  'workflow-instance',
 ];
 
 const ACTIONS = ['create', 'read', 'update', 'delete'];
@@ -52,6 +55,9 @@ const ROLE_DEFINITIONS: Array<{
       picklist: ['create', 'read', 'update', 'delete'],
       'custom-object-definition': ['create', 'read', 'update', 'delete'],
       'custom-object-record': ['create', 'read', 'update', 'delete'],
+      'state-machine-definition': ['create', 'read', 'update', 'delete'],
+      'workflow-definition': ['create', 'read', 'update', 'delete'],
+      'workflow-instance': ['create', 'read', 'update', 'delete'],
       company: ['read'],
       user: ['read'],
       contact: ['read'],
@@ -64,6 +70,7 @@ const ROLE_DEFINITIONS: Array<{
       employee: ['read'],
       'org-unit': ['read'],
       'org-unit-type': ['read'],
+      'workflow-instance': ['read'],
       company: ['read'],
       contact: ['read'],
     },

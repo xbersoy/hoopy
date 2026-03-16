@@ -1,0 +1,10 @@
+export { WorkflowDefinition } from './workflow-definition.entity';
+export { WorkflowDefinitionI18n } from './workflow-definition-i18n.entity';
+export { WorkflowDefinitionVersion } from './workflow-definition-version.entity';
+export { WorkflowStepDefinition } from './workflow-step-definition.entity';
+export { WorkflowStepI18n } from './workflow-step-i18n.entity';
+export { WorkflowTransitionDefinition } from './workflow-transition-definition.entity';
+export { WorkflowInstance } from './workflow-instance.entity';
+export { WorkflowStepInstance } from './workflow-step-instance.entity';
+export { WorkflowStepAssignee } from './workflow-step-assignee.entity';
+export { WorkflowActionLog } from './workflow-action-log.entity';
