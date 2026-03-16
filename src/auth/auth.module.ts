@@ -13,6 +13,7 @@ import { AccountModule } from '../account/account.module';
 import { CompanyModule } from '../company/company.module';
 import { EmployeeModule } from '../employee/employee.module';
 import { PermissionsModule } from '../permissions/permissions.module';
+import { AdminAccessModule } from '../admin-access/admin-access.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PermissionsModule } from '../permissions/permissions.module';
     CompanyModule,
     EmployeeModule,
     PermissionsModule,
+    AdminAccessModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

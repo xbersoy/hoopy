@@ -103,4 +103,22 @@ export class AuthController {
       ),
     };
   }
+
+  @Get('me/admin-privileges')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user administrative privileges' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of admin privileges',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getMyAdminPrivileges(@Req() req) {
+    return {
+      privileges: await this.authService.getUserAdminPrivileges(
+        req.user.id,
+        req.user.accountId,
+      ),
+    };
+  }
 }

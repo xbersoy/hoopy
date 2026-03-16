@@ -18,6 +18,8 @@ import { CompanyService } from '../company/services/company.service';
 import { EmployeeService } from '../employee/employee.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { Permission } from '../permissions/entities/permission.entity';
+import { AdminAccessService } from '../admin-access/services/admin-access.service';
+import { AdminPrivilege } from '../admin-access/entities/admin-access.entity';
 
 export interface JWT_CONFIG {
   accessSecret: string;
@@ -38,6 +40,7 @@ export class AuthService {
     private readonly companyService: CompanyService,
     private readonly employeeService: EmployeeService,
     private readonly permissionsService: PermissionsService,
+    private readonly adminAccessService: AdminAccessService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
@@ -198,6 +201,7 @@ export class AuthService {
     const company = await this.companyService.findByOwner(user.id);
 
     let accountId: string | undefined = company?.account?.id;
+    let isAccountOwner = !!accountId; // User owns a company → owns the account
 
     // Fallback: resolve account directly from user (e.g. seeded users without a company)
     if (!accountId) {
@@ -206,6 +210,7 @@ export class AuthService {
         relations: ['account'],
       });
       accountId = userWithAccount?.account?.id;
+      if (accountId) isAccountOwner = true;
     }
 
     const payload = {
@@ -213,6 +218,7 @@ export class AuthService {
       email: user.email,
       ...(company ? { companyId: company.id } : {}),
       ...(accountId ? { accountId } : {}),
+      isAccountOwner,
     };
 
     const accessToken = await this.jwtService.signAsync(payload, {
@@ -241,5 +247,20 @@ export class AuthService {
   ): Promise<Permission[]> {
     if (!companyId) return [];
     return this.permissionsService.getUserPermissions(userId, companyId);
+  }
+
+  async getUserAdminPrivileges(
+    userId: string,
+    accountId: string,
+  ): Promise<AdminPrivilege[]> {
+    if (!accountId) return [];
+
+    // Account owner has all privileges implicitly
+    const account = await this.accountService.findByOwner(userId);
+    if (account && account.id === accountId) {
+      return ['permission-management', 'account-management'];
+    }
+
+    return this.adminAccessService.getUserPrivileges(userId, accountId);
   }
 }

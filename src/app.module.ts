@@ -13,6 +13,7 @@ import { OrgStructureModule } from './org-structure/org-structure.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { CustomObjectsModule } from './custom-objects/custom-objects.module';
 import { PicklistsModule } from './picklists/picklists.module';
+import { AdminAccessModule } from './admin-access/admin-access.module';
 import { ConfigService } from '@nestjs/config';
 import { initSupabase } from './supabase/supabase.client';
 
@@ -33,6 +34,7 @@ import { initSupabase } from './supabase/supabase.client';
     PermissionsModule,
     CustomObjectsModule,
     PicklistsModule,
+    AdminAccessModule,
   ],
   controllers: [AppController],
 })
