@@ -4,9 +4,10 @@ import { Account } from './entities/account.entity';
 import { AccountService } from './services/account.service';
 import { TypeOrmAccountRepository } from './account.repository';
 import { AccountPreferencesController } from './controllers/account-preferences.controller';
+import { PermissionsModule } from '../permissions/permissions.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Account])],
+  imports: [TypeOrmModule.forFeature([Account]), PermissionsModule],
   controllers: [AccountPreferencesController],
   providers: [
     AccountService,
