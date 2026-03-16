@@ -5,7 +5,7 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class CreateAccountsTable1723456789000 implements MigrationInterface {
+export class CreateAccountsTable1710514000004 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -42,6 +42,12 @@ export class CreateAccountsTable1723456789000 implements MigrationInterface {
             name: 'updated_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
+          },
+          {
+            name: 'settings',
+            type: 'jsonb',
+            isNullable: true,
+            default: "'{}'",
           },
         ],
       }),

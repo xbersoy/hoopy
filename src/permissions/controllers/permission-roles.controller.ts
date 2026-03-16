@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   Req,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -14,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -48,6 +50,56 @@ export class PermissionRolesController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   findAll(@Req() req): Promise<PermissionRole[]> {
     return this.permissionRolesService.findAllByCompany(req.user.companyId);
+  }
+
+  @Get('export')
+  @RequirePermissions({ action: 'read', resourceType: 'permission-role' })
+  @ApiOperation({ summary: 'Export all permission roles (JSON or CSV)' })
+  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  async exportPermissionRoles(
+    @Query('format') format: string = 'json',
+    @Req() req,
+  ) {
+    const roles = await this.permissionRolesService.findAllByCompany(req.user.companyId);
+    if (format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      const rows = roles.map((r) => ({
+        name: r.name,
+        description: r.description,
+        permissionIds: JSON.stringify((r.permissions || []).map((p) => p.id)),
+      }));
+      return { format: 'csv', content: CsvHelper.toCsv(rows) };
+    }
+    return { format: 'json', content: roles };
+  }
+
+  @Post('import')
+  @RequirePermissions({ action: 'create', resourceType: 'permission-role' })
+  @ApiOperation({ summary: 'Import permission roles (JSON or CSV)' })
+  async importPermissionRoles(
+    @Body() body: { format: string; content: any },
+    @Req() req,
+  ) {
+    let items: any[];
+    if (body.format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      items = CsvHelper.fromCsv(body.content).map((row) => ({
+        name: row.name,
+        description: row.description,
+        permissionIds: row.permissionIds ? JSON.parse(row.permissionIds) : [],
+      }));
+    } else {
+      items = Array.isArray(body.content) ? body.content : [body.content];
+    }
+    const results = [];
+    for (const item of items) {
+      const created = await this.permissionRolesService.create(
+        { name: item.name, description: item.description, permissionIds: item.permissionIds },
+        req.user.companyId,
+      );
+      results.push(created);
+    }
+    return { imported: results.length };
   }
 
   @Get(':id')

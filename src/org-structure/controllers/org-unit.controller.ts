@@ -87,6 +87,63 @@ export class OrgUnitController {
     return this.orgUnitService.findAll(companyId);
   }
 
+  @Get('export')
+  @RequirePermissions({ action: 'read', resourceType: 'org-unit' })
+  @ApiOperation({ summary: 'Export all org units (JSON or CSV)' })
+  @ApiParam({ name: 'companyId', type: 'string', format: 'uuid' })
+  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  async exportOrgUnits(
+    @Param('companyId') companyId: string,
+    @Query('format') format: string = 'json',
+  ) {
+    const units = await this.orgUnitService.findAll(companyId);
+    if (format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      const rows = units.map((u) => ({
+        name: u.name,
+        code: u.code,
+        status: u.status,
+        depth: u.depth,
+        parentId: u.parentId,
+        typeId: u.typeId,
+        description: u.description,
+      }));
+      return { format: 'csv', content: CsvHelper.toCsv(rows) };
+    }
+    return { format: 'json', content: units };
+  }
+
+  @Post('import')
+  @RequirePermissions({ action: 'create', resourceType: 'org-unit' })
+  @ApiOperation({ summary: 'Import org units (JSON or CSV)' })
+  @ApiParam({ name: 'companyId', type: 'string', format: 'uuid' })
+  async importOrgUnits(
+    @Param('companyId') companyId: string,
+    @Body() body: { format: string; content: any },
+  ) {
+    let items: any[];
+    if (body.format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      items = CsvHelper.fromCsv(body.content).map((row) => ({
+        name: row.name,
+        code: row.code,
+        status: row.status,
+        depth: row.depth,
+        parentId: row.parentId,
+        typeId: row.typeId,
+        description: row.description,
+      }));
+    } else {
+      items = Array.isArray(body.content) ? body.content : [body.content];
+    }
+    const results = [];
+    for (const item of items) {
+      const created = await this.orgUnitService.create(companyId, item);
+      results.push(created);
+    }
+    return { imported: results.length };
+  }
+
   @Get(':id')
   @RequirePermissions({ action: 'read', resourceType: 'org-unit' })
   @ApiOperation({ summary: 'Get a single org unit' })

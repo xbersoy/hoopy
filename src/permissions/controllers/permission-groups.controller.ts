@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   Req,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -16,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -48,6 +50,54 @@ export class PermissionGroupsController {
   })
   findAll(@Req() req): Promise<PermissionGroup[]> {
     return this.permissionGroupsService.findAllByCompany(req.user.companyId);
+  }
+
+  @Get('export')
+  @RequirePermissions({ action: 'read', resourceType: 'permission-group' })
+  @ApiOperation({ summary: 'Export all permission groups (JSON or CSV)' })
+  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  async exportPermissionGroups(
+    @Query('format') format: string = 'json',
+    @Req() req,
+  ) {
+    const groups = await this.permissionGroupsService.findAllByCompany(req.user.companyId);
+    if (format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      const rows = groups.map((g) => ({
+        name: g.name,
+        description: g.description,
+      }));
+      return { format: 'csv', content: CsvHelper.toCsv(rows) };
+    }
+    return { format: 'json', content: groups };
+  }
+
+  @Post('import')
+  @RequirePermissions({ action: 'create', resourceType: 'permission-group' })
+  @ApiOperation({ summary: 'Import permission groups (JSON or CSV)' })
+  async importPermissionGroups(
+    @Body() body: { format: string; content: any },
+    @Req() req,
+  ) {
+    let items: any[];
+    if (body.format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      items = CsvHelper.fromCsv(body.content).map((row) => ({
+        name: row.name,
+        description: row.description,
+      }));
+    } else {
+      items = Array.isArray(body.content) ? body.content : [body.content];
+    }
+    const results = [];
+    for (const item of items) {
+      const created = await this.permissionGroupsService.create(
+        { name: item.name, description: item.description, memberUserIds: [], permissionRoleIds: [] },
+        req.user.companyId,
+      );
+      results.push(created);
+    }
+    return { imported: results.length };
   }
 
   @Get(':id')

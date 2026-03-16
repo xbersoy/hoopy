@@ -43,6 +43,12 @@ export class CreateCompaniesTable1710514500000 implements MigrationInterface {
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },
+          {
+            name: 'settings',
+            type: 'jsonb',
+            isNullable: true,
+            default: "'{}'",
+          },
         ],
       }),
       true,

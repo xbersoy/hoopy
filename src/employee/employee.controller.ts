@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -23,6 +24,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 
 @ApiTags('Employees')
@@ -58,6 +60,59 @@ export class EmployeeController {
     @Query() query: QueryEmployeeDto,
   ): Promise<PaginatedResponse<Employee>> {
     return this.employeeService.findPaginated(query);
+  }
+
+  @Get('export')
+  @RequirePermissions({ action: 'read', resourceType: 'employee' })
+  @ApiOperation({ summary: 'Export all employees (JSON or CSV)' })
+  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  async exportEmployees(
+    @Query('format') format: string = 'json',
+  ) {
+    const employees = await this.employeeService.findAll();
+    if (format === 'csv') {
+      const { CsvHelper } = await import('../shared/utils/csv.helper');
+      const rows = employees.map((e) => ({
+        firstName: e.firstName,
+        lastName: e.lastName,
+        email: e.email,
+        phone: e.phone,
+        position: e.position,
+        department: e.department,
+        hireDate: e.hireDate,
+      }));
+      return { format: 'csv', content: CsvHelper.toCsv(rows) };
+    }
+    return { format: 'json', content: employees };
+  }
+
+  @Post('import')
+  @RequirePermissions({ action: 'create', resourceType: 'employee' })
+  @ApiOperation({ summary: 'Import employees (JSON or CSV)' })
+  async importEmployees(
+    @Body() body: { format: string; content: any },
+  ) {
+    let items: any[];
+    if (body.format === 'csv') {
+      const { CsvHelper } = await import('../shared/utils/csv.helper');
+      items = CsvHelper.fromCsv(body.content).map((row) => ({
+        firstName: row.firstName,
+        lastName: row.lastName,
+        email: row.email,
+        phone: row.phone,
+        position: row.position,
+        department: row.department,
+        hireDate: row.hireDate,
+      }));
+    } else {
+      items = Array.isArray(body.content) ? body.content : [body.content];
+    }
+    const results = [];
+    for (const item of items) {
+      const created = await this.employeeService.create(item);
+      results.push(created);
+    }
+    return { imported: results.length, employees: results };
   }
 
   @Get(':id')

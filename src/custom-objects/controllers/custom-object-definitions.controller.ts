@@ -71,50 +71,6 @@ export class CustomObjectDefinitionsController {
     return this.definitionsService.findAll(req.user.companyId, query);
   }
 
-  @Get(':id')
-  @RequirePermissions({
-    action: 'read',
-    resourceType: 'custom-object-definition',
-  })
-  @ApiOperation({ summary: 'Get a custom object definition by ID' })
-  @ApiResponse({ status: 200, description: 'Definition details' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Not found' })
-  findOne(@Param('id') id: string): Promise<CustomObjectDefinition> {
-    return this.definitionsService.findOne(id);
-  }
-
-  @Patch(':id')
-  @RequirePermissions({
-    action: 'update',
-    resourceType: 'custom-object-definition',
-  })
-  @ApiOperation({ summary: 'Update a custom object definition' })
-  @ApiResponse({ status: 200, description: 'Definition updated' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Not found' })
-  update(
-    @Param('id') id: string,
-    @Body() dto: UpdateCustomObjectDefinitionDto,
-    @Req() req,
-  ): Promise<CustomObjectDefinition> {
-    return this.definitionsService.update(id, dto, req.user.sub, req.user.companyId);
-  }
-
-  @Delete(':id')
-  @RequirePermissions({
-    action: 'delete',
-    resourceType: 'custom-object-definition',
-  })
-  @ApiOperation({ summary: 'Delete a custom object definition' })
-  @ApiResponse({ status: 200, description: 'Definition deleted' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Not found' })
-  remove(@Param('id') id: string, @Req() req): Promise<CustomObjectDefinition> {
-    return this.definitionsService.remove(id, req.user.companyId);
-  }
-
   @Get('export')
   @RequirePermissions({
     action: 'read',
@@ -141,6 +97,19 @@ export class CustomObjectDefinitionsController {
       return { format: 'csv', content: CsvHelper.toCsv(rows) };
     }
     return { format: 'json', content: data };
+  }
+
+  @Get(':id')
+  @RequirePermissions({
+    action: 'read',
+    resourceType: 'custom-object-definition',
+  })
+  @ApiOperation({ summary: 'Get a custom object definition by ID' })
+  @ApiResponse({ status: 200, description: 'Definition details' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  findOne(@Param('id') id: string): Promise<CustomObjectDefinition> {
+    return this.definitionsService.findOne(id);
   }
 
   @Post('import')

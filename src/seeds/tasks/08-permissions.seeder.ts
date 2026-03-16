@@ -20,9 +20,8 @@ const RESOURCE_TYPES = [
   'permission-role',
   'permission-group',
   'attachment',
-  'custom-object-definition',
-  'custom-object-record',
   'picklist',
+  'custom-object-definition',
 ];
 
 const ACTIONS = ['create', 'read', 'update', 'delete'];
@@ -48,9 +47,8 @@ const ROLE_DEFINITIONS: Array<{
       'org-unit': ['create', 'read', 'update', 'delete'],
       'org-unit-type': ['create', 'read', 'update', 'delete'],
       'permission-group': ['read', 'update'],
-      'custom-object-definition': ['create', 'read', 'update', 'delete'],
-      'custom-object-record': ['create', 'read', 'update', 'delete'],
       picklist: ['create', 'read', 'update', 'delete'],
+      'custom-object-definition': ['create', 'read', 'update', 'delete'],
       company: ['read'],
       user: ['read'],
       contact: ['read'],
@@ -131,9 +129,7 @@ const GROUP_DEFINITIONS: Array<{
     peoplePools: [
       {
         poolType: 'included',
-        conditions: [
-          { field: 'department', values: ['Accounting', 'Legal'] },
-        ],
+        conditions: [{ field: 'department', values: ['Accounting', 'Legal'] }],
       },
     ],
   },
@@ -246,14 +242,18 @@ export class PermissionsSeeder implements Seeder {
           );
           if (missingIds.length > 0) {
             const mergedIds = [
-              ...Array.from(existingPermIds) as string[],
+              ...(Array.from(existingPermIds) as string[]),
               ...missingIds,
             ];
-            await permissionRolesService.update(existing.id, {
-              name: existing.name,
-              description: existing.description,
-              permissionIds: mergedIds,
-            }, company.id);
+            await permissionRolesService.update(
+              existing.id,
+              {
+                name: existing.name,
+                description: existing.description,
+                permissionIds: mergedIds,
+              },
+              company.id,
+            );
             this.logger.log(
               `  [${company.name}] Updated role "${roleDef.name}" (+${missingIds.length} permissions).`,
             );
@@ -336,9 +336,7 @@ export class PermissionsSeeder implements Seeder {
           },
           company.id,
         );
-        this.logger.log(
-          `  [${company.name}] Created group: ${groupDef.name}`,
-        );
+        this.logger.log(`  [${company.name}] Created group: ${groupDef.name}`);
       }
     }
   }

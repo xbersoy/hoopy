@@ -89,6 +89,59 @@ export class OrgUnitTypeController {
     );
   }
 
+  @Get('export')
+  @RequirePermissions({ action: 'read', resourceType: 'org-unit-type' })
+  @ApiOperation({ summary: 'Export all org unit types (JSON or CSV)' })
+  @ApiParam({ name: 'companyId', type: 'string', format: 'uuid' })
+  @ApiQuery({ name: 'format', required: false, description: 'json or csv (default: json)' })
+  async exportOrgUnitTypes(
+    @Param('companyId') companyId: string,
+    @Query('format') format: string = 'json',
+  ) {
+    const types = await this.orgUnitTypeService.findAll(companyId, undefined, true);
+    if (format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      const rows = types.map((t) => ({
+        slug: t.slug,
+        color: t.color,
+        icon: t.icon,
+        name: t.name,
+        translations: JSON.stringify(t.translations),
+      }));
+      return { format: 'csv', content: CsvHelper.toCsv(rows) };
+    }
+    return { format: 'json', content: types };
+  }
+
+  @Post('import')
+  @RequirePermissions({ action: 'create', resourceType: 'org-unit-type' })
+  @ApiOperation({ summary: 'Import org unit types (JSON or CSV)' })
+  @ApiParam({ name: 'companyId', type: 'string', format: 'uuid' })
+  async importOrgUnitTypes(
+    @Param('companyId') companyId: string,
+    @Body() body: { format: string; content: any },
+  ) {
+    let items: any[];
+    if (body.format === 'csv') {
+      const { CsvHelper } = await import('../../shared/utils/csv.helper');
+      items = CsvHelper.fromCsv(body.content).map((row) => ({
+        slug: row.slug,
+        color: row.color,
+        icon: row.icon,
+        name: row.name,
+        translations: row.translations ? JSON.parse(row.translations) : [],
+      }));
+    } else {
+      items = Array.isArray(body.content) ? body.content : [body.content];
+    }
+    const results = [];
+    for (const item of items) {
+      const created = await this.orgUnitTypeService.create(companyId, item);
+      results.push(created);
+    }
+    return { imported: results.length };
+  }
+
   @Get(':id')
   @RequirePermissions({ action: 'read', resourceType: 'org-unit-type' })
   @ApiOperation({
