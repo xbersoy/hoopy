@@ -5,7 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, EntityManager } from 'typeorm';
 import {
   WorkflowDefinition,
   WorkflowDefinitionI18n,
@@ -45,8 +45,9 @@ export class WorkflowDefinitionService {
     });
   }
 
-  async findOneById(companyId: string, id: string): Promise<WorkflowDefinition> {
-    const def = await this.definitionRepo.findOne({
+  async findOneById(companyId: string, id: string, entityManager?: EntityManager): Promise<WorkflowDefinition> {
+    const repo = entityManager ? entityManager.getRepository(WorkflowDefinition) : this.definitionRepo;
+    const def = await repo.findOne({
       where: { id, companyId },
       relations: ['versions', 'translations'],
     });
@@ -150,7 +151,7 @@ export class WorkflowDefinitionService {
         await manager.save(WorkflowTransitionDefinition, transition);
       }
 
-      return this.findOneById(companyId, savedDef.id);
+      return this.findOneById(companyId, savedDef.id, manager);
     });
   }
 

@@ -175,7 +175,7 @@ export class StateMachineService {
         }
       }
 
-      const result = await this.findDefinitionById(companyId, savedDef.id);
+      const result = await this.findDefinitionById(companyId, savedDef.id, manager);
       this.eventPublisher.emit({
         eventType: 'state_machine.definition.created',
         actor: actor ?? { type: 'system', service: 'state-machine' },
@@ -194,8 +194,9 @@ export class StateMachineService {
     });
   }
 
-  async findDefinitionById(companyId: string, id: string): Promise<StateMachineDefinition> {
-    const def = await this.definitionRepo.findOne({
+  async findDefinitionById(companyId: string, id: string, entityManager?: EntityManager): Promise<StateMachineDefinition> {
+    const repo = entityManager ? entityManager.getRepository(StateMachineDefinition) : this.definitionRepo;
+    const def = await repo.findOne({
       where: { id, companyId },
       relations: [
         'translations',

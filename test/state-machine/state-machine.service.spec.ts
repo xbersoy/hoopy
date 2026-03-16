@@ -20,6 +20,12 @@ const createMockManager = () => ({
   findOne: jest.fn(),
   find: jest.fn(),
   delete: jest.fn(),
+  getRepository: jest.fn().mockReturnValue({
+    findOne: jest.fn(),
+    find: jest.fn(),
+    save: jest.fn(),
+    create: jest.fn(),
+  }),
 });
 
 describe('StateMachineService', () => {
@@ -103,7 +109,7 @@ describe('StateMachineService', () => {
 
       dataSource.transaction.mockImplementation((cb) => cb(mockManager));
 
-      // Mock findDefinitionById for the return value
+      // Mock findDefinitionById for the return value (now uses manager.getRepository inside transaction)
       const savedDef = {
         id: 'def-1',
         code: input.code,
@@ -112,7 +118,8 @@ describe('StateMachineService', () => {
         transitions: [],
         translations: [],
       };
-      definitionRepo.findOne.mockResolvedValue(savedDef);
+      const mockRepo = { findOne: jest.fn().mockResolvedValue(savedDef) };
+      mockManager.getRepository.mockReturnValue(mockRepo);
 
       const result = await service.createDefinition(companyId, input);
 
