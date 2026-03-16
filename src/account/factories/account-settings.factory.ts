@@ -1,6 +1,9 @@
 import { AccountSettings } from '../interfaces/account-settings.interface';
 
 export const createDefaultAccountSettings = (): AccountSettings => ({
+  branding: {
+    companyName: '',
+  },
   localization: {
     supportedLanguages: ['en'],
     defaultLanguage: 'en',
@@ -10,6 +13,7 @@ export const createDefaultAccountSettings = (): AccountSettings => ({
     weekStartsOn: 1,
   },
   currency: {
+    supportedCurrencies: ['USD'],
     preferredCurrency: 'USD',
     display: {
       style: 'symbol',

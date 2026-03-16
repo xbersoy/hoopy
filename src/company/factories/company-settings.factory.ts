@@ -10,6 +10,7 @@ export const createDefaultCompanySettings = (): CompanySettings => ({
     weekStartsOn: 1,
   },
   currency: {
+    supportedCurrencies: ['USD'],
     preferredCurrency: 'USD',
     display: {
       style: 'symbol',

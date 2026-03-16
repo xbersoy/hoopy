@@ -8,6 +8,7 @@ export interface LocalizationSettings {
 }
 
 export interface CurrencySettings {
+  supportedCurrencies: string[];
   preferredCurrency: string;
   display: {
     style: 'symbol' | 'code';

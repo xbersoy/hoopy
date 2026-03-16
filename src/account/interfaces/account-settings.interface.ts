@@ -8,6 +8,7 @@ export interface AccountLocalizationSettings {
 }
 
 export interface AccountCurrencySettings {
+  supportedCurrencies: string[];
   preferredCurrency: string;
   display: {
     style: 'symbol' | 'code';
@@ -15,11 +16,16 @@ export interface AccountCurrencySettings {
   };
 }
 
+export interface AccountBrandingSettings {
+  companyName: string;
+}
+
 export interface AccountUiSettings {
   theme?: 'light' | 'dark';
 }
 
 export interface AccountSettings {
+  branding: AccountBrandingSettings;
   localization: AccountLocalizationSettings;
   currency: AccountCurrencySettings;
   ui?: AccountUiSettings;

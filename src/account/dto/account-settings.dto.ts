@@ -19,6 +19,11 @@ class AccountCurrencyDisplayDto {
 }
 
 class AccountCurrencySettingsDto {
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  supportedCurrencies?: string[];
+
   @IsString()
   preferredCurrency: string;
 
@@ -54,7 +59,17 @@ class AccountUiSettingsDto {
   theme?: 'light' | 'dark';
 }
 
+class AccountBrandingSettingsDto {
+  @IsString()
+  companyName: string;
+}
+
 export class AccountSettingsDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AccountBrandingSettingsDto)
+  branding?: AccountBrandingSettingsDto;
+
   @ValidateNested()
   @Type(() => AccountLocalizationSettingsDto)
   localization: AccountLocalizationSettingsDto;

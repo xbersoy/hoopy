@@ -19,6 +19,11 @@ class CurrencyDisplayDto {
 }
 
 class CurrencySettingsDto {
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  supportedCurrencies?: string[];
+
   @IsString()
   // Could add a custom decorator for ISO code validation here if strictly needed, keeping it as string for now
   preferredCurrency: string;
