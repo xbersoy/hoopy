@@ -39,7 +39,10 @@ export class CreateShiftTemplateDto {
   @IsOptional()
   breakDurationMinutes?: number;
 
-  @ApiProperty({ description: 'Whether the shift is overnight', required: false })
+  @ApiProperty({
+    description: 'Whether the shift is overnight',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isOvernight?: boolean;
@@ -88,7 +91,10 @@ export class UpdateShiftTemplateDto {
   @IsOptional()
   breakDurationMinutes?: number;
 
-  @ApiProperty({ description: 'Whether the shift is overnight', required: false })
+  @ApiProperty({
+    description: 'Whether the shift is overnight',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isOvernight?: boolean;
@@ -99,7 +105,10 @@ export class UpdateShiftTemplateDto {
   @IsOptional()
   color?: string;
 
-  @ApiProperty({ description: 'Whether the template is active', required: false })
+  @ApiProperty({
+    description: 'Whether the template is active',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

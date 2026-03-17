@@ -40,7 +40,9 @@ export class CompOffService {
   async consume(id: string, days: number): Promise<CompOffGrant> {
     const grant = await this.findOne(id);
     if (grant.status !== CompOffStatus.ACTIVE) {
-      throw new BadRequestException('Only active comp-off grants can be consumed');
+      throw new BadRequestException(
+        'Only active comp-off grants can be consumed',
+      );
     }
     if (days > grant.remainingDays) {
       throw new BadRequestException(

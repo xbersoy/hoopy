@@ -15,7 +15,11 @@ import { LeaveGrant } from './leave-grant.entity';
 import { BalanceTransactionType, BalanceActorType } from '../enums/leave.enums';
 
 @Entity('leave_balance_ledger')
-@Index('IDX_balance_ledger_employee_type', ['companyId', 'employeeId', 'leaveTypeId'])
+@Index('IDX_balance_ledger_employee_type', [
+  'companyId',
+  'employeeId',
+  'leaveTypeId',
+])
 @Index('IDX_balance_ledger_grant', ['leaveGrantId'])
 @Index('IDX_balance_ledger_request', ['leaveRequestId'])
 export class LeaveBalanceLedger {
@@ -56,11 +60,17 @@ export class LeaveBalanceLedger {
   @Column({ name: 'leave_request_id', type: 'uuid', nullable: true })
   leaveRequestId: string | null;
 
-  @ApiProperty({ description: 'Transaction type', enum: BalanceTransactionType })
+  @ApiProperty({
+    description: 'Transaction type',
+    enum: BalanceTransactionType,
+  })
   @Column({ type: 'varchar', length: 50 })
   transactionType: BalanceTransactionType;
 
-  @ApiProperty({ description: 'Transaction amount (positive = credit, negative = debit)', example: -3 })
+  @ApiProperty({
+    description: 'Transaction amount (positive = credit, negative = debit)',
+    example: -3,
+  })
   @Column({ type: 'decimal', precision: 8, scale: 2 })
   amount: number;
 

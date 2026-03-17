@@ -24,7 +24,9 @@ describe('LeaveTypeController', () => {
       create: jest.fn().mockResolvedValue(mockLeaveType),
       findAll: jest.fn().mockResolvedValue([mockLeaveType]),
       findOne: jest.fn().mockResolvedValue(mockLeaveType),
-      update: jest.fn().mockResolvedValue({ ...mockLeaveType, name: 'Updated' }),
+      update: jest
+        .fn()
+        .mockResolvedValue({ ...mockLeaveType, name: 'Updated' }),
       remove: jest.fn().mockResolvedValue(mockLeaveType),
     };
 
@@ -32,7 +34,10 @@ describe('LeaveTypeController', () => {
       controllers: [LeaveTypeController],
       providers: [
         { provide: LeaveTypeService, useValue: service },
-        { provide: PermissionsService, useValue: { userCan: jest.fn().mockResolvedValue(true) } },
+        {
+          provide: PermissionsService,
+          useValue: { userCan: jest.fn().mockResolvedValue(true) },
+        },
       ],
     }).compile();
 
@@ -41,8 +46,14 @@ describe('LeaveTypeController', () => {
 
   describe('create', () => {
     it('should pass companyId from JWT and dto to service', async () => {
-      await controller.create(mockReq, { code: 'annual', name: 'Annual Leave' });
-      expect(service.create).toHaveBeenCalledWith('comp-1', { code: 'annual', name: 'Annual Leave' });
+      await controller.create(mockReq, {
+        code: 'annual',
+        name: 'Annual Leave',
+      });
+      expect(service.create).toHaveBeenCalledWith('comp-1', {
+        code: 'annual',
+        name: 'Annual Leave',
+      });
     });
   });
 

@@ -5,7 +5,10 @@ import {
   LeaveEntitlementRuleRepository,
   LeavePolicyI18nRepository,
 } from '../leave.repository';
-import { CreateLeavePolicyDto, UpdateLeavePolicyDto } from '../dto/create-leave-policy.dto';
+import {
+  CreateLeavePolicyDto,
+  UpdateLeavePolicyDto,
+} from '../dto/create-leave-policy.dto';
 
 @Injectable()
 export class LeavePolicyService {
@@ -20,13 +23,24 @@ export class LeavePolicyService {
     private readonly i18nRepository: LeavePolicyI18nRepository,
   ) {}
 
-  async create(companyId: string, dto: CreateLeavePolicyDto): Promise<LeavePolicy> {
-    const { entitlementRules, effectiveStartDate, effectiveEndDate, translations, ...policyData } = dto;
+  async create(
+    companyId: string,
+    dto: CreateLeavePolicyDto,
+  ): Promise<LeavePolicy> {
+    const {
+      entitlementRules,
+      effectiveStartDate,
+      effectiveEndDate,
+      translations,
+      ...policyData
+    } = dto;
 
     const entity = this.policyRepository.create({
       companyId,
       ...policyData,
-      effectiveStartDate: effectiveStartDate ? new Date(effectiveStartDate) : null,
+      effectiveStartDate: effectiveStartDate
+        ? new Date(effectiveStartDate)
+        : null,
       effectiveEndDate: effectiveEndDate ? new Date(effectiveEndDate) : null,
     });
     const saved = await this.policyRepository.save(entity);
@@ -40,7 +54,13 @@ export class LeavePolicyService {
 
     if (translations) {
       for (const [locale, t] of Object.entries(translations)) {
-        await this.i18nRepository.upsert(companyId, saved.id, locale, t.name, t.description);
+        await this.i18nRepository.upsert(
+          companyId,
+          saved.id,
+          locale,
+          t.name,
+          t.description,
+        );
       }
     }
 
@@ -59,22 +79,39 @@ export class LeavePolicyService {
     return entity;
   }
 
-  async findByLeaveType(companyId: string, leaveTypeId: string): Promise<LeavePolicy[]> {
+  async findByLeaveType(
+    companyId: string,
+    leaveTypeId: string,
+  ): Promise<LeavePolicy[]> {
     return this.policyRepository.findByLeaveType(companyId, leaveTypeId);
   }
 
   async update(id: string, dto: UpdateLeavePolicyDto): Promise<LeavePolicy> {
     const entity = await this.findOne(id);
-    const { entitlementRules, effectiveStartDate, effectiveEndDate, translations, ...policyData } = dto;
+    const {
+      entitlementRules,
+      effectiveStartDate,
+      effectiveEndDate,
+      translations,
+      ...policyData
+    } = dto;
 
     if (Object.keys(policyData).length > 0) {
       Object.assign(entity, {
         ...policyData,
         ...(effectiveStartDate !== undefined
-          ? { effectiveStartDate: effectiveStartDate ? new Date(effectiveStartDate) : null }
+          ? {
+              effectiveStartDate: effectiveStartDate
+                ? new Date(effectiveStartDate)
+                : null,
+            }
           : {}),
         ...(effectiveEndDate !== undefined
-          ? { effectiveEndDate: effectiveEndDate ? new Date(effectiveEndDate) : null }
+          ? {
+              effectiveEndDate: effectiveEndDate
+                ? new Date(effectiveEndDate)
+                : null,
+            }
           : {}),
       });
       await this.policyRepository.save(entity);
@@ -92,7 +129,13 @@ export class LeavePolicyService {
 
     if (translations) {
       for (const [locale, t] of Object.entries(translations)) {
-        await this.i18nRepository.upsert(entity.companyId, id, locale, t.name, t.description);
+        await this.i18nRepository.upsert(
+          entity.companyId,
+          id,
+          locale,
+          t.name,
+          t.description,
+        );
       }
     }
 

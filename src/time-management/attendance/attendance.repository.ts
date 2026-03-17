@@ -9,7 +9,10 @@ import { AttendanceCorrectionRequest } from './entities/attendance-correction-re
 export interface AttendanceRecordRepository {
   create(data: Partial<AttendanceRecord>): AttendanceRecord;
   save(entity: AttendanceRecord): Promise<AttendanceRecord>;
-  findByCompanyAndDate(companyId: string, date: Date): Promise<AttendanceRecord[]>;
+  findByCompanyAndDate(
+    companyId: string,
+    date: Date,
+  ): Promise<AttendanceRecord[]>;
   findByEmployee(
     companyId: string,
     employeeId: string,
@@ -31,8 +34,12 @@ export interface AttendanceRecordRepository {
 }
 
 export interface AttendanceCorrectionRepository {
-  create(data: Partial<AttendanceCorrectionRequest>): AttendanceCorrectionRequest;
-  save(entity: AttendanceCorrectionRequest): Promise<AttendanceCorrectionRequest>;
+  create(
+    data: Partial<AttendanceCorrectionRequest>,
+  ): AttendanceCorrectionRequest;
+  save(
+    entity: AttendanceCorrectionRequest,
+  ): Promise<AttendanceCorrectionRequest>;
   findPaginated(options: {
     companyId: string;
     employeeId?: string;
@@ -42,7 +49,10 @@ export interface AttendanceCorrectionRepository {
     limit: number;
   }): Promise<{ data: AttendanceCorrectionRequest[]; total: number }>;
   findOne(id: string): Promise<AttendanceCorrectionRequest | null>;
-  findByEmployee(companyId: string, employeeId: string): Promise<AttendanceCorrectionRequest[]>;
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<AttendanceCorrectionRequest[]>;
 }
 
 // ─── Implementations ────────────────────────────────────────
@@ -60,7 +70,10 @@ export class TypeOrmAttendanceRecordRepository implements AttendanceRecordReposi
   save(entity: AttendanceRecord): Promise<AttendanceRecord> {
     return this.repo.save(entity);
   }
-  findByCompanyAndDate(companyId: string, date: Date): Promise<AttendanceRecord[]> {
+  findByCompanyAndDate(
+    companyId: string,
+    date: Date,
+  ): Promise<AttendanceRecord[]> {
     return this.repo.find({
       where: { companyId, date },
       relations: ['employee'],
@@ -105,7 +118,9 @@ export class TypeOrmAttendanceRecordRepository implements AttendanceRecordReposi
       .where('ar.companyId = :companyId', { companyId: options.companyId });
 
     if (options.employeeId)
-      qb.andWhere('ar.employeeId = :employeeId', { employeeId: options.employeeId });
+      qb.andWhere('ar.employeeId = :employeeId', {
+        employeeId: options.employeeId,
+      });
     if (options.status)
       qb.andWhere('ar.status = :status', { status: options.status });
     if (options.startDate)
@@ -134,10 +149,14 @@ export class TypeOrmAttendanceCorrectionRepository implements AttendanceCorrecti
     this.repo = ds.getRepository(AttendanceCorrectionRequest);
   }
 
-  create(data: Partial<AttendanceCorrectionRequest>): AttendanceCorrectionRequest {
+  create(
+    data: Partial<AttendanceCorrectionRequest>,
+  ): AttendanceCorrectionRequest {
     return this.repo.create(data);
   }
-  save(entity: AttendanceCorrectionRequest): Promise<AttendanceCorrectionRequest> {
+  save(
+    entity: AttendanceCorrectionRequest,
+  ): Promise<AttendanceCorrectionRequest> {
     return this.repo.save(entity);
   }
   async findPaginated(options: {
@@ -155,7 +174,9 @@ export class TypeOrmAttendanceCorrectionRepository implements AttendanceCorrecti
       .where('cr.companyId = :companyId', { companyId: options.companyId });
 
     if (options.employeeId)
-      qb.andWhere('cr.employeeId = :employeeId', { employeeId: options.employeeId });
+      qb.andWhere('cr.employeeId = :employeeId', {
+        employeeId: options.employeeId,
+      });
     if (options.status)
       qb.andWhere('cr.status = :status', { status: options.status });
     if (options.search)
@@ -174,7 +195,10 @@ export class TypeOrmAttendanceCorrectionRepository implements AttendanceCorrecti
       relations: ['employee', 'attendanceRecord'],
     });
   }
-  findByEmployee(companyId: string, employeeId: string): Promise<AttendanceCorrectionRequest[]> {
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<AttendanceCorrectionRequest[]> {
     return this.repo.find({
       where: { companyId, employeeId },
       relations: ['attendanceRecord'],

@@ -19,13 +19,19 @@ export interface OvertimeRequestRepository {
     limit: number;
   }): Promise<{ data: OvertimeRequest[]; total: number }>;
   findOne(id: string): Promise<OvertimeRequest | null>;
-  findByEmployee(companyId: string, employeeId: string): Promise<OvertimeRequest[]>;
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<OvertimeRequest[]>;
 }
 
 export interface CompOffGrantRepository {
   create(data: Partial<CompOffGrant>): CompOffGrant;
   save(entity: CompOffGrant): Promise<CompOffGrant>;
-  findByEmployee(companyId: string, employeeId: string): Promise<CompOffGrant[]>;
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<CompOffGrant[]>;
   findActive(companyId: string, employeeId: string): Promise<CompOffGrant[]>;
   findOne(id: string): Promise<CompOffGrant | null>;
 }
@@ -59,7 +65,9 @@ export class TypeOrmOvertimeRequestRepository implements OvertimeRequestReposito
       .where('or.companyId = :companyId', { companyId: options.companyId });
 
     if (options.employeeId)
-      qb.andWhere('or.employeeId = :employeeId', { employeeId: options.employeeId });
+      qb.andWhere('or.employeeId = :employeeId', {
+        employeeId: options.employeeId,
+      });
     if (options.status)
       qb.andWhere('or.status = :status', { status: options.status });
     if (options.search)
@@ -78,7 +86,10 @@ export class TypeOrmOvertimeRequestRepository implements OvertimeRequestReposito
       relations: ['employee'],
     });
   }
-  findByEmployee(companyId: string, employeeId: string): Promise<OvertimeRequest[]> {
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<OvertimeRequest[]> {
     return this.repo.find({
       where: { companyId, employeeId },
       order: { date: 'DESC' },
@@ -99,7 +110,10 @@ export class TypeOrmCompOffGrantRepository implements CompOffGrantRepository {
   save(entity: CompOffGrant): Promise<CompOffGrant> {
     return this.repo.save(entity);
   }
-  findByEmployee(companyId: string, employeeId: string): Promise<CompOffGrant[]> {
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<CompOffGrant[]> {
     return this.repo.find({
       where: { companyId, employeeId },
       relations: ['overtimeRequest'],

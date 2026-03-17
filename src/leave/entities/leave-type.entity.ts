@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Company } from '../../company/entities/company.entity';
-import { LeaveUnitType, SystemLeaveType } from '../enums/leave.enums';
+import { LeaveUnitType } from '../enums/leave.enums';
 import { LeaveTypeI18n } from './leave-type-i18n.entity';
 
 @Entity('leave_types')
@@ -22,7 +22,10 @@ export class LeaveType {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({ description: 'Company ID (null for system/global types)', required: false })
+  @ApiProperty({
+    description: 'Company ID (null for system/global types)',
+    required: false,
+  })
   @Column({ name: 'company_id', type: 'uuid', nullable: true })
   @Index()
   companyId: string | null;
@@ -31,7 +34,10 @@ export class LeaveType {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @ApiProperty({ description: 'System key for built-in types', required: false })
+  @ApiProperty({
+    description: 'System key for built-in types',
+    required: false,
+  })
   @Column({ type: 'varchar', length: 100, nullable: true })
   systemKey: string | null;
 
@@ -63,7 +69,10 @@ export class LeaveType {
   @Column({ default: false })
   requiresAttachment: boolean;
 
-  @ApiProperty({ description: 'Min attachment threshold in days (e.g. require after 2 days)', required: false })
+  @ApiProperty({
+    description: 'Min attachment threshold in days (e.g. require after 2 days)',
+    required: false,
+  })
   @Column({ type: 'int', nullable: true })
   attachmentThresholdDays: number | null;
 

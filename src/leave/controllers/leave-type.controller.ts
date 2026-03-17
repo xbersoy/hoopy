@@ -19,7 +19,10 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { PermissionsGuard } from '../../permissions/guards/permissions.guard';
 import { RequirePermissions } from '../../permissions/decorators/require-permissions.decorator';
 import { LeaveTypeService } from '../services/leave-type.service';
-import { CreateLeaveTypeDto, UpdateLeaveTypeDto } from '../dto/create-leave-type.dto';
+import {
+  CreateLeaveTypeDto,
+  UpdateLeaveTypeDto,
+} from '../dto/create-leave-type.dto';
 import { LeaveType } from '../entities/leave-type.entity';
 
 @ApiTags('Leave Types')
@@ -57,7 +60,10 @@ export class LeaveTypeController {
   @RequirePermissions({ action: 'update', resourceType: 'leave-type' })
   @ApiOperation({ summary: 'Update a leave type' })
   @ApiResponse({ status: 200, type: LeaveType })
-  update(@Param('id') id: string, @Body() dto: UpdateLeaveTypeDto): Promise<LeaveType> {
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateLeaveTypeDto,
+  ): Promise<LeaveType> {
     return this.leaveTypeService.update(id, dto);
   }
 

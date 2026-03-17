@@ -57,7 +57,12 @@ export class OvertimeRequest {
   status: OvertimeStatus;
 
   @ApiProperty({ description: 'Compensation type', enum: CompensationType })
-  @Column({ name: 'compensation_type', type: 'varchar', length: 50, default: CompensationType.PAID })
+  @Column({
+    name: 'compensation_type',
+    type: 'varchar',
+    length: 50,
+    default: CompensationType.PAID,
+  })
   compensationType: CompensationType;
 
   @ApiProperty({ description: 'Reviewer user ID', required: false })

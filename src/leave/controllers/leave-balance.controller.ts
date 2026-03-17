@@ -7,12 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { PermissionsGuard } from '../../permissions/guards/permissions.guard';
 import { RequirePermissions } from '../../permissions/decorators/require-permissions.decorator';

@@ -164,9 +164,7 @@ describe('ActivityPayloadBuilderService', () => {
 
     it('should include changes when provided', () => {
       const changes = {
-        fields: [
-          { field: 'department', before: 'Sales', after: 'Operations' },
-        ],
+        fields: [{ field: 'department', before: 'Sales', after: 'Operations' }],
       };
 
       const payload = builder.build(context, {

@@ -53,7 +53,11 @@ export class QueryOvertimeDto extends PaginationDto {
   @IsOptional()
   employeeId?: string;
 
-  @ApiProperty({ description: 'Filter by status', enum: OvertimeStatus, required: false })
+  @ApiProperty({
+    description: 'Filter by status',
+    enum: OvertimeStatus,
+    required: false,
+  })
   @IsEnum(OvertimeStatus)
   @IsOptional()
   status?: OvertimeStatus;

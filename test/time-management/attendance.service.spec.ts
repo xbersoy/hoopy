@@ -3,7 +3,10 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AttendanceService } from '@/time-management/attendance/services/attendance.service';
 import { AttendanceRecord } from '@/time-management/attendance/entities/attendance-record.entity';
-import { AttendanceStatus, CheckSource } from '@/time-management/attendance/enums/attendance.enums';
+import {
+  AttendanceStatus,
+  CheckSource,
+} from '@/time-management/attendance/enums/attendance.enums';
 import { Employee } from '@/employee/entities/employee.entity';
 
 describe('AttendanceService', () => {
@@ -41,10 +44,14 @@ describe('AttendanceService', () => {
 
   beforeEach(async () => {
     repo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'att-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'att-new' }),
+        ),
       findOne: jest.fn().mockResolvedValue(null),
       findByEmployee: jest.fn().mockResolvedValue([]),
       findPaginated: jest.fn().mockResolvedValue({ data: [], total: 0 }),
@@ -74,7 +81,9 @@ describe('AttendanceService', () => {
     it('should create a new record when none exists', async () => {
       repo.findByEmployee.mockResolvedValue([]);
 
-      const result = await service.checkIn('comp-1', 'user-1', { source: CheckSource.WEB });
+      const result = await service.checkIn('comp-1', 'user-1', {
+        source: CheckSource.WEB,
+      });
 
       expect(repo.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -91,9 +100,9 @@ describe('AttendanceService', () => {
     it('should throw BadRequestException if already checked in', async () => {
       repo.findByEmployee.mockResolvedValue([{ ...mockRecord, checkIn: now }]);
 
-      await expect(
-        service.checkIn('comp-1', 'user-1', {}),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.checkIn('comp-1', 'user-1', {})).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should default source to WEB', async () => {
@@ -123,7 +132,9 @@ describe('AttendanceService', () => {
       repo.findByEmployee.mockResolvedValue([record]);
       repo.save.mockImplementation((entity) => Promise.resolve(entity));
 
-      const result = await service.checkOut('comp-1', 'user-1', { source: CheckSource.MOBILE });
+      const result = await service.checkOut('comp-1', 'user-1', {
+        source: CheckSource.MOBILE,
+      });
 
       expect(repo.save).toHaveBeenCalled();
       expect(result.checkOut).toBeDefined();
@@ -134,9 +145,9 @@ describe('AttendanceService', () => {
     it('should throw BadRequestException if no check-in found', async () => {
       repo.findByEmployee.mockResolvedValue([]);
 
-      await expect(
-        service.checkOut('comp-1', 'user-1', {}),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.checkOut('comp-1', 'user-1', {})).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException if already checked out', async () => {
@@ -144,9 +155,9 @@ describe('AttendanceService', () => {
         { ...mockRecord, checkIn: now, checkOut: later },
       ]);
 
-      await expect(
-        service.checkOut('comp-1', 'user-1', {}),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.checkOut('comp-1', 'user-1', {})).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -160,7 +171,9 @@ describe('AttendanceService', () => {
     });
 
     it('should throw NotFoundException when not found', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

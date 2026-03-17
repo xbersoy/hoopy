@@ -7,11 +7,13 @@ import { AttendanceService } from '../../time-management/attendance/services/att
 import { ScheduleTemplateService } from '../../time-management/schedules/services/schedule-template.service';
 import { ShiftTemplateService } from '../../time-management/schedules/services/shift-template.service';
 import { EmployeeScheduleService } from '../../time-management/schedules/services/employee-schedule.service';
-import { TimesheetService } from '../../time-management/timesheets/services/timesheet.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ScheduleTemplate } from '../../time-management/schedules/entities/schedule-template.entity';
-import { AttendanceStatus, CheckSource } from '../../time-management/attendance/enums/attendance.enums';
+import {
+  AttendanceStatus,
+  CheckSource,
+} from '../../time-management/attendance/enums/attendance.enums';
 import { ScheduleType } from '../../time-management/schedules/enums/schedule.enums';
 
 export class TimeManagementSeeder implements Seeder {
@@ -38,7 +40,9 @@ export class TimeManagementSeeder implements Seeder {
 
     const company = await companyService.findByOwner(admin.id);
     if (!company) {
-      this.logger.warn('Admin company not found — skipping time management seed.');
+      this.logger.warn(
+        'Admin company not found — skipping time management seed.',
+      );
       return;
     }
 
@@ -63,8 +67,14 @@ export class TimeManagementSeeder implements Seeder {
       breakDurationMinutes: 60,
       weeklyHours: 40,
       translations: {
-        en: { name: 'Standard Weekday Schedule', description: 'Monday to Friday, 9:00-18:00' },
-        tr: { name: 'Standart Hafta İçi Programı', description: 'Pazartesi - Cuma, 09:00-18:00' },
+        en: {
+          name: 'Standard Weekday Schedule',
+          description: 'Monday to Friday, 9:00-18:00',
+        },
+        tr: {
+          name: 'Standart Hafta İçi Programı',
+          description: 'Pazartesi - Cuma, 09:00-18:00',
+        },
       },
     });
     this.logger.log(`Created schedule template: ${standardSchedule.name}`);
@@ -80,8 +90,15 @@ export class TimeManagementSeeder implements Seeder {
       breakDurationMinutes: 60,
       weeklyHours: 40,
       translations: {
-        en: { name: 'Flexible Weekday Schedule', description: 'Monday to Friday, flexible hours (core: 10:00-16:00)' },
-        tr: { name: 'Esnek Hafta İçi Programı', description: 'Pazartesi - Cuma, esnek saatler (çekirdek: 10:00-16:00)' },
+        en: {
+          name: 'Flexible Weekday Schedule',
+          description: 'Monday to Friday, flexible hours (core: 10:00-16:00)',
+        },
+        tr: {
+          name: 'Esnek Hafta İçi Programı',
+          description:
+            'Pazartesi - Cuma, esnek saatler (çekirdek: 10:00-16:00)',
+        },
       },
     });
     this.logger.log(`Created schedule template: ${flexSchedule.name}`);
@@ -147,7 +164,9 @@ export class TimeManagementSeeder implements Seeder {
             scheduleTemplateId: standardSchedule.id,
             effectiveFrom: yearStart.toISOString().split('T')[0],
           });
-          this.logger.log(`Assigned standard schedule to ${employees[i].firstName} ${employees[i].lastName}`);
+          this.logger.log(
+            `Assigned standard schedule to ${employees[i].firstName} ${employees[i].lastName}`,
+          );
         }
 
         // Assign flexible schedule to next 2 employees
@@ -157,7 +176,9 @@ export class TimeManagementSeeder implements Seeder {
             scheduleTemplateId: flexSchedule.id,
             effectiveFrom: yearStart.toISOString().split('T')[0],
           });
-          this.logger.log(`Assigned flexible schedule to ${employees[i].firstName} ${employees[i].lastName}`);
+          this.logger.log(
+            `Assigned flexible schedule to ${employees[i].firstName} ${employees[i].lastName}`,
+          );
         }
       }
 
@@ -187,8 +208,10 @@ export class TimeManagementSeeder implements Seeder {
               checkInSource: CheckSource.WEB,
               checkOutSource: CheckSource.WEB,
             });
-            this.logger.log(`Created attendance for ${emp.firstName} on ${dateStr}`);
-          } catch (err) {
+            this.logger.log(
+              `Created attendance for ${emp.firstName} on ${dateStr}`,
+            );
+          } catch {
             // Skip duplicates
           }
         }

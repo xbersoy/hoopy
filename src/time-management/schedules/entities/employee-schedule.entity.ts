@@ -17,7 +17,12 @@ import { ShiftTemplate } from './shift-template.entity';
 @Entity('employee_schedules')
 @Index('IDX_employee_schedule_company', ['companyId'])
 @Index('IDX_employee_schedule_employee', ['companyId', 'employeeId'])
-@Index('IDX_employee_schedule_effective', ['companyId', 'employeeId', 'effectiveFrom', 'effectiveUntil'])
+@Index('IDX_employee_schedule_effective', [
+  'companyId',
+  'employeeId',
+  'effectiveFrom',
+  'effectiveUntil',
+])
 export class EmployeeSchedule {
   @ApiProperty({ description: 'Unique identifier' })
   @PrimaryGeneratedColumn('uuid')

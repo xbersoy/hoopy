@@ -1,4 +1,4 @@
-import { IsOptional, IsUUID, IsEnum, IsString } from 'class-validator';
+import { IsOptional, IsUUID, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from '../../shared/dto';
 import { LeaveRequestStatus } from '../enums/leave.enums';
@@ -14,7 +14,11 @@ export class QueryLeaveRequestDto extends PaginationDto {
   @IsOptional()
   leaveTypeId?: string;
 
-  @ApiProperty({ description: 'Filter by status', enum: LeaveRequestStatus, required: false })
+  @ApiProperty({
+    description: 'Filter by status',
+    enum: LeaveRequestStatus,
+    required: false,
+  })
   @IsEnum(LeaveRequestStatus)
   @IsOptional()
   status?: LeaveRequestStatus;

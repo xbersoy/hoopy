@@ -9,7 +9,6 @@ import {
   LeaveUnitType,
   BalanceTransactionType,
   LeaveGrantStatus,
-  GrantSourceType,
 } from '@/leave/enums/leave.enums';
 
 describe('LeaveRequestService', () => {
@@ -74,10 +73,14 @@ describe('LeaveRequestService', () => {
 
   beforeEach(async () => {
     requestRepo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'req-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'req-new' }),
+        ),
       findPaginated: jest.fn().mockResolvedValue({ data: [], total: 0 }),
       findOne: jest.fn().mockResolvedValue(null),
       findOverlapping: jest.fn().mockResolvedValue([]),
@@ -85,13 +88,17 @@ describe('LeaveRequestService', () => {
 
     segmentRepo = {
       create: jest.fn().mockImplementation((data) => data),
-      saveAll: jest.fn().mockImplementation((entities) => Promise.resolve(entities)),
+      saveAll: jest
+        .fn()
+        .mockImplementation((entities) => Promise.resolve(entities)),
       deleteByRequestId: jest.fn().mockResolvedValue(undefined),
     };
 
     grantRepo = {
       save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
-      findActiveByEmployeeAndType: jest.fn().mockResolvedValue([{ ...mockGrant }]),
+      findActiveByEmployeeAndType: jest
+        .fn()
+        .mockResolvedValue([{ ...mockGrant }]),
     };
 
     ledgerRepo = {
@@ -124,9 +131,13 @@ describe('LeaveRequestService', () => {
   describe('create', () => {
     it('should create a leave request with segments', async () => {
       requestRepo.save.mockResolvedValue({ ...mockRequest, id: 'req-new' });
-      requestRepo.findOne.mockResolvedValue({ ...mockRequest, id: 'req-new', segments: [] });
+      requestRepo.findOne.mockResolvedValue({
+        ...mockRequest,
+        id: 'req-new',
+        segments: [],
+      });
 
-      const result = await service.create('comp-1', 'user-1', {
+      await service.create('comp-1', 'user-1', {
         employeeId: 'emp-1',
         leaveTypeId: 'lt-1',
         startDate: '2026-04-01',
@@ -251,7 +262,10 @@ describe('LeaveRequestService', () => {
         total: 1,
       });
 
-      const result = await service.findPaginated('comp-1', { page: 1, limit: 10 });
+      const result = await service.findPaginated('comp-1', {
+        page: 1,
+        limit: 10,
+      });
       expect(result.data).toHaveLength(1);
       expect(result.total).toBe(1);
       expect(result.page).toBe(1);
@@ -277,7 +291,9 @@ describe('LeaveRequestService', () => {
     });
 
     it('should throw NotFoundException', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -285,13 +301,16 @@ describe('LeaveRequestService', () => {
 
   describe('submit', () => {
     it('should submit a draft request and reserve balance', async () => {
-      requestRepo.findOne.mockResolvedValue({ ...mockRequest, status: LeaveRequestStatus.DRAFT });
+      requestRepo.findOne.mockResolvedValue({
+        ...mockRequest,
+        status: LeaveRequestStatus.DRAFT,
+      });
       requestRepo.save.mockResolvedValue({
         ...mockRequest,
         status: LeaveRequestStatus.SUBMITTED,
       });
 
-      const result = await service.submit('req-1', 'user-1');
+      await service.submit('req-1', 'user-1');
 
       expect(grantRepo.findActiveByEmployeeAndType).toHaveBeenCalled();
       expect(grantRepo.save).toHaveBeenCalledWith(
@@ -336,7 +355,7 @@ describe('LeaveRequestService', () => {
         status: LeaveRequestStatus.APPROVED,
       });
 
-      const result = await service.approve('req-1', 'user-1');
+      await service.approve('req-1', 'user-1');
 
       expect(grantRepo.save).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -379,7 +398,7 @@ describe('LeaveRequestService', () => {
         status: LeaveRequestStatus.REJECTED,
       });
 
-      const result = await service.reject('req-1', 'user-1');
+      await service.reject('req-1', 'user-1');
 
       expect(grantRepo.save).toHaveBeenCalledWith(
         expect.objectContaining({

@@ -1,6 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { LeaveGrant } from '../entities/leave-grant.entity';
-import { LeaveGrantRepository, LeaveBalanceLedgerRepository } from '../leave.repository';
+import {
+  LeaveGrantRepository,
+  LeaveBalanceLedgerRepository,
+} from '../leave.repository';
 import {
   LeaveGrantStatus,
   GrantSourceType,
@@ -71,7 +74,10 @@ export class LeaveGrantService {
     return saved;
   }
 
-  async findByEmployee(companyId: string, employeeId: string): Promise<LeaveGrant[]> {
+  async findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<LeaveGrant[]> {
     return this.grantRepository.findByEmployee(companyId, employeeId);
   }
 
@@ -111,10 +117,20 @@ export class LeaveGrantService {
       totalRemaining: number;
     }>
   > {
-    const grants = await this.grantRepository.findByEmployee(companyId, employeeId);
+    const grants = await this.grantRepository.findByEmployee(
+      companyId,
+      employeeId,
+    );
     const grouped = new Map<
       string,
-      { leaveTypeId: string; leaveTypeName: string; granted: number; consumed: number; reserved: number; remaining: number }
+      {
+        leaveTypeId: string;
+        leaveTypeName: string;
+        granted: number;
+        consumed: number;
+        reserved: number;
+        remaining: number;
+      }
     >();
 
     for (const g of grants) {

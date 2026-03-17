@@ -26,12 +26,17 @@ export class AttendanceService {
     private readonly employeeRepo: Repository<Employee>,
   ) {}
 
-  private async resolveEmployeeId(userId: string, companyId: string): Promise<string> {
+  private async resolveEmployeeId(
+    userId: string,
+    companyId: string,
+  ): Promise<string> {
     const employee = await this.employeeRepo.findOne({
       where: { user: { id: userId }, company: { id: companyId } },
     });
     if (!employee) {
-      throw new BadRequestException('No employee record linked to the current user');
+      throw new BadRequestException(
+        'No employee record linked to the current user',
+      );
     }
     return employee.id;
   }
@@ -136,7 +141,9 @@ export class AttendanceService {
   async findOne(id: string): Promise<AttendanceRecord> {
     const entity = await this.recordRepository.findOne(id);
     if (!entity) {
-      throw new NotFoundException(`Attendance record with ID "${id}" not found`);
+      throw new NotFoundException(
+        `Attendance record with ID "${id}" not found`,
+      );
     }
     return entity;
   }
@@ -192,14 +199,20 @@ export class AttendanceService {
     const record = await this.findOne(id);
 
     if (dto.status !== undefined) record.status = dto.status;
-    if (dto.checkIn !== undefined) record.checkIn = dto.checkIn ? new Date(dto.checkIn) : null;
-    if (dto.checkOut !== undefined) record.checkOut = dto.checkOut ? new Date(dto.checkOut) : null;
-    if (dto.checkInSource !== undefined) record.checkInSource = dto.checkInSource;
-    if (dto.checkOutSource !== undefined) record.checkOutSource = dto.checkOutSource;
+    if (dto.checkIn !== undefined)
+      record.checkIn = dto.checkIn ? new Date(dto.checkIn) : null;
+    if (dto.checkOut !== undefined)
+      record.checkOut = dto.checkOut ? new Date(dto.checkOut) : null;
+    if (dto.checkInSource !== undefined)
+      record.checkInSource = dto.checkInSource;
+    if (dto.checkOutSource !== undefined)
+      record.checkOutSource = dto.checkOutSource;
     if (dto.breakMinutes !== undefined) record.breakMinutes = dto.breakMinutes;
-    if (dto.overtimeMinutes !== undefined) record.overtimeMinutes = dto.overtimeMinutes;
+    if (dto.overtimeMinutes !== undefined)
+      record.overtimeMinutes = dto.overtimeMinutes;
     if (dto.lateMinutes !== undefined) record.lateMinutes = dto.lateMinutes;
-    if (dto.earlyDepartureMinutes !== undefined) record.earlyDepartureMinutes = dto.earlyDepartureMinutes;
+    if (dto.earlyDepartureMinutes !== undefined)
+      record.earlyDepartureMinutes = dto.earlyDepartureMinutes;
     if (dto.isOvernight !== undefined) record.isOvernight = dto.isOvernight;
     if (dto.timezone !== undefined) record.timezone = dto.timezone;
     if (dto.notes !== undefined) record.notes = dto.notes;

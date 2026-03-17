@@ -33,10 +33,14 @@ describe('TimesheetService', () => {
 
   beforeEach(async () => {
     periodRepo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'ts-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'ts-new' }),
+        ),
       findOne: jest.fn().mockResolvedValue(null),
       findPaginated: jest.fn().mockResolvedValue({ data: [], total: 0 }),
       findOverlapping: jest.fn().mockResolvedValue([]),
@@ -46,7 +50,9 @@ describe('TimesheetService', () => {
     entryRepo = {
       create: jest.fn().mockImplementation((data) => data),
       save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
-      saveAll: jest.fn().mockImplementation((entities) => Promise.resolve(entities)),
+      saveAll: jest
+        .fn()
+        .mockImplementation((entities) => Promise.resolve(entities)),
       findByPeriodId: jest.fn().mockResolvedValue([]),
       deleteByPeriodId: jest.fn().mockResolvedValue(undefined),
     };
@@ -68,7 +74,7 @@ describe('TimesheetService', () => {
 
   describe('create', () => {
     it('should create a DRAFT period', async () => {
-      const result = await service.create('comp-1', {
+      await service.create('comp-1', {
         employeeId: 'emp-1',
         periodStart: '2025-06-01',
         periodEnd: '2025-06-15',
@@ -107,7 +113,9 @@ describe('TimesheetService', () => {
     });
 
     it('should throw NotFoundException when not found', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -115,7 +123,10 @@ describe('TimesheetService', () => {
 
   describe('submit', () => {
     it('should move DRAFT → SUBMITTED', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.DRAFT });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.DRAFT,
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
       const result = await service.submit('ts-1');
@@ -124,7 +135,10 @@ describe('TimesheetService', () => {
     });
 
     it('should allow CORRECTION_REQUESTED → SUBMITTED', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.CORRECTION_REQUESTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.CORRECTION_REQUESTED,
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
       const result = await service.submit('ts-1');
@@ -132,7 +146,10 @@ describe('TimesheetService', () => {
     });
 
     it('should throw for non-DRAFT/CORRECTION_REQUESTED states', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.APPROVED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.APPROVED,
+      });
 
       await expect(service.submit('ts-1')).rejects.toThrow(BadRequestException);
     });
@@ -142,7 +159,10 @@ describe('TimesheetService', () => {
 
   describe('approve', () => {
     it('should move SUBMITTED → APPROVED', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.SUBMITTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.SUBMITTED,
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
       const result = await service.approve('ts-1', 'user-1');
@@ -152,9 +172,14 @@ describe('TimesheetService', () => {
     });
 
     it('should throw for non-SUBMITTED states', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.DRAFT });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.DRAFT,
+      });
 
-      await expect(service.approve('ts-1', 'user-1')).rejects.toThrow(BadRequestException);
+      await expect(service.approve('ts-1', 'user-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -162,7 +187,10 @@ describe('TimesheetService', () => {
 
   describe('reject', () => {
     it('should move SUBMITTED → REJECTED with reason', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.SUBMITTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.SUBMITTED,
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
       const result = await service.reject('ts-1', 'Incorrect hours');
@@ -172,9 +200,14 @@ describe('TimesheetService', () => {
     });
 
     it('should throw for non-SUBMITTED states', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.DRAFT });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.DRAFT,
+      });
 
-      await expect(service.reject('ts-1', 'reason')).rejects.toThrow(BadRequestException);
+      await expect(service.reject('ts-1', 'reason')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -182,18 +215,29 @@ describe('TimesheetService', () => {
 
   describe('requestCorrection', () => {
     it('should move SUBMITTED → CORRECTION_REQUESTED', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.SUBMITTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.SUBMITTED,
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
-      const result = await service.requestCorrection('ts-1', 'Please fix hours');
+      const result = await service.requestCorrection(
+        'ts-1',
+        'Please fix hours',
+      );
       expect(result.status).toBe(TimesheetStatus.CORRECTION_REQUESTED);
       expect(result.rejectionReason).toBe('Please fix hours');
     });
 
     it('should throw for non-SUBMITTED states', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.DRAFT });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.DRAFT,
+      });
 
-      await expect(service.requestCorrection('ts-1', 'reason')).rejects.toThrow(BadRequestException);
+      await expect(service.requestCorrection('ts-1', 'reason')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -201,7 +245,10 @@ describe('TimesheetService', () => {
 
   describe('lock', () => {
     it('should move APPROVED → LOCKED', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.APPROVED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.APPROVED,
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
       const result = await service.lock('ts-1');
@@ -210,7 +257,10 @@ describe('TimesheetService', () => {
     });
 
     it('should throw for non-APPROVED states', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.SUBMITTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.SUBMITTED,
+      });
 
       await expect(service.lock('ts-1')).rejects.toThrow(BadRequestException);
     });
@@ -220,15 +270,21 @@ describe('TimesheetService', () => {
 
   describe('remove', () => {
     it('should only delete DRAFT timesheets', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.DRAFT });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.DRAFT,
+      });
 
-      const result = await service.remove('ts-1');
+      await service.remove('ts-1');
       expect(entryRepo.deleteByPeriodId).toHaveBeenCalledWith('ts-1');
       expect(periodRepo.remove).toHaveBeenCalled();
     });
 
     it('should throw for non-DRAFT timesheets', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.SUBMITTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.SUBMITTED,
+      });
 
       await expect(service.remove('ts-1')).rejects.toThrow(BadRequestException);
     });
@@ -243,9 +299,10 @@ describe('TimesheetService', () => {
   describe('addEntries', () => {
     it('should add entries to DRAFT timesheet', async () => {
       const period = { ...mockPeriod, status: TimesheetStatus.DRAFT };
-      periodRepo.findOne
-        .mockResolvedValueOnce(period)
-        .mockResolvedValueOnce({ ...period, entries: [{ workedMinutes: 480, overtimeMinutes: 0 }] });
+      periodRepo.findOne.mockResolvedValueOnce(period).mockResolvedValueOnce({
+        ...period,
+        entries: [{ workedMinutes: 480, overtimeMinutes: 0 }],
+      });
       periodRepo.save.mockImplementation((entity) => Promise.resolve(entity));
 
       await service.addEntries('ts-1', [
@@ -257,7 +314,10 @@ describe('TimesheetService', () => {
     });
 
     it('should add entries to CORRECTION_REQUESTED timesheet', async () => {
-      const period = { ...mockPeriod, status: TimesheetStatus.CORRECTION_REQUESTED };
+      const period = {
+        ...mockPeriod,
+        status: TimesheetStatus.CORRECTION_REQUESTED,
+      };
       periodRepo.findOne
         .mockResolvedValueOnce(period)
         .mockResolvedValueOnce({ ...period, entries: [] });
@@ -271,18 +331,28 @@ describe('TimesheetService', () => {
     });
 
     it('should throw for SUBMITTED timesheets', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.SUBMITTED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.SUBMITTED,
+      });
 
       await expect(
-        service.addEntries('ts-1', [{ date: '2025-06-01', workedMinutes: 480 } as any]),
+        service.addEntries('ts-1', [
+          { date: '2025-06-01', workedMinutes: 480 } as any,
+        ]),
       ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw for APPROVED timesheets', async () => {
-      periodRepo.findOne.mockResolvedValue({ ...mockPeriod, status: TimesheetStatus.APPROVED });
+      periodRepo.findOne.mockResolvedValue({
+        ...mockPeriod,
+        status: TimesheetStatus.APPROVED,
+      });
 
       await expect(
-        service.addEntries('ts-1', [{ date: '2025-06-01', workedMinutes: 480 } as any]),
+        service.addEntries('ts-1', [
+          { date: '2025-06-01', workedMinutes: 480 } as any,
+        ]),
       ).rejects.toThrow(BadRequestException);
     });
   });

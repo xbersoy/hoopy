@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { LeavePolicyService } from '@/leave/services/leave-policy.service';
 import { LeavePolicy } from '@/leave/entities/leave-policy.entity';
-import { GrantStrategy, GrantTrigger, CarryoverStrategy, ExpiryStrategy, ConsumptionStrategy } from '@/leave/enums/leave.enums';
+import { GrantStrategy, GrantTrigger } from '@/leave/enums/leave.enums';
 
 describe('LeavePolicyService', () => {
   let service: LeavePolicyService;
@@ -32,10 +32,14 @@ describe('LeavePolicyService', () => {
 
   beforeEach(async () => {
     policyRepo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'pol-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'pol-new' }),
+        ),
       findByCompany: jest.fn().mockResolvedValue([]),
       findOne: jest.fn().mockResolvedValue(null),
       findByLeaveType: jest.fn().mockResolvedValue([]),
@@ -45,7 +49,9 @@ describe('LeavePolicyService', () => {
     ruleRepo = {
       create: jest.fn().mockImplementation((data) => data),
       save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
-      saveAll: jest.fn().mockImplementation((entities) => Promise.resolve(entities)),
+      saveAll: jest
+        .fn()
+        .mockImplementation((entities) => Promise.resolve(entities)),
       findByPolicy: jest.fn().mockResolvedValue([]),
       findOne: jest.fn().mockResolvedValue(null),
       deleteByPolicyId: jest.fn().mockResolvedValue(undefined),
@@ -85,7 +91,10 @@ describe('LeavePolicyService', () => {
       });
 
       expect(policyRepo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ companyId: 'comp-1', code: 'standard_annual' }),
+        expect.objectContaining({
+          companyId: 'comp-1',
+          code: 'standard_annual',
+        }),
       );
       expect(ruleRepo.saveAll).not.toHaveBeenCalled();
       expect(result.id).toBe('pol-new');
@@ -114,7 +123,10 @@ describe('LeavePolicyService', () => {
       });
 
       expect(ruleRepo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ leavePolicyId: 'pol-new', name: '14 days yearly' }),
+        expect.objectContaining({
+          leavePolicyId: 'pol-new',
+          name: '14 days yearly',
+        }),
       );
       expect(ruleRepo.saveAll).toHaveBeenCalledTimes(1);
       expect(result.entitlementRules).toHaveLength(1);
@@ -161,7 +173,9 @@ describe('LeavePolicyService', () => {
     });
 
     it('should throw NotFoundException when not found', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -181,7 +195,10 @@ describe('LeavePolicyService', () => {
     it('should replace entitlement rules when provided', async () => {
       policyRepo.findOne
         .mockResolvedValueOnce({ ...mockPolicy })
-        .mockResolvedValueOnce({ ...mockPolicy, entitlementRules: [{ id: 'new-rule' }] });
+        .mockResolvedValueOnce({
+          ...mockPolicy,
+          entitlementRules: [{ id: 'new-rule' }],
+        });
 
       await service.update('pol-1', {
         entitlementRules: [
@@ -213,7 +230,7 @@ describe('LeavePolicyService', () => {
   describe('remove', () => {
     it('should remove a policy', async () => {
       policyRepo.findOne.mockResolvedValue({ ...mockPolicy });
-      const result = await service.remove('pol-1');
+      await service.remove('pol-1');
       expect(policyRepo.remove).toHaveBeenCalled();
     });
 

@@ -11,6 +11,7 @@ import { ContactService } from '../../src/contact/contact.service';
 import { CompanyService } from '../../src/company/services/company.service';
 import { EmployeeService } from '../../src/employee/employee.service';
 import { PermissionsService } from '../../src/permissions/services/permissions.service';
+import { AdminAccessService } from '../../src/admin-access/services/admin-access.service';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword'),
@@ -111,6 +112,12 @@ describe('AuthService', () => {
         {
           provide: PermissionsService,
           useValue: { userCan: jest.fn().mockResolvedValue(true) },
+        },
+        {
+          provide: AdminAccessService,
+          useValue: {
+            getPrivilegesForUser: jest.fn().mockResolvedValue([]),
+          },
         },
       ],
     }).compile();

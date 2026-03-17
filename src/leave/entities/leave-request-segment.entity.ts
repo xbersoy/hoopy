@@ -41,7 +41,10 @@ export class LeaveRequestSegment {
   @Column({ default: true })
   countsAgainstBalance: boolean;
 
-  @ApiProperty({ description: 'Grant allocated for this segment', required: false })
+  @ApiProperty({
+    description: 'Grant allocated for this segment',
+    required: false,
+  })
   @Column({ name: 'applied_grant_id', type: 'uuid', nullable: true })
   appliedGrantId: string | null;
 

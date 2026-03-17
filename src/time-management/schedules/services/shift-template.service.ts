@@ -29,7 +29,9 @@ export class ShiftTemplateService {
   ): Promise<ShiftTemplate> {
     const existing = await this.templateRepo.findByCode(companyId, dto.code);
     if (existing) {
-      throw new ConflictException(`Shift template with code "${dto.code}" already exists`);
+      throw new ConflictException(
+        `Shift template with code "${dto.code}" already exists`,
+      );
     }
 
     const entity = this.templateRepo.create({
@@ -72,10 +74,12 @@ export class ShiftTemplateService {
     const entity = await this.findOne(id);
 
     if (dto.name !== undefined) entity.name = dto.name;
-    if (dto.description !== undefined) entity.description = dto.description ?? null;
+    if (dto.description !== undefined)
+      entity.description = dto.description ?? null;
     if (dto.startTime !== undefined) entity.startTime = dto.startTime;
     if (dto.endTime !== undefined) entity.endTime = dto.endTime;
-    if (dto.breakDurationMinutes !== undefined) entity.breakDurationMinutes = dto.breakDurationMinutes;
+    if (dto.breakDurationMinutes !== undefined)
+      entity.breakDurationMinutes = dto.breakDurationMinutes;
     if (dto.isOvernight !== undefined) entity.isOvernight = dto.isOvernight;
     if (dto.color !== undefined) entity.color = dto.color ?? null;
     if (dto.isActive !== undefined) entity.isActive = dto.isActive;

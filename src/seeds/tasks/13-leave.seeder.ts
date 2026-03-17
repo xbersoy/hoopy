@@ -72,7 +72,10 @@ export class LeaveSeeder implements Seeder {
         color: '#3B82F6',
         icon: 'calendar',
         translations: {
-          en: { name: 'Annual Leave', description: 'Paid annual leave entitlement' },
+          en: {
+            name: 'Annual Leave',
+            description: 'Paid annual leave entitlement',
+          },
           tr: { name: 'Yıllık İzin', description: 'Ücretli yıllık izin hakkı' },
         },
       },
@@ -89,8 +92,14 @@ export class LeaveSeeder implements Seeder {
         color: '#EF4444',
         icon: 'heart-pulse',
         translations: {
-          en: { name: 'Sick Leave', description: 'Leave for illness or medical appointments' },
-          tr: { name: 'Hastalık İzni', description: 'Hastalık veya tıbbi randevular için izin' },
+          en: {
+            name: 'Sick Leave',
+            description: 'Leave for illness or medical appointments',
+          },
+          tr: {
+            name: 'Hastalık İzni',
+            description: 'Hastalık veya tıbbi randevular için izin',
+          },
         },
       },
       {
@@ -121,8 +130,14 @@ export class LeaveSeeder implements Seeder {
         color: '#EC4899',
         icon: 'baby',
         translations: {
-          en: { name: 'Maternity Leave', description: 'Leave for childbirth and newborn care' },
-          tr: { name: 'Doğum İzni', description: 'Doğum ve yenidoğan bakımı için izin' },
+          en: {
+            name: 'Maternity Leave',
+            description: 'Leave for childbirth and newborn care',
+          },
+          tr: {
+            name: 'Doğum İzni',
+            description: 'Doğum ve yenidoğan bakımı için izin',
+          },
         },
       },
       {
@@ -153,7 +168,10 @@ export class LeaveSeeder implements Seeder {
         color: '#374151',
         icon: 'heart',
         translations: {
-          en: { name: 'Bereavement Leave', description: 'Leave for family loss' },
+          en: {
+            name: 'Bereavement Leave',
+            description: 'Leave for family loss',
+          },
           tr: { name: 'Vefat İzni', description: 'Aile kaybı için izin' },
         },
       },
@@ -179,8 +197,15 @@ export class LeaveSeeder implements Seeder {
       color: '#10B981',
       icon: 'gift',
       translations: {
-        en: { name: 'New Joiner Welcome Leave', description: 'Extra leave for new employees valid during first 6 months' },
-        tr: { name: 'Yeni İşe Başlama İzni', description: 'İlk 6 ay geçerli olan yeni çalışanlar için ek izin' },
+        en: {
+          name: 'New Joiner Welcome Leave',
+          description:
+            'Extra leave for new employees valid during first 6 months',
+        },
+        tr: {
+          name: 'Yeni İşe Başlama İzni',
+          description: 'İlk 6 ay geçerli olan yeni çalışanlar için ek izin',
+        },
       },
     });
     createdTypes[welcomeType.code] = welcomeType;
@@ -196,8 +221,14 @@ export class LeaveSeeder implements Seeder {
       description: '14 days per calendar year with 5-day carryover',
       priority: 0,
       translations: {
-        en: { name: 'Standard Annual Leave Policy', description: '14 days per calendar year with 5-day carryover' },
-        tr: { name: 'Standart Yıllık İzin Politikası', description: 'Yılda 14 gün, 5 gün devir hakkı ile' },
+        en: {
+          name: 'Standard Annual Leave Policy',
+          description: '14 days per calendar year with 5-day carryover',
+        },
+        tr: {
+          name: 'Standart Yıllık İzin Politikası',
+          description: 'Yılda 14 gün, 5 gün devir hakkı ile',
+        },
       },
       entitlementRules: [
         {
@@ -225,8 +256,14 @@ export class LeaveSeeder implements Seeder {
       description: '10 days per calendar year, attachment after 2 days',
       priority: 0,
       translations: {
-        en: { name: 'Standard Sick Leave Policy', description: '10 days per calendar year, attachment after 2 days' },
-        tr: { name: 'Standart Hastalık İzni Politikası', description: 'Yılda 10 gün, 2 günden sonra rapor gerekli' },
+        en: {
+          name: 'Standard Sick Leave Policy',
+          description: '10 days per calendar year, attachment after 2 days',
+        },
+        tr: {
+          name: 'Standart Hastalık İzni Politikası',
+          description: 'Yılda 10 gün, 2 günden sonra rapor gerekli',
+        },
       },
       entitlementRules: [
         {
@@ -249,11 +286,19 @@ export class LeaveSeeder implements Seeder {
       leaveTypeId: welcomeType.id,
       code: 'new_joiner_welcome',
       name: 'New Joiner Welcome Leave Policy',
-      description: '7 days of extra leave valid during first 6 months of employment',
+      description:
+        '7 days of extra leave valid during first 6 months of employment',
       priority: 0,
       translations: {
-        en: { name: 'New Joiner Welcome Leave Policy', description: '7 days of extra leave valid during first 6 months of employment' },
-        tr: { name: 'Yeni İşe Başlama İzin Politikası', description: 'İstihdamın ilk 6 ayında geçerli 7 günlük ek izin' },
+        en: {
+          name: 'New Joiner Welcome Leave Policy',
+          description:
+            '7 days of extra leave valid during first 6 months of employment',
+        },
+        tr: {
+          name: 'Yeni İşe Başlama İzin Politikası',
+          description: 'İstihdamın ilk 6 ayında geçerli 7 günlük ek izin',
+        },
       },
       entitlementRules: [
         {
@@ -294,7 +339,9 @@ export class LeaveSeeder implements Seeder {
           validUntil: yearEnd,
           sourceType: GrantSourceType.ENTITLEMENT_RULE,
         });
-        this.logger.log(`Granted 14 annual leave days to ${emp.firstName} ${emp.lastName}`);
+        this.logger.log(
+          `Granted 14 annual leave days to ${emp.firstName} ${emp.lastName}`,
+        );
 
         // Sick leave grant
         await grantService.createGrant(company.id, {
@@ -308,7 +355,9 @@ export class LeaveSeeder implements Seeder {
           validUntil: yearEnd,
           sourceType: GrantSourceType.ENTITLEMENT_RULE,
         });
-        this.logger.log(`Granted 10 sick leave days to ${emp.firstName} ${emp.lastName}`);
+        this.logger.log(
+          `Granted 10 sick leave days to ${emp.firstName} ${emp.lastName}`,
+        );
 
         // New joiner welcome leave (valid 6 months from hire date)
         const hireDate = emp.hireDate ? new Date(emp.hireDate) : new Date();
@@ -325,7 +374,9 @@ export class LeaveSeeder implements Seeder {
           validUntil: welcomeExpiry,
           sourceType: GrantSourceType.ENTITLEMENT_RULE,
         });
-        this.logger.log(`Granted 7 welcome leave days to ${emp.firstName} ${emp.lastName}`);
+        this.logger.log(
+          `Granted 7 welcome leave days to ${emp.firstName} ${emp.lastName}`,
+        );
       }
     } catch (err) {
       this.logger.warn(`Could not create sample grants: ${err.message}`);

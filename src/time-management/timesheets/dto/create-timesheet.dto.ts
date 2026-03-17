@@ -77,7 +77,11 @@ export class CreateTimesheetEntryDto {
 }
 
 export class UpdateTimesheetPeriodDto {
-  @ApiProperty({ description: 'Timesheet entries', required: false, type: [CreateTimesheetEntryDto] })
+  @ApiProperty({
+    description: 'Timesheet entries',
+    required: false,
+    type: [CreateTimesheetEntryDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateTimesheetEntryDto)
@@ -91,7 +95,11 @@ export class QueryTimesheetDto extends PaginationDto {
   @IsOptional()
   employeeId?: string;
 
-  @ApiProperty({ description: 'Filter by status', enum: TimesheetStatus, required: false })
+  @ApiProperty({
+    description: 'Filter by status',
+    enum: TimesheetStatus,
+    required: false,
+  })
   @IsEnum(TimesheetStatus)
   @IsOptional()
   status?: TimesheetStatus;

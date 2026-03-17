@@ -17,8 +17,17 @@ import { LeaveEntitlementRule } from './leave-entitlement-rule.entity';
 import { LeaveGrantStatus, GrantSourceType } from '../enums/leave.enums';
 
 @Entity('leave_grants')
-@Index('IDX_leave_grant_employee_type', ['companyId', 'employeeId', 'leaveTypeId'])
-@Index('IDX_leave_grant_valid_window', ['employeeId', 'leaveTypeId', 'validFrom', 'validUntil'])
+@Index('IDX_leave_grant_employee_type', [
+  'companyId',
+  'employeeId',
+  'leaveTypeId',
+])
+@Index('IDX_leave_grant_valid_window', [
+  'employeeId',
+  'leaveTypeId',
+  'validFrom',
+  'validUntil',
+])
 export class LeaveGrant {
   @ApiProperty({ description: 'Unique identifier' })
   @PrimaryGeneratedColumn('uuid')
@@ -58,7 +67,10 @@ export class LeaveGrant {
   @Column({ name: 'entitlement_rule_id', type: 'uuid', nullable: true })
   entitlementRuleId: string | null;
 
-  @ManyToOne(() => LeaveEntitlementRule, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => LeaveEntitlementRule, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   @JoinColumn({ name: 'entitlement_rule_id' })
   entitlementRule: LeaveEntitlementRule;
 
@@ -86,7 +98,10 @@ export class LeaveGrant {
   @Column({ type: 'date' })
   validFrom: Date;
 
-  @ApiProperty({ description: 'End of validity window (null = no expiry)', required: false })
+  @ApiProperty({
+    description: 'End of validity window (null = no expiry)',
+    required: false,
+  })
   @Column({ type: 'date', nullable: true })
   validUntil: Date | null;
 
@@ -94,7 +109,10 @@ export class LeaveGrant {
   @Column({ type: 'timestamptz' })
   grantedAt: Date;
 
-  @ApiProperty({ description: 'Source type of the grant', enum: GrantSourceType })
+  @ApiProperty({
+    description: 'Source type of the grant',
+    enum: GrantSourceType,
+  })
   @Column({ type: 'varchar', length: 50 })
   sourceType: GrantSourceType;
 

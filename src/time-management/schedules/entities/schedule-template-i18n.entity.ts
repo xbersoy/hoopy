@@ -13,7 +13,10 @@ import { Company } from '../../../company/entities/company.entity';
 import { ScheduleTemplate } from './schedule-template.entity';
 
 @Entity('schedule_template_i18n')
-@Unique('UQ_schedule_template_i18n_template_locale', ['scheduleTemplateId', 'locale'])
+@Unique('UQ_schedule_template_i18n_template_locale', [
+  'scheduleTemplateId',
+  'locale',
+])
 @Index('IDX_schedule_template_i18n_company_locale', ['companyId', 'locale'])
 export class ScheduleTemplateI18n {
   @PrimaryGeneratedColumn('uuid')

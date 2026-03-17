@@ -15,7 +15,11 @@ import { Employee } from '../../../employee/entities/employee.entity';
 import { AttendanceStatus, CheckSource } from '../enums/attendance.enums';
 
 @Entity('attendance_records')
-@Unique('UQ_attendance_company_employee_date', ['companyId', 'employeeId', 'date'])
+@Unique('UQ_attendance_company_employee_date', [
+  'companyId',
+  'employeeId',
+  'date',
+])
 @Index('IDX_attendance_record_company', ['companyId'])
 @Index('IDX_attendance_record_employee', ['companyId', 'employeeId'])
 @Index('IDX_attendance_record_date', ['companyId', 'date'])
@@ -54,12 +58,30 @@ export class AttendanceRecord {
   @Column({ name: 'check_out', type: 'timestamptz', nullable: true })
   checkOut: Date | null;
 
-  @ApiProperty({ description: 'Check-in source', enum: CheckSource, required: false })
-  @Column({ name: 'check_in_source', type: 'varchar', length: 50, nullable: true })
+  @ApiProperty({
+    description: 'Check-in source',
+    enum: CheckSource,
+    required: false,
+  })
+  @Column({
+    name: 'check_in_source',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   checkInSource: CheckSource | null;
 
-  @ApiProperty({ description: 'Check-out source', enum: CheckSource, required: false })
-  @Column({ name: 'check_out_source', type: 'varchar', length: 50, nullable: true })
+  @ApiProperty({
+    description: 'Check-out source',
+    enum: CheckSource,
+    required: false,
+  })
+  @Column({
+    name: 'check_out_source',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   checkOutSource: CheckSource | null;
 
   @ApiProperty({ description: 'Total worked minutes', required: false })

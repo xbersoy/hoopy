@@ -34,8 +34,12 @@ export class AttendanceCorrectionService {
       attendanceRecordId: dto.attendanceRecordId || null,
       date: new Date(dto.date),
       correctionType: dto.correctionType,
-      requestedCheckIn: dto.requestedCheckIn ? new Date(dto.requestedCheckIn) : null,
-      requestedCheckOut: dto.requestedCheckOut ? new Date(dto.requestedCheckOut) : null,
+      requestedCheckIn: dto.requestedCheckIn
+        ? new Date(dto.requestedCheckIn)
+        : null,
+      requestedCheckOut: dto.requestedCheckOut
+        ? new Date(dto.requestedCheckOut)
+        : null,
       reason: dto.reason,
       status: CorrectionStatus.PENDING,
       metadata: dto.metadata || null,
@@ -63,7 +67,9 @@ export class AttendanceCorrectionService {
   async findOne(id: string): Promise<AttendanceCorrectionRequest> {
     const entity = await this.correctionRepository.findOne(id);
     if (!entity) {
-      throw new NotFoundException(`Correction request with ID "${id}" not found`);
+      throw new NotFoundException(
+        `Correction request with ID "${id}" not found`,
+      );
     }
     return entity;
   }
@@ -80,16 +86,21 @@ export class AttendanceCorrectionService {
 
     // Apply correction to attendance record
     if (request.attendanceRecordId) {
-      const record = await this.recordRepository.findOne(request.attendanceRecordId);
+      const record = await this.recordRepository.findOne(
+        request.attendanceRecordId,
+      );
       if (record) {
         if (request.requestedCheckIn) record.checkIn = request.requestedCheckIn;
-        if (request.requestedCheckOut) record.checkOut = request.requestedCheckOut;
+        if (request.requestedCheckOut)
+          record.checkOut = request.requestedCheckOut;
 
         // Recalculate worked minutes
         if (record.checkIn && record.checkOut) {
           const checkInTime = new Date(record.checkIn).getTime();
           const checkOutTime = new Date(record.checkOut).getTime();
-          record.workedMinutes = Math.round((checkOutTime - checkInTime) / 60000);
+          record.workedMinutes = Math.round(
+            (checkOutTime - checkInTime) / 60000,
+          );
         }
 
         await this.recordRepository.save(record);

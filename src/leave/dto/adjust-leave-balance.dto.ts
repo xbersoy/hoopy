@@ -10,7 +10,10 @@ export class AdjustLeaveBalanceDto {
   @IsUUID()
   leaveTypeId: string;
 
-  @ApiProperty({ description: 'Adjustment amount (positive or negative)', example: 2 })
+  @ApiProperty({
+    description: 'Adjustment amount (positive or negative)',
+    example: 2,
+  })
   @IsNumber()
   amount: number;
 
@@ -18,7 +21,10 @@ export class AdjustLeaveBalanceDto {
   @IsString()
   reason: string;
 
-  @ApiProperty({ description: 'Specific grant ID to adjust (optional)', required: false })
+  @ApiProperty({
+    description: 'Specific grant ID to adjust (optional)',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   grantId?: string;

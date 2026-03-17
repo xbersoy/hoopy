@@ -29,7 +29,9 @@ export class ScheduleTemplateService {
   ): Promise<ScheduleTemplate> {
     const existing = await this.templateRepo.findByCode(companyId, dto.code);
     if (existing) {
-      throw new ConflictException(`Schedule template with code "${dto.code}" already exists`);
+      throw new ConflictException(
+        `Schedule template with code "${dto.code}" already exists`,
+      );
     }
 
     const entity = this.templateRepo.create({
@@ -62,7 +64,9 @@ export class ScheduleTemplateService {
   async findOne(id: string): Promise<ScheduleTemplate> {
     const entity = await this.templateRepo.findOne(id);
     if (!entity) {
-      throw new NotFoundException(`Schedule template with ID "${id}" not found`);
+      throw new NotFoundException(
+        `Schedule template with ID "${id}" not found`,
+      );
     }
     return entity;
   }
@@ -74,14 +78,19 @@ export class ScheduleTemplateService {
     const entity = await this.findOne(id);
 
     if (dto.name !== undefined) entity.name = dto.name;
-    if (dto.description !== undefined) entity.description = dto.description ?? null;
+    if (dto.description !== undefined)
+      entity.description = dto.description ?? null;
     if (dto.scheduleType !== undefined) entity.scheduleType = dto.scheduleType;
     if (dto.workDays !== undefined) entity.workDays = dto.workDays;
-    if (dto.defaultStartTime !== undefined) entity.defaultStartTime = dto.defaultStartTime ?? null;
-    if (dto.defaultEndTime !== undefined) entity.defaultEndTime = dto.defaultEndTime ?? null;
-    if (dto.breakDurationMinutes !== undefined) entity.breakDurationMinutes = dto.breakDurationMinutes;
+    if (dto.defaultStartTime !== undefined)
+      entity.defaultStartTime = dto.defaultStartTime ?? null;
+    if (dto.defaultEndTime !== undefined)
+      entity.defaultEndTime = dto.defaultEndTime ?? null;
+    if (dto.breakDurationMinutes !== undefined)
+      entity.breakDurationMinutes = dto.breakDurationMinutes;
     if (dto.isOvernight !== undefined) entity.isOvernight = dto.isOvernight;
-    if (dto.weeklyHours !== undefined) entity.weeklyHours = dto.weeklyHours ?? null;
+    if (dto.weeklyHours !== undefined)
+      entity.weeklyHours = dto.weeklyHours ?? null;
     if (dto.isActive !== undefined) entity.isActive = dto.isActive;
     if (dto.metadata !== undefined) entity.metadata = dto.metadata ?? null;
 

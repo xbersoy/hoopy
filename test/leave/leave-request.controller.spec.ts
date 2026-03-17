@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LeaveRequestController } from '@/leave/controllers/leave-request.controller';
 import { LeaveRequestService } from '@/leave/services/leave-request.service';
 import { PermissionsService } from '@/permissions/services/permissions.service';
-import { LeaveRequestStatus, SessionType } from '@/leave/enums/leave.enums';
+import { LeaveRequestStatus } from '@/leave/enums/leave.enums';
 
 describe('LeaveRequestController', () => {
   let controller: LeaveRequestController;
@@ -24,19 +24,39 @@ describe('LeaveRequestController', () => {
   beforeEach(async () => {
     service = {
       create: jest.fn().mockResolvedValue(mockRequest),
-      findPaginated: jest.fn().mockResolvedValue({ data: [mockRequest], total: 1, page: 1, limit: 10 }),
+      findPaginated: jest.fn().mockResolvedValue({
+        data: [mockRequest],
+        total: 1,
+        page: 1,
+        limit: 10,
+      }),
       findOne: jest.fn().mockResolvedValue(mockRequest),
-      submit: jest.fn().mockResolvedValue({ ...mockRequest, status: LeaveRequestStatus.SUBMITTED }),
-      approve: jest.fn().mockResolvedValue({ ...mockRequest, status: LeaveRequestStatus.APPROVED }),
-      reject: jest.fn().mockResolvedValue({ ...mockRequest, status: LeaveRequestStatus.REJECTED }),
-      cancel: jest.fn().mockResolvedValue({ ...mockRequest, status: LeaveRequestStatus.CANCELLED }),
+      submit: jest.fn().mockResolvedValue({
+        ...mockRequest,
+        status: LeaveRequestStatus.SUBMITTED,
+      }),
+      approve: jest.fn().mockResolvedValue({
+        ...mockRequest,
+        status: LeaveRequestStatus.APPROVED,
+      }),
+      reject: jest.fn().mockResolvedValue({
+        ...mockRequest,
+        status: LeaveRequestStatus.REJECTED,
+      }),
+      cancel: jest.fn().mockResolvedValue({
+        ...mockRequest,
+        status: LeaveRequestStatus.CANCELLED,
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LeaveRequestController],
       providers: [
         { provide: LeaveRequestService, useValue: service },
-        { provide: PermissionsService, useValue: { userCan: jest.fn().mockResolvedValue(true) } },
+        {
+          provide: PermissionsService,
+          useValue: { userCan: jest.fn().mockResolvedValue(true) },
+        },
       ],
     }).compile();
 
@@ -65,7 +85,10 @@ describe('LeaveRequestController', () => {
     it('should return paginated results', async () => {
       const result = await controller.findAll(mockReq, { page: 1, limit: 10 });
       expect(result.data).toHaveLength(1);
-      expect(service.findPaginated).toHaveBeenCalledWith('comp-1', { page: 1, limit: 10 });
+      expect(service.findPaginated).toHaveBeenCalledWith('comp-1', {
+        page: 1,
+        limit: 10,
+      });
     });
 
     it('should pass filter params through', async () => {

@@ -33,7 +33,7 @@ describe('EmployeeController', () => {
   beforeEach(async () => {
     employeeService = {
       create: jest.fn(),
-      findAll: jest.fn(),
+      findPaginated: jest.fn(),
       findOne: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
@@ -69,20 +69,23 @@ describe('EmployeeController', () => {
 
   describe('findAll', () => {
     it('should return all employees', async () => {
-      employeeService.findAll.mockResolvedValue([mockEmployee]);
+      employeeService.findPaginated.mockResolvedValue({
+        data: [mockEmployee],
+        total: 1,
+      });
 
-      const result = await controller.findAll();
+      const result = await controller.findAll({});
 
-      expect(result).toEqual([mockEmployee]);
-      expect(employeeService.findAll).toHaveBeenCalled();
+      expect(result).toEqual({ data: [mockEmployee], total: 1 });
+      expect(employeeService.findPaginated).toHaveBeenCalled();
     });
 
     it('should return empty array when no employees exist', async () => {
-      employeeService.findAll.mockResolvedValue([]);
+      employeeService.findPaginated.mockResolvedValue({ data: [], total: 0 });
 
-      const result = await controller.findAll();
+      const result = await controller.findAll({});
 
-      expect(result).toEqual([]);
+      expect(result).toEqual({ data: [], total: 0 });
     });
   });
 

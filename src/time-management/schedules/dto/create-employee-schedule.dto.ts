@@ -26,7 +26,11 @@ export class CreateEmployeeScheduleDto {
   @IsDateString()
   effectiveFrom: string;
 
-  @ApiProperty({ description: 'Effective until date', required: false, example: '2026-12-31' })
+  @ApiProperty({
+    description: 'Effective until date',
+    required: false,
+    example: '2026-12-31',
+  })
   @IsDateString()
   @IsOptional()
   effectiveUntil?: string;
@@ -58,7 +62,10 @@ export class UpdateEmployeeScheduleDto {
   @IsOptional()
   effectiveUntil?: string;
 
-  @ApiProperty({ description: 'Whether the assignment is active', required: false })
+  @ApiProperty({
+    description: 'Whether the assignment is active',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
@@ -75,7 +82,10 @@ export class QueryEmployeeScheduleDto extends PaginationDto {
   @IsOptional()
   employeeId?: string;
 
-  @ApiProperty({ description: 'Filter by schedule template ID', required: false })
+  @ApiProperty({
+    description: 'Filter by schedule template ID',
+    required: false,
+  })
   @IsUUID()
   @IsOptional()
   scheduleTemplateId?: string;

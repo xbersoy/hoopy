@@ -21,7 +21,11 @@ export class CreateAttendanceRecordDto {
   @IsDateString()
   date: string;
 
-  @ApiProperty({ description: 'Attendance status', enum: AttendanceStatus, required: false })
+  @ApiProperty({
+    description: 'Attendance status',
+    enum: AttendanceStatus,
+    required: false,
+  })
   @IsEnum(AttendanceStatus)
   @IsOptional()
   status?: AttendanceStatus;
@@ -36,12 +40,20 @@ export class CreateAttendanceRecordDto {
   @IsOptional()
   checkOut?: string;
 
-  @ApiProperty({ description: 'Check-in source', enum: CheckSource, required: false })
+  @ApiProperty({
+    description: 'Check-in source',
+    enum: CheckSource,
+    required: false,
+  })
   @IsEnum(CheckSource)
   @IsOptional()
   checkInSource?: CheckSource;
 
-  @ApiProperty({ description: 'Check-out source', enum: CheckSource, required: false })
+  @ApiProperty({
+    description: 'Check-out source',
+    enum: CheckSource,
+    required: false,
+  })
   @IsEnum(CheckSource)
   @IsOptional()
   checkOutSource?: CheckSource;
@@ -52,7 +64,10 @@ export class CreateAttendanceRecordDto {
   @IsOptional()
   breakMinutes?: number;
 
-  @ApiProperty({ description: 'Whether the shift is overnight', required: false })
+  @ApiProperty({
+    description: 'Whether the shift is overnight',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isOvernight?: boolean;
@@ -73,7 +88,11 @@ export class CreateAttendanceRecordDto {
 }
 
 export class UpdateAttendanceRecordDto {
-  @ApiProperty({ description: 'Attendance status', enum: AttendanceStatus, required: false })
+  @ApiProperty({
+    description: 'Attendance status',
+    enum: AttendanceStatus,
+    required: false,
+  })
   @IsEnum(AttendanceStatus)
   @IsOptional()
   status?: AttendanceStatus;
@@ -88,12 +107,20 @@ export class UpdateAttendanceRecordDto {
   @IsOptional()
   checkOut?: string;
 
-  @ApiProperty({ description: 'Check-in source', enum: CheckSource, required: false })
+  @ApiProperty({
+    description: 'Check-in source',
+    enum: CheckSource,
+    required: false,
+  })
   @IsEnum(CheckSource)
   @IsOptional()
   checkInSource?: CheckSource;
 
-  @ApiProperty({ description: 'Check-out source', enum: CheckSource, required: false })
+  @ApiProperty({
+    description: 'Check-out source',
+    enum: CheckSource,
+    required: false,
+  })
   @IsEnum(CheckSource)
   @IsOptional()
   checkOutSource?: CheckSource;
@@ -122,7 +149,10 @@ export class UpdateAttendanceRecordDto {
   @IsOptional()
   earlyDepartureMinutes?: number;
 
-  @ApiProperty({ description: 'Whether the shift is overnight', required: false })
+  @ApiProperty({
+    description: 'Whether the shift is overnight',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isOvernight?: boolean;
@@ -148,17 +178,29 @@ export class QueryAttendanceDto extends PaginationDto {
   @IsOptional()
   employeeId?: string;
 
-  @ApiProperty({ description: 'Filter by status', enum: AttendanceStatus, required: false })
+  @ApiProperty({
+    description: 'Filter by status',
+    enum: AttendanceStatus,
+    required: false,
+  })
   @IsEnum(AttendanceStatus)
   @IsOptional()
   status?: AttendanceStatus;
 
-  @ApiProperty({ description: 'Filter by start date', required: false, example: '2026-04-01' })
+  @ApiProperty({
+    description: 'Filter by start date',
+    required: false,
+    example: '2026-04-01',
+  })
   @IsDateString()
   @IsOptional()
   startDate?: string;
 
-  @ApiProperty({ description: 'Filter by end date', required: false, example: '2026-04-30' })
+  @ApiProperty({
+    description: 'Filter by end date',
+    required: false,
+    example: '2026-04-30',
+  })
   @IsDateString()
   @IsOptional()
   endDate?: string;

@@ -30,11 +30,16 @@ export class LeaveEntitlementRule {
   @Index()
   leavePolicyId: string;
 
-  @ManyToOne(() => LeavePolicy, (p) => p.entitlementRules, { onDelete: 'CASCADE' })
+  @ManyToOne(() => LeavePolicy, (p) => p.entitlementRules, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'leave_policy_id' })
   policy: LeavePolicy;
 
-  @ApiProperty({ description: 'Human-readable name', example: '14 days yearly' })
+  @ApiProperty({
+    description: 'Human-readable name',
+    example: '14 days yearly',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
@@ -50,7 +55,11 @@ export class LeaveEntitlementRule {
   @Column({ type: 'varchar', length: 50 })
   grantTrigger: GrantTrigger;
 
-  @ApiProperty({ description: 'Relative anchor for validity window', enum: RelativeAnchor, required: false })
+  @ApiProperty({
+    description: 'Relative anchor for validity window',
+    enum: RelativeAnchor,
+    required: false,
+  })
   @Column({ type: 'varchar', length: 50, nullable: true })
   relativeAnchor: RelativeAnchor | null;
 
@@ -58,15 +67,25 @@ export class LeaveEntitlementRule {
   @Column({ type: 'int', default: 0 })
   relativeStartOffsetDays: number;
 
-  @ApiProperty({ description: 'End offset in days from anchor (null = no end)', required: false })
+  @ApiProperty({
+    description: 'End offset in days from anchor (null = no end)',
+    required: false,
+  })
   @Column({ type: 'int', nullable: true })
   relativeEndOffsetDays: number | null;
 
-  @ApiProperty({ description: 'Recurring pattern', enum: RecurringPattern, required: false })
+  @ApiProperty({
+    description: 'Recurring pattern',
+    enum: RecurringPattern,
+    required: false,
+  })
   @Column({ type: 'varchar', length: 20, nullable: true })
   recurringPattern: RecurringPattern | null;
 
-  @ApiProperty({ description: 'Max grants per employee (null = unlimited)', required: false })
+  @ApiProperty({
+    description: 'Max grants per employee (null = unlimited)',
+    required: false,
+  })
   @Column({ type: 'int', nullable: true })
   maxGrantsPerEmployee: number | null;
 
@@ -74,20 +93,37 @@ export class LeaveEntitlementRule {
   @Column({ type: 'varchar', length: 20, default: CarryoverStrategy.NONE })
   carryoverStrategy: CarryoverStrategy;
 
-  @ApiProperty({ description: 'Max days for carryover (when capped)', required: false })
+  @ApiProperty({
+    description: 'Max days for carryover (when capped)',
+    required: false,
+  })
   @Column({ type: 'decimal', precision: 8, scale: 2, nullable: true })
   carryoverMaxDays: number | null;
 
   @ApiProperty({ description: 'Expiry strategy', enum: ExpiryStrategy })
-  @Column({ type: 'varchar', length: 50, default: ExpiryStrategy.END_OF_PERIOD })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: ExpiryStrategy.END_OF_PERIOD,
+  })
   expiryStrategy: ExpiryStrategy;
 
-  @ApiProperty({ description: 'Fixed days after grant for expiry', required: false })
+  @ApiProperty({
+    description: 'Fixed days after grant for expiry',
+    required: false,
+  })
   @Column({ type: 'int', nullable: true })
   expiryDays: number | null;
 
-  @ApiProperty({ description: 'Consumption priority strategy', enum: ConsumptionStrategy })
-  @Column({ type: 'varchar', length: 50, default: ConsumptionStrategy.EARLIEST_EXPIRING_FIRST })
+  @ApiProperty({
+    description: 'Consumption priority strategy',
+    enum: ConsumptionStrategy,
+  })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: ConsumptionStrategy.EARLIEST_EXPIRING_FIRST,
+  })
   consumptionStrategy: ConsumptionStrategy;
 
   @ApiProperty({ description: 'Whether negative balance is allowed' })

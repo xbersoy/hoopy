@@ -4,13 +4,15 @@ import { ConfigService } from '@nestjs/config';
 import { of, throwError } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { ActivityClientService } from '../../src/activity-client/services/activity-client.service';
-import { ActivityCategory, ActorType } from '../../src/activity-client/constants';
+import {
+  ActivityCategory,
+  ActorType,
+} from '../../src/activity-client/constants';
 
 describe('ActivityClientService', () => {
   let service: ActivityClientService;
   let httpService: any;
   let loggerErrorSpy: jest.SpyInstance;
-  let loggerWarnSpy: jest.SpyInstance;
 
   const mockConfig = {
     baseUrl: 'http://localhost:4000',
@@ -39,8 +41,12 @@ describe('ActivityClientService', () => {
     httpService = module.get(HttpService);
 
     // Spy on logger to verify error handling
-    loggerErrorSpy = jest.spyOn((service as any).logger, 'error').mockImplementation();
-    loggerWarnSpy = jest.spyOn((service as any).logger, 'warn').mockImplementation();
+    loggerErrorSpy = jest
+      .spyOn((service as any).logger, 'error')
+      .mockImplementation();
+    loggerWarnSpy = jest
+      .spyOn((service as any).logger, 'warn')
+      .mockImplementation();
   });
 
   afterEach(() => {
@@ -141,7 +147,9 @@ describe('ActivityClientService', () => {
       await expect(service.log(basePayload)).resolves.toBeUndefined();
 
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to send activity log [employee.created]'),
+        expect.stringContaining(
+          'Failed to send activity log [employee.created]',
+        ),
         expect.any(String),
       );
     });
@@ -216,8 +224,12 @@ describe('ActivityClientService', () => {
         ],
       }).compile();
 
-      const unconfiguredService = module.get<ActivityClientService>(ActivityClientService);
-      const warnSpy = jest.spyOn((unconfiguredService as any).logger, 'warn').mockImplementation();
+      const unconfiguredService = module.get<ActivityClientService>(
+        ActivityClientService,
+      );
+      const warnSpy = jest
+        .spyOn((unconfiguredService as any).logger, 'warn')
+        .mockImplementation();
 
       await unconfiguredService.log(basePayload);
 
@@ -239,10 +251,16 @@ describe('ActivityClientService', () => {
         ],
       }).compile();
 
-      const unconfiguredService = module.get<ActivityClientService>(ActivityClientService);
-      jest.spyOn((unconfiguredService as any).logger, 'warn').mockImplementation();
+      const unconfiguredService = module.get<ActivityClientService>(
+        ActivityClientService,
+      );
+      jest
+        .spyOn((unconfiguredService as any).logger, 'warn')
+        .mockImplementation();
 
-      await expect(unconfiguredService.log(basePayload)).resolves.toBeUndefined();
+      await expect(
+        unconfiguredService.log(basePayload),
+      ).resolves.toBeUndefined();
     });
   });
 

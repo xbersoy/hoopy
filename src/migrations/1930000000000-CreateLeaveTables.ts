@@ -31,7 +31,9 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_leave_type_company" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_type_company" ON "leave_types" ("company_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_type_company" ON "leave_types" ("company_id")`,
+    );
 
     // ── leave_policies ──
     await queryRunner.query(`
@@ -55,8 +57,12 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_leave_policy_type" FOREIGN KEY ("leave_type_id") REFERENCES "leave_types"("id") ON DELETE CASCADE
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_policy_company" ON "leave_policies" ("company_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_policy_type" ON "leave_policies" ("leave_type_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_policy_company" ON "leave_policies" ("company_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_policy_type" ON "leave_policies" ("leave_type_id")`,
+    );
 
     // ── leave_entitlement_rules ──
     await queryRunner.query(`
@@ -85,7 +91,9 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_entitlement_rule_policy" FOREIGN KEY ("leave_policy_id") REFERENCES "leave_policies"("id") ON DELETE CASCADE
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_entitlement_rule_policy" ON "leave_entitlement_rules" ("leave_policy_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_entitlement_rule_policy" ON "leave_entitlement_rules" ("leave_policy_id")`,
+    );
 
     // ── leave_grants ──
     await queryRunner.query(`
@@ -117,11 +125,21 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_leave_grant_rule" FOREIGN KEY ("entitlement_rule_id") REFERENCES "leave_entitlement_rules"("id") ON DELETE SET NULL
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_grant_company" ON "leave_grants" ("company_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_grant_employee" ON "leave_grants" ("employee_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_grant_type" ON "leave_grants" ("leave_type_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_grant_employee_type" ON "leave_grants" ("company_id", "employee_id", "leave_type_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_grant_valid_window" ON "leave_grants" ("employee_id", "leave_type_id", "valid_from", "valid_until")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_grant_company" ON "leave_grants" ("company_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_grant_employee" ON "leave_grants" ("employee_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_grant_type" ON "leave_grants" ("leave_type_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_grant_employee_type" ON "leave_grants" ("company_id", "employee_id", "leave_type_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_grant_valid_window" ON "leave_grants" ("employee_id", "leave_type_id", "valid_from", "valid_until")`,
+    );
 
     // ── leave_balance_ledger ──
     await queryRunner.query(`
@@ -147,10 +165,18 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_ledger_grant" FOREIGN KEY ("leave_grant_id") REFERENCES "leave_grants"("id") ON DELETE SET NULL
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_balance_ledger_employee" ON "leave_balance_ledger" ("employee_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_balance_ledger_employee_type" ON "leave_balance_ledger" ("company_id", "employee_id", "leave_type_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_balance_ledger_grant" ON "leave_balance_ledger" ("leave_grant_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_balance_ledger_request" ON "leave_balance_ledger" ("leave_request_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_balance_ledger_employee" ON "leave_balance_ledger" ("employee_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_balance_ledger_employee_type" ON "leave_balance_ledger" ("company_id", "employee_id", "leave_type_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_balance_ledger_grant" ON "leave_balance_ledger" ("leave_grant_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_balance_ledger_request" ON "leave_balance_ledger" ("leave_request_id")`,
+    );
 
     // ── leave_requests ──
     await queryRunner.query(`
@@ -187,11 +213,21 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_leave_request_policy" FOREIGN KEY ("matched_policy_id") REFERENCES "leave_policies"("id") ON DELETE SET NULL
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_request_company" ON "leave_requests" ("company_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_request_employee" ON "leave_requests" ("company_id", "employee_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_request_status" ON "leave_requests" ("company_id", "status")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_request_dates" ON "leave_requests" ("employee_id", "start_date", "end_date")`);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_request_type" ON "leave_requests" ("leave_type_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_request_company" ON "leave_requests" ("company_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_request_employee" ON "leave_requests" ("company_id", "employee_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_request_status" ON "leave_requests" ("company_id", "status")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_request_dates" ON "leave_requests" ("employee_id", "start_date", "end_date")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_request_type" ON "leave_requests" ("leave_type_id")`,
+    );
 
     // ── leave_request_segments ──
     await queryRunner.query(`
@@ -208,7 +244,9 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
         CONSTRAINT "FK_segment_grant" FOREIGN KEY ("applied_grant_id") REFERENCES "leave_grants"("id") ON DELETE SET NULL
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_segment_request" ON "leave_request_segments" ("leave_request_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_segment_request" ON "leave_request_segments" ("leave_request_id")`,
+    );
 
     // ── Add FK from ledger to requests (now that requests table exists) ──
     await queryRunner.query(`
@@ -218,12 +256,20 @@ export class CreateLeaveTables1930000000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "leave_balance_ledger" DROP CONSTRAINT IF EXISTS "FK_ledger_request"`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "leave_request_segments" CASCADE`);
+    await queryRunner.query(
+      `ALTER TABLE "leave_balance_ledger" DROP CONSTRAINT IF EXISTS "FK_ledger_request"`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "leave_request_segments" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "leave_requests" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "leave_balance_ledger" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "leave_balance_ledger" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "leave_grants" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "leave_entitlement_rules" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "leave_entitlement_rules" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "leave_policies" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "leave_types" CASCADE`);
   }

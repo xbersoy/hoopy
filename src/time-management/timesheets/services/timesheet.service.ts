@@ -127,7 +127,9 @@ export class TimesheetService {
       period.status !== TimesheetStatus.DRAFT &&
       period.status !== TimesheetStatus.CORRECTION_REQUESTED
     ) {
-      throw new BadRequestException('Only DRAFT or CORRECTION_REQUESTED timesheets can be submitted');
+      throw new BadRequestException(
+        'Only DRAFT or CORRECTION_REQUESTED timesheets can be submitted',
+      );
     }
 
     period.status = TimesheetStatus.SUBMITTED;
@@ -138,7 +140,9 @@ export class TimesheetService {
   async approve(id: string, approverUserId: string): Promise<TimesheetPeriod> {
     const period = await this.findOne(id);
     if (period.status !== TimesheetStatus.SUBMITTED) {
-      throw new BadRequestException('Only SUBMITTED timesheets can be approved');
+      throw new BadRequestException(
+        'Only SUBMITTED timesheets can be approved',
+      );
     }
 
     period.status = TimesheetStatus.APPROVED;
@@ -150,7 +154,9 @@ export class TimesheetService {
   async reject(id: string, reason: string): Promise<TimesheetPeriod> {
     const period = await this.findOne(id);
     if (period.status !== TimesheetStatus.SUBMITTED) {
-      throw new BadRequestException('Only SUBMITTED timesheets can be rejected');
+      throw new BadRequestException(
+        'Only SUBMITTED timesheets can be rejected',
+      );
     }
 
     period.status = TimesheetStatus.REJECTED;
@@ -159,7 +165,10 @@ export class TimesheetService {
     return this.periodRepository.save(period);
   }
 
-  async requestCorrection(id: string, reason: string): Promise<TimesheetPeriod> {
+  async requestCorrection(
+    id: string,
+    reason: string,
+  ): Promise<TimesheetPeriod> {
     const period = await this.findOne(id);
     if (period.status !== TimesheetStatus.SUBMITTED) {
       throw new BadRequestException(

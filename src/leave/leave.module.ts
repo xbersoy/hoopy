@@ -69,14 +69,35 @@ import { PermissionsModule } from '../permissions/permissions.module';
 
     // Repositories
     { provide: 'LeaveTypeRepository', useClass: TypeOrmLeaveTypeRepository },
-    { provide: 'LeaveTypeI18nRepository', useClass: TypeOrmLeaveTypeI18nRepository },
-    { provide: 'LeavePolicyRepository', useClass: TypeOrmLeavePolicyRepository },
-    { provide: 'LeavePolicyI18nRepository', useClass: TypeOrmLeavePolicyI18nRepository },
-    { provide: 'LeaveEntitlementRuleRepository', useClass: TypeOrmLeaveEntitlementRuleRepository },
+    {
+      provide: 'LeaveTypeI18nRepository',
+      useClass: TypeOrmLeaveTypeI18nRepository,
+    },
+    {
+      provide: 'LeavePolicyRepository',
+      useClass: TypeOrmLeavePolicyRepository,
+    },
+    {
+      provide: 'LeavePolicyI18nRepository',
+      useClass: TypeOrmLeavePolicyI18nRepository,
+    },
+    {
+      provide: 'LeaveEntitlementRuleRepository',
+      useClass: TypeOrmLeaveEntitlementRuleRepository,
+    },
     { provide: 'LeaveGrantRepository', useClass: TypeOrmLeaveGrantRepository },
-    { provide: 'LeaveBalanceLedgerRepository', useClass: TypeOrmLeaveBalanceLedgerRepository },
-    { provide: 'LeaveRequestRepository', useClass: TypeOrmLeaveRequestRepository },
-    { provide: 'LeaveRequestSegmentRepository', useClass: TypeOrmLeaveRequestSegmentRepository },
+    {
+      provide: 'LeaveBalanceLedgerRepository',
+      useClass: TypeOrmLeaveBalanceLedgerRepository,
+    },
+    {
+      provide: 'LeaveRequestRepository',
+      useClass: TypeOrmLeaveRequestRepository,
+    },
+    {
+      provide: 'LeaveRequestSegmentRepository',
+      useClass: TypeOrmLeaveRequestSegmentRepository,
+    },
   ],
   exports: [
     LeaveTypeService,

@@ -25,7 +25,9 @@ export class EmployeeScheduleService {
     dto: CreateEmployeeScheduleDto,
   ): Promise<EmployeeSchedule> {
     const effectiveFrom = new Date(dto.effectiveFrom);
-    const effectiveUntil = dto.effectiveUntil ? new Date(dto.effectiveUntil) : undefined;
+    const effectiveUntil = dto.effectiveUntil
+      ? new Date(dto.effectiveUntil)
+      : undefined;
 
     const overlapping = await this.scheduleRepo.findOverlapping(
       companyId,
@@ -81,7 +83,9 @@ export class EmployeeScheduleService {
   async findOne(id: string): Promise<EmployeeSchedule> {
     const entity = await this.scheduleRepo.findOne(id);
     if (!entity) {
-      throw new NotFoundException(`Employee schedule with ID "${id}" not found`);
+      throw new NotFoundException(
+        `Employee schedule with ID "${id}" not found`,
+      );
     }
     return entity;
   }
@@ -92,10 +96,16 @@ export class EmployeeScheduleService {
   ): Promise<EmployeeSchedule> {
     const entity = await this.findOne(id);
 
-    if (dto.scheduleTemplateId !== undefined) entity.scheduleTemplateId = dto.scheduleTemplateId;
-    if (dto.shiftTemplateId !== undefined) entity.shiftTemplateId = dto.shiftTemplateId ?? null;
-    if (dto.effectiveFrom !== undefined) entity.effectiveFrom = new Date(dto.effectiveFrom);
-    if (dto.effectiveUntil !== undefined) entity.effectiveUntil = dto.effectiveUntil ? new Date(dto.effectiveUntil) : null;
+    if (dto.scheduleTemplateId !== undefined)
+      entity.scheduleTemplateId = dto.scheduleTemplateId;
+    if (dto.shiftTemplateId !== undefined)
+      entity.shiftTemplateId = dto.shiftTemplateId ?? null;
+    if (dto.effectiveFrom !== undefined)
+      entity.effectiveFrom = new Date(dto.effectiveFrom);
+    if (dto.effectiveUntil !== undefined)
+      entity.effectiveUntil = dto.effectiveUntil
+        ? new Date(dto.effectiveUntil)
+        : null;
     if (dto.isActive !== undefined) entity.isActive = dto.isActive;
     if (dto.notes !== undefined) entity.notes = dto.notes ?? null;
 

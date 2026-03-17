@@ -19,7 +19,10 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { PermissionsGuard } from '../../permissions/guards/permissions.guard';
 import { RequirePermissions } from '../../permissions/decorators/require-permissions.decorator';
 import { LeavePolicyService } from '../services/leave-policy.service';
-import { CreateLeavePolicyDto, UpdateLeavePolicyDto } from '../dto/create-leave-policy.dto';
+import {
+  CreateLeavePolicyDto,
+  UpdateLeavePolicyDto,
+} from '../dto/create-leave-policy.dto';
 import { LeavePolicy } from '../entities/leave-policy.entity';
 
 @ApiTags('Leave Policies')
@@ -33,7 +36,10 @@ export class LeavePolicyController {
   @RequirePermissions({ action: 'create', resourceType: 'leave-policy' })
   @ApiOperation({ summary: 'Create a leave policy with entitlement rules' })
   @ApiResponse({ status: 201, type: LeavePolicy })
-  create(@Req() req: any, @Body() dto: CreateLeavePolicyDto): Promise<LeavePolicy> {
+  create(
+    @Req() req: any,
+    @Body() dto: CreateLeavePolicyDto,
+  ): Promise<LeavePolicy> {
     return this.leavePolicyService.create(req.user.companyId, dto);
   }
 

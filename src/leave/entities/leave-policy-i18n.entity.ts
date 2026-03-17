@@ -31,7 +31,9 @@ export class LeavePolicyI18n {
   @Column({ name: 'leave_policy_id', type: 'uuid' })
   leavePolicyId: string;
 
-  @ManyToOne(() => LeavePolicy, (lp) => lp.translations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => LeavePolicy, (lp) => lp.translations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'leave_policy_id' })
   leavePolicy: LeavePolicy;
 
@@ -39,7 +41,10 @@ export class LeavePolicyI18n {
   @Column({ type: 'varchar', length: 35 })
   locale: string;
 
-  @ApiProperty({ description: 'Localized name', example: 'Standard Annual Leave Policy' })
+  @ApiProperty({
+    description: 'Localized name',
+    example: 'Standard Annual Leave Policy',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 

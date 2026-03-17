@@ -35,7 +35,10 @@ export class LeaveRequestController {
   @RequirePermissions({ action: 'create', resourceType: 'leave-request' })
   @ApiOperation({ summary: 'Create a leave request' })
   @ApiResponse({ status: 201, type: LeaveRequest })
-  create(@Req() req: any, @Body() dto: CreateLeaveRequestDto): Promise<LeaveRequest> {
+  create(
+    @Req() req: any,
+    @Body() dto: CreateLeaveRequestDto,
+  ): Promise<LeaveRequest> {
     return this.leaveRequestService.create(
       req.user.companyId,
       req.user.id,

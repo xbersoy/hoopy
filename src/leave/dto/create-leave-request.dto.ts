@@ -4,8 +4,6 @@ import {
   IsUUID,
   IsDateString,
   IsEnum,
-  IsNumber,
-  Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SessionType } from '../enums/leave.enums';

@@ -11,7 +11,7 @@ import {
   LeaveGrantRepository,
   LeaveBalanceLedgerRepository,
 } from '../leave.repository';
-import { CreateLeaveRequestDto, UpdateLeaveRequestDto } from '../dto/create-leave-request.dto';
+import { CreateLeaveRequestDto } from '../dto/create-leave-request.dto';
 import { QueryLeaveRequestDto } from '../dto/query-leave.dto';
 import { PaginatedResponse } from '../../shared/dto';
 import {
@@ -19,7 +19,6 @@ import {
   SessionType,
   BalanceTransactionType,
   BalanceActorType,
-  LeaveGrantStatus,
 } from '../enums/leave.enums';
 import { LeaveTypeService } from './leave-type.service';
 
@@ -52,7 +51,9 @@ export class LeaveRequestService {
     const endDate = new Date(dto.endDate);
 
     if (startDate > endDate) {
-      throw new BadRequestException('Start date must be before or equal to end date');
+      throw new BadRequestException(
+        'Start date must be before or equal to end date',
+      );
     }
 
     // Check for overlapping requests
@@ -62,13 +63,20 @@ export class LeaveRequestService {
       endDate,
     );
     if (overlapping.length > 0) {
-      throw new BadRequestException('Leave request overlaps with an existing request');
+      throw new BadRequestException(
+        'Leave request overlaps with an existing request',
+      );
     }
 
     // Calculate duration and build segments
     const startSession = dto.startSession || SessionType.FULL_DAY;
     const endSession = dto.endSession || SessionType.FULL_DAY;
-    const segments = this.buildSegments(startDate, endDate, startSession, endSession);
+    const segments = this.buildSegments(
+      startDate,
+      endDate,
+      startSession,
+      endSession,
+    );
     const durationDays = segments.reduce((sum, s) => sum + s.durationDays, 0);
 
     // Check balance if required
@@ -179,9 +187,7 @@ export class LeaveRequestService {
 
   async reject(id: string, actorUserId: string): Promise<LeaveRequest> {
     const request = await this.findOne(id);
-    if (
-      request.status !== LeaveRequestStatus.SUBMITTED
-    ) {
+    if (request.status !== LeaveRequestStatus.SUBMITTED) {
       throw new BadRequestException('Only submitted requests can be rejected');
     }
 
@@ -217,7 +223,10 @@ export class LeaveRequestService {
 
   // ─── Balance Operations ─────────────────────────────────────
 
-  private async reserveBalance(request: LeaveRequest, actorUserId: string): Promise<void> {
+  private async reserveBalance(
+    request: LeaveRequest,
+    actorUserId: string,
+  ): Promise<void> {
     const grants = await this.grantRepository.findActiveByEmployeeAndType(
       request.employeeId,
       request.leaveTypeId,
@@ -255,7 +264,10 @@ export class LeaveRequestService {
     }
   }
 
-  private async consumeReservedBalance(request: LeaveRequest, actorUserId: string): Promise<void> {
+  private async consumeReservedBalance(
+    request: LeaveRequest,
+    actorUserId: string,
+  ): Promise<void> {
     const grants = await this.grantRepository.findActiveByEmployeeAndType(
       request.employeeId,
       request.leaveTypeId,
@@ -294,7 +306,10 @@ export class LeaveRequestService {
     }
   }
 
-  private async releaseReservedBalance(request: LeaveRequest, actorUserId: string): Promise<void> {
+  private async releaseReservedBalance(
+    request: LeaveRequest,
+    actorUserId: string,
+  ): Promise<void> {
     const grants = await this.grantRepository.findActiveByEmployeeAndType(
       request.employeeId,
       request.leaveTypeId,
@@ -333,7 +348,10 @@ export class LeaveRequestService {
     }
   }
 
-  private async reverseConsumedBalance(request: LeaveRequest, actorUserId: string): Promise<void> {
+  private async reverseConsumedBalance(
+    request: LeaveRequest,
+    actorUserId: string,
+  ): Promise<void> {
     const grants = await this.grantRepository.findActiveByEmployeeAndType(
       request.employeeId,
       request.leaveTypeId,
@@ -380,7 +398,11 @@ export class LeaveRequestService {
     startSession: SessionType,
     endSession: SessionType,
   ): Array<{ date: Date; sessionType: SessionType; durationDays: number }> {
-    const segments: Array<{ date: Date; sessionType: SessionType; durationDays: number }> = [];
+    const segments: Array<{
+      date: Date;
+      sessionType: SessionType;
+      durationDays: number;
+    }> = [];
     const current = new Date(startDate);
 
     while (current <= endDate) {

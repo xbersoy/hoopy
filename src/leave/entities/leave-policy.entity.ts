@@ -43,7 +43,10 @@ export class LeavePolicy {
   @Column({ type: 'varchar', length: 100 })
   code: string;
 
-  @ApiProperty({ description: 'Policy name', example: 'Standard Annual Leave Policy' })
+  @ApiProperty({
+    description: 'Policy name',
+    example: 'Standard Annual Leave Policy',
+  })
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
@@ -51,7 +54,9 @@ export class LeavePolicy {
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
-  @ApiProperty({ description: 'Priority for rule matching (lower = higher priority)' })
+  @ApiProperty({
+    description: 'Priority for rule matching (lower = higher priority)',
+  })
   @Column({ type: 'int', default: 0 })
   priority: number;
 
@@ -71,10 +76,14 @@ export class LeavePolicy {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any> | null;
 
-  @OneToMany(() => LeaveEntitlementRule, (rule) => rule.policy, { cascade: true })
+  @OneToMany(() => LeaveEntitlementRule, (rule) => rule.policy, {
+    cascade: true,
+  })
   entitlementRules: LeaveEntitlementRule[];
 
-  @OneToMany(() => LeavePolicyI18n, (i18n) => i18n.leavePolicy, { cascade: true })
+  @OneToMany(() => LeavePolicyI18n, (i18n) => i18n.leavePolicy, {
+    cascade: true,
+  })
   translations: LeavePolicyI18n[];
 
   @CreateDateColumn({ name: 'created_at' })

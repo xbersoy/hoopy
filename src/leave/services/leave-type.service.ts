@@ -1,7 +1,18 @@
-import { Inject, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { LeaveType } from '../entities/leave-type.entity';
-import { LeaveTypeRepository, LeaveTypeI18nRepository } from '../leave.repository';
-import { CreateLeaveTypeDto, UpdateLeaveTypeDto } from '../dto/create-leave-type.dto';
+import {
+  LeaveTypeRepository,
+  LeaveTypeI18nRepository,
+} from '../leave.repository';
+import {
+  CreateLeaveTypeDto,
+  UpdateLeaveTypeDto,
+} from '../dto/create-leave-type.dto';
 
 @Injectable()
 export class LeaveTypeService {
@@ -14,9 +25,14 @@ export class LeaveTypeService {
   ) {}
 
   async create(companyId: string, dto: CreateLeaveTypeDto): Promise<LeaveType> {
-    const existing = await this.leaveTypeRepository.findByCode(companyId, dto.code);
+    const existing = await this.leaveTypeRepository.findByCode(
+      companyId,
+      dto.code,
+    );
     if (existing) {
-      throw new ConflictException(`Leave type with code "${dto.code}" already exists`);
+      throw new ConflictException(
+        `Leave type with code "${dto.code}" already exists`,
+      );
     }
 
     const { translations, ...data } = dto;
@@ -29,7 +45,13 @@ export class LeaveTypeService {
     // Upsert translations
     if (translations) {
       for (const [locale, t] of Object.entries(translations)) {
-        await this.i18nRepository.upsert(companyId, saved.id, locale, t.name, t.description);
+        await this.i18nRepository.upsert(
+          companyId,
+          saved.id,
+          locale,
+          t.name,
+          t.description,
+        );
       }
     }
 
@@ -51,10 +73,21 @@ export class LeaveTypeService {
   async update(id: string, dto: UpdateLeaveTypeDto): Promise<LeaveType> {
     const entity = await this.findOne(id);
     if (entity.isSystem) {
-      const allowed = ['name', 'description', 'isActive', 'sortOrder', 'color', 'icon', 'metadata', 'translations'];
+      const allowed = [
+        'name',
+        'description',
+        'isActive',
+        'sortOrder',
+        'color',
+        'icon',
+        'metadata',
+        'translations',
+      ];
       for (const key of Object.keys(dto)) {
         if (!allowed.includes(key)) {
-          throw new ConflictException(`Cannot modify "${key}" on system leave types`);
+          throw new ConflictException(
+            `Cannot modify "${key}" on system leave types`,
+          );
         }
       }
     }
@@ -67,7 +100,13 @@ export class LeaveTypeService {
 
     if (translations) {
       for (const [locale, t] of Object.entries(translations)) {
-        await this.i18nRepository.upsert(entity.companyId!, id, locale, t.name, t.description);
+        await this.i18nRepository.upsert(
+          entity.companyId!,
+          id,
+          locale,
+          t.name,
+          t.description,
+        );
       }
     }
 

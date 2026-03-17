@@ -36,7 +36,10 @@ export class AttendanceCorrectionController {
   ) {}
 
   @Post()
-  @RequirePermissions({ action: 'create', resourceType: 'attendance-correction' })
+  @RequirePermissions({
+    action: 'create',
+    resourceType: 'attendance-correction',
+  })
   @ApiOperation({ summary: 'Create a correction request' })
   @ApiResponse({ status: 201, type: AttendanceCorrectionRequest })
   create(
@@ -65,7 +68,10 @@ export class AttendanceCorrectionController {
   }
 
   @Post(':id/approve')
-  @RequirePermissions({ action: 'update', resourceType: 'attendance-correction' })
+  @RequirePermissions({
+    action: 'update',
+    resourceType: 'attendance-correction',
+  })
   @ApiOperation({ summary: 'Approve a correction request' })
   @ApiResponse({ status: 200, type: AttendanceCorrectionRequest })
   approve(
@@ -77,7 +83,10 @@ export class AttendanceCorrectionController {
   }
 
   @Post(':id/reject')
-  @RequirePermissions({ action: 'update', resourceType: 'attendance-correction' })
+  @RequirePermissions({
+    action: 'update',
+    resourceType: 'attendance-correction',
+  })
   @ApiOperation({ summary: 'Reject a correction request' })
   @ApiResponse({ status: 200, type: AttendanceCorrectionRequest })
   reject(
@@ -89,7 +98,10 @@ export class AttendanceCorrectionController {
   }
 
   @Post(':id/cancel')
-  @RequirePermissions({ action: 'update', resourceType: 'attendance-correction' })
+  @RequirePermissions({
+    action: 'update',
+    resourceType: 'attendance-correction',
+  })
   @ApiOperation({ summary: 'Cancel a correction request' })
   @ApiResponse({ status: 200, type: AttendanceCorrectionRequest })
   cancel(@Param('id') id: string): Promise<AttendanceCorrectionRequest> {

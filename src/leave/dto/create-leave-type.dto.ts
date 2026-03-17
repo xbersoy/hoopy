@@ -1,6 +1,13 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsInt, IsObject, Min, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsInt,
+  IsObject,
+  Min,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import { LeaveUnitType } from '../enums/leave.enums';
 
 export class LeaveTypeTranslationDto {
@@ -19,25 +26,38 @@ export class CreateLeaveTypeDto {
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Default display name (fallback)', example: 'Annual Leave' })
+  @ApiProperty({
+    description: 'Default display name (fallback)',
+    example: 'Annual Leave',
+  })
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Default description (fallback)', required: false })
+  @ApiProperty({
+    description: 'Default description (fallback)',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   description?: string;
 
   @ApiProperty({
     description: 'Translations keyed by locale',
-    example: { en: { name: 'Annual Leave', description: 'Paid annual leave' }, tr: { name: 'Yıllık İzin' } },
+    example: {
+      en: { name: 'Annual Leave', description: 'Paid annual leave' },
+      tr: { name: 'Yıllık İzin' },
+    },
     required: false,
   })
   @IsObject()
   @IsOptional()
   translations?: Record<string, LeaveTypeTranslationDto>;
 
-  @ApiProperty({ description: 'Unit type', enum: LeaveUnitType, required: false })
+  @ApiProperty({
+    description: 'Unit type',
+    enum: LeaveUnitType,
+    required: false,
+  })
   @IsEnum(LeaveUnitType)
   @IsOptional()
   unitType?: LeaveUnitType;
@@ -52,7 +72,10 @@ export class CreateLeaveTypeDto {
   @IsOptional()
   requiresBalance?: boolean;
 
-  @ApiProperty({ description: 'Whether attachment is required', required: false })
+  @ApiProperty({
+    description: 'Whether attachment is required',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   requiresAttachment?: boolean;

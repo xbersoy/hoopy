@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LeaveBalanceService } from '@/leave/services/leave-balance.service';
 import { LeaveGrantService } from '@/leave/services/leave-grant.service';
-import { BalanceTransactionType, BalanceActorType, GrantSourceType } from '@/leave/enums/leave.enums';
+import {
+  BalanceTransactionType,
+  BalanceActorType,
+  GrantSourceType,
+} from '@/leave/enums/leave.enums';
 
 describe('LeaveBalanceService', () => {
   let service: LeaveBalanceService;
@@ -36,9 +40,11 @@ describe('LeaveBalanceService', () => {
   beforeEach(async () => {
     ledgerRepo = {
       create: jest.fn().mockImplementation((data) => data),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ id: 'ledger-new', ...entity }),
-      ),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ id: 'ledger-new', ...entity }),
+        ),
       findByEmployee: jest.fn().mockResolvedValue([]),
       findByGrant: jest.fn().mockResolvedValue([mockLedgerEntry]),
     };
@@ -49,7 +55,9 @@ describe('LeaveBalanceService', () => {
 
     grantService = {
       findOne: jest.fn().mockResolvedValue({ ...mockGrant }),
-      createGrant: jest.fn().mockResolvedValue({ ...mockGrant, id: 'grant-new' }),
+      createGrant: jest
+        .fn()
+        .mockResolvedValue({ ...mockGrant, id: 'grant-new' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -70,7 +78,7 @@ describe('LeaveBalanceService', () => {
 
   describe('adjust with existing grant', () => {
     it('should adjust an existing grant and create ledger entry', async () => {
-      const result = await service.adjust(
+      await service.adjust(
         'comp-1',
         {
           employeeId: 'emp-1',

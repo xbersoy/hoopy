@@ -32,10 +32,14 @@ describe('ScheduleTemplateService', () => {
 
   beforeEach(async () => {
     templateRepo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'sched-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'sched-new' }),
+        ),
       findOne: jest.fn().mockResolvedValue(null),
       findByCompany: jest.fn().mockResolvedValue([]),
       findByCode: jest.fn().mockResolvedValue(null),
@@ -66,7 +70,10 @@ describe('ScheduleTemplateService', () => {
   describe('create', () => {
     it('should create a schedule template', async () => {
       templateRepo.save.mockResolvedValue({ ...mockTemplate, id: 'sched-new' });
-      templateRepo.findOne.mockResolvedValue({ ...mockTemplate, id: 'sched-new' });
+      templateRepo.findOne.mockResolvedValue({
+        ...mockTemplate,
+        id: 'sched-new',
+      });
 
       const result = await service.create('comp-1', {
         code: 'standard',
@@ -74,7 +81,10 @@ describe('ScheduleTemplateService', () => {
         scheduleType: ScheduleType.FIXED,
       } as any);
 
-      expect(templateRepo.findByCode).toHaveBeenCalledWith('comp-1', 'standard');
+      expect(templateRepo.findByCode).toHaveBeenCalledWith(
+        'comp-1',
+        'standard',
+      );
       expect(templateRepo.create).toHaveBeenCalledWith(
         expect.objectContaining({ companyId: 'comp-1', code: 'standard' }),
       );
@@ -84,7 +94,10 @@ describe('ScheduleTemplateService', () => {
 
     it('should create with translations', async () => {
       templateRepo.save.mockResolvedValue({ ...mockTemplate, id: 'sched-new' });
-      templateRepo.findOne.mockResolvedValue({ ...mockTemplate, id: 'sched-new' });
+      templateRepo.findOne.mockResolvedValue({
+        ...mockTemplate,
+        id: 'sched-new',
+      });
 
       await service.create('comp-1', {
         code: 'standard',
@@ -98,10 +111,16 @@ describe('ScheduleTemplateService', () => {
 
       expect(i18nRepo.upsert).toHaveBeenCalledTimes(2);
       expect(i18nRepo.upsert).toHaveBeenCalledWith(
-        'comp-1', 'sched-new', 'en', { name: 'Standard Schedule', description: 'Standard 9-5' },
+        'comp-1',
+        'sched-new',
+        'en',
+        { name: 'Standard Schedule', description: 'Standard 9-5' },
       );
       expect(i18nRepo.upsert).toHaveBeenCalledWith(
-        'comp-1', 'sched-new', 'tr', { name: 'Standart Çalışma', description: 'Standart 9-5 program' },
+        'comp-1',
+        'sched-new',
+        'tr',
+        { name: 'Standart Çalışma', description: 'Standart 9-5 program' },
       );
     });
 
@@ -144,7 +163,9 @@ describe('ScheduleTemplateService', () => {
     });
 
     it('should throw NotFoundException when not found', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -157,7 +178,9 @@ describe('ScheduleTemplateService', () => {
         .mockResolvedValueOnce({ ...mockTemplate, name: 'Updated' });
       templateRepo.save.mockResolvedValue({ ...mockTemplate, name: 'Updated' });
 
-      const result = await service.update('sched-1', { name: 'Updated' } as any);
+      const result = await service.update('sched-1', {
+        name: 'Updated',
+      } as any);
       expect(result.name).toBe('Updated');
     });
 
@@ -172,9 +195,9 @@ describe('ScheduleTemplateService', () => {
         },
       } as any);
 
-      expect(i18nRepo.upsert).toHaveBeenCalledWith(
-        'comp-1', 'sched-1', 'en', { name: 'Updated Schedule' },
-      );
+      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'sched-1', 'en', {
+        name: 'Updated Schedule',
+      });
     });
   });
 

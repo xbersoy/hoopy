@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource, Repository, FindOptionsWhere, ILike, In } from 'typeorm';
+import { DataSource, Repository, FindOptionsWhere } from 'typeorm';
 import { LeaveType } from './entities/leave-type.entity';
 import { LeaveTypeI18n } from './entities/leave-type-i18n.entity';
 import { LeavePolicy } from './entities/leave-policy.entity';
@@ -17,14 +17,23 @@ import { LeaveGrantStatus } from './enums/leave.enums';
 export interface LeaveTypeRepository {
   create(data: Partial<LeaveType>): LeaveType;
   save(entity: LeaveType): Promise<LeaveType>;
-  findByCompany(companyId: string, includeSystem?: boolean): Promise<LeaveType[]>;
+  findByCompany(
+    companyId: string,
+    includeSystem?: boolean,
+  ): Promise<LeaveType[]>;
   findOne(id: string): Promise<LeaveType | null>;
   findByCode(companyId: string, code: string): Promise<LeaveType | null>;
   remove(entity: LeaveType): Promise<LeaveType>;
 }
 
 export interface LeaveTypeI18nRepository {
-  upsert(companyId: string, leaveTypeId: string, locale: string, name: string, description?: string): Promise<LeaveTypeI18n>;
+  upsert(
+    companyId: string,
+    leaveTypeId: string,
+    locale: string,
+    name: string,
+    description?: string,
+  ): Promise<LeaveTypeI18n>;
   findByLeaveType(leaveTypeId: string): Promise<LeaveTypeI18n[]>;
   deleteByLeaveType(leaveTypeId: string): Promise<void>;
 }
@@ -34,12 +43,21 @@ export interface LeavePolicyRepository {
   save(entity: LeavePolicy): Promise<LeavePolicy>;
   findByCompany(companyId: string): Promise<LeavePolicy[]>;
   findOne(id: string): Promise<LeavePolicy | null>;
-  findByLeaveType(companyId: string, leaveTypeId: string): Promise<LeavePolicy[]>;
+  findByLeaveType(
+    companyId: string,
+    leaveTypeId: string,
+  ): Promise<LeavePolicy[]>;
   remove(entity: LeavePolicy): Promise<LeavePolicy>;
 }
 
 export interface LeavePolicyI18nRepository {
-  upsert(companyId: string, leavePolicyId: string, locale: string, name: string, description?: string): Promise<LeavePolicyI18n>;
+  upsert(
+    companyId: string,
+    leavePolicyId: string,
+    locale: string,
+    name: string,
+    description?: string,
+  ): Promise<LeavePolicyI18n>;
   findByPolicy(leavePolicyId: string): Promise<LeavePolicyI18n[]>;
   deleteByPolicy(leavePolicyId: string): Promise<void>;
 }
@@ -68,7 +86,10 @@ export interface LeaveGrantRepository {
 export interface LeaveBalanceLedgerRepository {
   create(data: Partial<LeaveBalanceLedger>): LeaveBalanceLedger;
   save(entity: LeaveBalanceLedger): Promise<LeaveBalanceLedger>;
-  findByEmployee(companyId: string, employeeId: string): Promise<LeaveBalanceLedger[]>;
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<LeaveBalanceLedger[]>;
   findByGrant(grantId: string): Promise<LeaveBalanceLedger[]>;
 }
 
@@ -85,7 +106,12 @@ export interface LeaveRequestRepository {
     limit: number;
   }): Promise<{ data: LeaveRequest[]; total: number }>;
   findOne(id: string): Promise<LeaveRequest | null>;
-  findOverlapping(employeeId: string, startDate: Date, endDate: Date, excludeId?: string): Promise<LeaveRequest[]>;
+  findOverlapping(
+    employeeId: string,
+    startDate: Date,
+    endDate: Date,
+    excludeId?: string,
+  ): Promise<LeaveRequest[]>;
 }
 
 export interface LeaveRequestSegmentRepository {
@@ -112,7 +138,11 @@ export class TypeOrmLeaveTypeRepository implements LeaveTypeRepository {
   findByCompany(companyId: string, includeSystem = true): Promise<LeaveType[]> {
     const where: FindOptionsWhere<LeaveType>[] = [{ companyId }];
     if (includeSystem) where.push({ isSystem: true, companyId: null as any });
-    return this.repo.find({ where, relations: ['translations'], order: { sortOrder: 'ASC', name: 'ASC' } });
+    return this.repo.find({
+      where,
+      relations: ['translations'],
+      order: { sortOrder: 'ASC', name: 'ASC' },
+    });
   }
   findOne(id: string): Promise<LeaveType | null> {
     return this.repo.findOne({ where: { id }, relations: ['translations'] });
@@ -137,14 +167,28 @@ export class TypeOrmLeaveTypeI18nRepository implements LeaveTypeI18nRepository {
     this.repo = ds.getRepository(LeaveTypeI18n);
   }
 
-  async upsert(companyId: string, leaveTypeId: string, locale: string, name: string, description?: string): Promise<LeaveTypeI18n> {
-    let existing = await this.repo.findOne({ where: { leaveTypeId, locale } });
+  async upsert(
+    companyId: string,
+    leaveTypeId: string,
+    locale: string,
+    name: string,
+    description?: string,
+  ): Promise<LeaveTypeI18n> {
+    const existing = await this.repo.findOne({
+      where: { leaveTypeId, locale },
+    });
     if (existing) {
       existing.name = name;
       existing.description = description ?? null;
       return this.repo.save(existing);
     }
-    const entity = this.repo.create({ companyId, leaveTypeId, locale, name, description: description ?? null });
+    const entity = this.repo.create({
+      companyId,
+      leaveTypeId,
+      locale,
+      name,
+      description: description ?? null,
+    });
     return this.repo.save(entity);
   }
   findByLeaveType(leaveTypeId: string): Promise<LeaveTypeI18n[]> {
@@ -181,7 +225,10 @@ export class TypeOrmLeavePolicyRepository implements LeavePolicyRepository {
       relations: ['leaveType', 'entitlementRules', 'translations'],
     });
   }
-  findByLeaveType(companyId: string, leaveTypeId: string): Promise<LeavePolicy[]> {
+  findByLeaveType(
+    companyId: string,
+    leaveTypeId: string,
+  ): Promise<LeavePolicy[]> {
     return this.repo.find({
       where: { companyId, leaveTypeId },
       relations: ['entitlementRules'],
@@ -200,18 +247,35 @@ export class TypeOrmLeavePolicyI18nRepository implements LeavePolicyI18nReposito
     this.repo = ds.getRepository(LeavePolicyI18n);
   }
 
-  async upsert(companyId: string, leavePolicyId: string, locale: string, name: string, description?: string): Promise<LeavePolicyI18n> {
-    let existing = await this.repo.findOne({ where: { leavePolicyId, locale } });
+  async upsert(
+    companyId: string,
+    leavePolicyId: string,
+    locale: string,
+    name: string,
+    description?: string,
+  ): Promise<LeavePolicyI18n> {
+    const existing = await this.repo.findOne({
+      where: { leavePolicyId, locale },
+    });
     if (existing) {
       existing.name = name;
       existing.description = description ?? null;
       return this.repo.save(existing);
     }
-    const entity = this.repo.create({ companyId, leavePolicyId, locale, name, description: description ?? null });
+    const entity = this.repo.create({
+      companyId,
+      leavePolicyId,
+      locale,
+      name,
+      description: description ?? null,
+    });
     return this.repo.save(entity);
   }
   findByPolicy(leavePolicyId: string): Promise<LeavePolicyI18n[]> {
-    return this.repo.find({ where: { leavePolicyId }, order: { locale: 'ASC' } });
+    return this.repo.find({
+      where: { leavePolicyId },
+      order: { locale: 'ASC' },
+    });
   }
   async deleteByPolicy(leavePolicyId: string): Promise<void> {
     await this.repo.delete({ leavePolicyId });
@@ -276,7 +340,9 @@ export class TypeOrmLeaveGrantRepository implements LeaveGrantRepository {
       .andWhere('g.leaveTypeId = :leaveTypeId', { leaveTypeId })
       .andWhere('g.status = :status', { status: LeaveGrantStatus.ACTIVE })
       .andWhere('g.validFrom <= :asOfDate', { asOfDate })
-      .andWhere('(g.validUntil IS NULL OR g.validUntil >= :asOfDate)', { asOfDate })
+      .andWhere('(g.validUntil IS NULL OR g.validUntil >= :asOfDate)', {
+        asOfDate,
+      })
       .andWhere('g.remainingAmount > 0')
       .orderBy('g.validUntil', 'ASC', 'NULLS LAST')
       .getMany();
@@ -299,14 +365,20 @@ export class TypeOrmLeaveBalanceLedgerRepository implements LeaveBalanceLedgerRe
   save(entity: LeaveBalanceLedger): Promise<LeaveBalanceLedger> {
     return this.repo.save(entity);
   }
-  findByEmployee(companyId: string, employeeId: string): Promise<LeaveBalanceLedger[]> {
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<LeaveBalanceLedger[]> {
     return this.repo.find({
       where: { companyId, employeeId },
       order: { occurredAt: 'DESC' },
     });
   }
   findByGrant(grantId: string): Promise<LeaveBalanceLedger[]> {
-    return this.repo.find({ where: { leaveGrantId: grantId }, order: { occurredAt: 'DESC' } });
+    return this.repo.find({
+      where: { leaveGrantId: grantId },
+      order: { occurredAt: 'DESC' },
+    });
   }
 }
 
@@ -339,11 +411,15 @@ export class TypeOrmLeaveRequestRepository implements LeaveRequestRepository {
       .where('r.companyId = :companyId', { companyId: options.companyId });
 
     if (options.employeeId)
-      qb.andWhere('r.employeeId = :employeeId', { employeeId: options.employeeId });
+      qb.andWhere('r.employeeId = :employeeId', {
+        employeeId: options.employeeId,
+      });
     if (options.status)
       qb.andWhere('r.status = :status', { status: options.status });
     if (options.leaveTypeId)
-      qb.andWhere('r.leaveTypeId = :leaveTypeId', { leaveTypeId: options.leaveTypeId });
+      qb.andWhere('r.leaveTypeId = :leaveTypeId', {
+        leaveTypeId: options.leaveTypeId,
+      });
     if (options.search)
       qb.andWhere('r.reason ILIKE :search', { search: `%${options.search}%` });
 

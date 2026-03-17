@@ -19,7 +19,12 @@ export interface IScheduleTemplateRepository {
 }
 
 export interface IScheduleTemplateI18nRepository {
-  upsert(companyId: string, scheduleTemplateId: string, locale: string, data: { name: string; description?: string }): Promise<ScheduleTemplateI18n>;
+  upsert(
+    companyId: string,
+    scheduleTemplateId: string,
+    locale: string,
+    data: { name: string; description?: string },
+  ): Promise<ScheduleTemplateI18n>;
   findByTemplate(scheduleTemplateId: string): Promise<ScheduleTemplateI18n[]>;
   deleteByTemplate(scheduleTemplateId: string): Promise<void>;
 }
@@ -34,7 +39,12 @@ export interface IShiftTemplateRepository {
 }
 
 export interface IShiftTemplateI18nRepository {
-  upsert(companyId: string, shiftTemplateId: string, locale: string, data: { name: string; description?: string }): Promise<ShiftTemplateI18n>;
+  upsert(
+    companyId: string,
+    shiftTemplateId: string,
+    locale: string,
+    data: { name: string; description?: string },
+  ): Promise<ShiftTemplateI18n>;
   findByTemplate(shiftTemplateId: string): Promise<ShiftTemplateI18n[]>;
   deleteByTemplate(shiftTemplateId: string): Promise<void>;
 }
@@ -42,7 +52,10 @@ export interface IShiftTemplateI18nRepository {
 export interface IEmployeeScheduleRepository {
   create(data: Partial<EmployeeSchedule>): EmployeeSchedule;
   save(entity: EmployeeSchedule): Promise<EmployeeSchedule>;
-  findByEmployee(companyId: string, employeeId: string): Promise<EmployeeSchedule[]>;
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<EmployeeSchedule[]>;
   findOne(id: string): Promise<EmployeeSchedule | null>;
   findPaginated(options: {
     companyId: string;
@@ -53,7 +66,13 @@ export interface IEmployeeScheduleRepository {
     page: number;
     limit: number;
   }): Promise<{ data: EmployeeSchedule[]; total: number }>;
-  findOverlapping(companyId: string, employeeId: string, effectiveFrom: Date, effectiveUntil?: Date, excludeId?: string): Promise<EmployeeSchedule[]>;
+  findOverlapping(
+    companyId: string,
+    employeeId: string,
+    effectiveFrom: Date,
+    effectiveUntil?: Date,
+    excludeId?: string,
+  ): Promise<EmployeeSchedule[]>;
   remove(entity: EmployeeSchedule): Promise<EmployeeSchedule>;
 }
 
@@ -79,7 +98,10 @@ export class TypeOrmScheduleTemplateRepository implements IScheduleTemplateRepos
       order: { name: 'ASC' },
     });
   }
-  findByCode(companyId: string, code: string): Promise<ScheduleTemplate | null> {
+  findByCode(
+    companyId: string,
+    code: string,
+  ): Promise<ScheduleTemplate | null> {
     return this.repo.findOne({ where: { companyId, code } });
   }
   findOne(id: string): Promise<ScheduleTemplate | null> {
@@ -220,7 +242,10 @@ export class TypeOrmEmployeeScheduleRepository implements IEmployeeScheduleRepos
   save(entity: EmployeeSchedule): Promise<EmployeeSchedule> {
     return this.repo.save(entity);
   }
-  findByEmployee(companyId: string, employeeId: string): Promise<EmployeeSchedule[]> {
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<EmployeeSchedule[]> {
     return this.repo.find({
       where: { companyId, employeeId },
       relations: ['scheduleTemplate', 'shiftTemplate'],
@@ -250,9 +275,13 @@ export class TypeOrmEmployeeScheduleRepository implements IEmployeeScheduleRepos
       .where('es.companyId = :companyId', { companyId: options.companyId });
 
     if (options.employeeId)
-      qb.andWhere('es.employeeId = :employeeId', { employeeId: options.employeeId });
+      qb.andWhere('es.employeeId = :employeeId', {
+        employeeId: options.employeeId,
+      });
     if (options.scheduleTemplateId)
-      qb.andWhere('es.scheduleTemplateId = :scheduleTemplateId', { scheduleTemplateId: options.scheduleTemplateId });
+      qb.andWhere('es.scheduleTemplateId = :scheduleTemplateId', {
+        scheduleTemplateId: options.scheduleTemplateId,
+      });
     if (options.isActive !== undefined)
       qb.andWhere('es.isActive = :isActive', { isActive: options.isActive });
     if (options.search)

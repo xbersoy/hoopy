@@ -43,10 +43,14 @@ describe('LeaveGrantService', () => {
 
   beforeEach(async () => {
     grantRepo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'grant-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'grant-new' }),
+        ),
       findByEmployee: jest.fn().mockResolvedValue([]),
       findActiveByEmployeeAndType: jest.fn().mockResolvedValue([]),
       findOne: jest.fn().mockResolvedValue(null),
@@ -78,7 +82,7 @@ describe('LeaveGrantService', () => {
     it('should create a grant and write a ledger entry', async () => {
       grantRepo.save.mockResolvedValue({ ...mockGrant, id: 'grant-new' });
 
-      const result = await service.createGrant('comp-1', {
+      await service.createGrant('comp-1', {
         employeeId: 'emp-1',
         leaveTypeId: 'lt-1',
         leavePolicyId: 'pol-1',
@@ -172,7 +176,9 @@ describe('LeaveGrantService', () => {
     });
 
     it('should throw NotFoundException', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -181,8 +187,22 @@ describe('LeaveGrantService', () => {
   describe('getBalanceSummary', () => {
     it('should aggregate balances by leave type', async () => {
       grantRepo.findByEmployee.mockResolvedValue([
-        { ...mockGrant, grantedAmount: 14, consumedAmount: 3, reservedAmount: 2, remainingAmount: 9 },
-        { ...mockGrant, id: 'grant-2', grantedAmount: 5, consumedAmount: 0, reservedAmount: 0, remainingAmount: 5, grantReason: 'Carryover' },
+        {
+          ...mockGrant,
+          grantedAmount: 14,
+          consumedAmount: 3,
+          reservedAmount: 2,
+          remainingAmount: 9,
+        },
+        {
+          ...mockGrant,
+          id: 'grant-2',
+          grantedAmount: 5,
+          consumedAmount: 0,
+          reservedAmount: 0,
+          remainingAmount: 5,
+          grantReason: 'Carryover',
+        },
       ]);
 
       const result = await service.getBalanceSummary('comp-1', 'emp-1');
@@ -195,7 +215,14 @@ describe('LeaveGrantService', () => {
 
     it('should exclude cancelled grants', async () => {
       grantRepo.findByEmployee.mockResolvedValue([
-        { ...mockGrant, status: LeaveGrantStatus.CANCELLED, grantedAmount: 14, consumedAmount: 0, reservedAmount: 0, remainingAmount: 14 },
+        {
+          ...mockGrant,
+          status: LeaveGrantStatus.CANCELLED,
+          grantedAmount: 14,
+          consumedAmount: 0,
+          reservedAmount: 0,
+          remainingAmount: 14,
+        },
       ]);
 
       const result = await service.getBalanceSummary('comp-1', 'emp-1');
@@ -204,8 +231,25 @@ describe('LeaveGrantService', () => {
 
     it('should group by leave type', async () => {
       grantRepo.findByEmployee.mockResolvedValue([
-        { ...mockGrant, leaveTypeId: 'lt-1', leaveType: { name: 'Annual' }, grantedAmount: 14, consumedAmount: 0, reservedAmount: 0, remainingAmount: 14 },
-        { ...mockGrant, id: 'g2', leaveTypeId: 'lt-2', leaveType: { name: 'Sick' }, grantedAmount: 10, consumedAmount: 0, reservedAmount: 0, remainingAmount: 10 },
+        {
+          ...mockGrant,
+          leaveTypeId: 'lt-1',
+          leaveType: { name: 'Annual' },
+          grantedAmount: 14,
+          consumedAmount: 0,
+          reservedAmount: 0,
+          remainingAmount: 14,
+        },
+        {
+          ...mockGrant,
+          id: 'g2',
+          leaveTypeId: 'lt-2',
+          leaveType: { name: 'Sick' },
+          grantedAmount: 10,
+          consumedAmount: 0,
+          reservedAmount: 0,
+          remainingAmount: 10,
+        },
       ]);
 
       const result = await service.getBalanceSummary('comp-1', 'emp-1');

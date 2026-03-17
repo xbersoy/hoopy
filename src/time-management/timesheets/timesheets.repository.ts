@@ -24,7 +24,10 @@ export interface TimesheetPeriodRepository {
     periodStart: Date,
     periodEnd: Date,
   ): Promise<TimesheetPeriod[]>;
-  findByEmployee(companyId: string, employeeId: string): Promise<TimesheetPeriod[]>;
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<TimesheetPeriod[]>;
   remove(entity: TimesheetPeriod): Promise<TimesheetPeriod>;
 }
 
@@ -63,7 +66,9 @@ export class TypeOrmTimesheetPeriodRepository implements TimesheetPeriodReposito
       .where('tp.companyId = :companyId', { companyId: options.companyId });
 
     if (options.employeeId)
-      qb.andWhere('tp.employeeId = :employeeId', { employeeId: options.employeeId });
+      qb.andWhere('tp.employeeId = :employeeId', {
+        employeeId: options.employeeId,
+      });
     if (options.status)
       qb.andWhere('tp.status = :status', { status: options.status });
 
@@ -94,7 +99,10 @@ export class TypeOrmTimesheetPeriodRepository implements TimesheetPeriodReposito
       .andWhere('tp.periodEnd >= :periodStart', { periodStart })
       .getMany();
   }
-  findByEmployee(companyId: string, employeeId: string): Promise<TimesheetPeriod[]> {
+  findByEmployee(
+    companyId: string,
+    employeeId: string,
+  ): Promise<TimesheetPeriod[]> {
     return this.repo.find({
       where: { companyId, employeeId },
       relations: ['entries'],

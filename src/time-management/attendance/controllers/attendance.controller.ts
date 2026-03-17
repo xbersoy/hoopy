@@ -51,19 +51,21 @@ export class AttendanceController {
   @RequirePermissions({ action: 'create', resourceType: 'attendance-record' })
   @ApiOperation({ summary: 'Check in for today' })
   @ApiResponse({ status: 201, type: AttendanceRecord })
-  checkIn(@Req() req: any, @Body() dto: { source?: CheckSource; notes?: string }): Promise<AttendanceRecord> {
-    return this.attendanceService.checkIn(
-      req.user.companyId,
-      req.user.id,
-      dto,
-    );
+  checkIn(
+    @Req() req: any,
+    @Body() dto: { source?: CheckSource; notes?: string },
+  ): Promise<AttendanceRecord> {
+    return this.attendanceService.checkIn(req.user.companyId, req.user.id, dto);
   }
 
   @Post('check-out')
   @RequirePermissions({ action: 'create', resourceType: 'attendance-record' })
   @ApiOperation({ summary: 'Check out for today' })
   @ApiResponse({ status: 201, type: AttendanceRecord })
-  checkOut(@Req() req: any, @Body() dto: { source?: CheckSource; notes?: string }): Promise<AttendanceRecord> {
+  checkOut(
+    @Req() req: any,
+    @Body() dto: { source?: CheckSource; notes?: string },
+  ): Promise<AttendanceRecord> {
     return this.attendanceService.checkOut(
       req.user.companyId,
       req.user.id,

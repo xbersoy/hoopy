@@ -15,7 +15,11 @@ import {
   QueryOvertimeDto,
 } from '../dto/create-overtime.dto';
 import { PaginatedResponse } from '../../../shared/dto/pagination.dto';
-import { OvertimeStatus, CompensationType, CompOffStatus } from '../enums/overtime.enums';
+import {
+  OvertimeStatus,
+  CompensationType,
+  CompOffStatus,
+} from '../enums/overtime.enums';
 
 @Injectable()
 export class OvertimeService {

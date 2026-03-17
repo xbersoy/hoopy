@@ -42,7 +42,9 @@ export class LeaveRequest {
   @JoinColumn({ name: 'employee_id' })
   employee: Employee;
 
-  @ApiProperty({ description: 'User who submitted the request (may differ from employee)' })
+  @ApiProperty({
+    description: 'User who submitted the request (may differ from employee)',
+  })
   @Column({ name: 'requester_user_id', type: 'uuid' })
   requesterUserId: string;
 
@@ -89,11 +91,17 @@ export class LeaveRequest {
   @Column({ type: 'text', nullable: true })
   reason: string | null;
 
-  @ApiProperty({ description: 'Snapshot of policy at submission time', required: false })
+  @ApiProperty({
+    description: 'Snapshot of policy at submission time',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   policySnapshot: Record<string, any> | null;
 
-  @ApiProperty({ description: 'Snapshot of org context at submission time', required: false })
+  @ApiProperty({
+    description: 'Snapshot of org context at submission time',
+    required: false,
+  })
   @Column({ type: 'jsonb', nullable: true })
   orgSnapshot: Record<string, any> | null;
 
@@ -109,7 +117,9 @@ export class LeaveRequest {
   @Column({ name: 'state_machine_instance_id', type: 'uuid', nullable: true })
   stateMachineInstanceId: string | null;
 
-  @OneToMany(() => LeaveRequestSegment, (seg) => seg.leaveRequest, { cascade: true })
+  @OneToMany(() => LeaveRequestSegment, (seg) => seg.leaveRequest, {
+    cascade: true,
+  })
   segments: LeaveRequestSegment[];
 
   @Column({ type: 'int', default: 1 })

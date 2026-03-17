@@ -14,15 +14,9 @@ import {
   EmployeeSchedule,
 } from './schedules/entities';
 
-import {
-  TimesheetPeriod,
-  TimesheetEntry,
-} from './timesheets/entities';
+import { TimesheetPeriod, TimesheetEntry } from './timesheets/entities';
 
-import {
-  OvertimeRequest,
-  CompOffGrant,
-} from './overtime/entities';
+import { OvertimeRequest, CompOffGrant } from './overtime/entities';
 
 import {
   TypeOrmAttendanceRecordRepository,
@@ -108,17 +102,50 @@ import { Employee } from '../employee/entities/employee.entity';
     CompOffService,
 
     // Repositories
-    { provide: 'AttendanceRecordRepository', useClass: TypeOrmAttendanceRecordRepository },
-    { provide: 'AttendanceCorrectionRepository', useClass: TypeOrmAttendanceCorrectionRepository },
-    { provide: 'ScheduleTemplateRepository', useClass: TypeOrmScheduleTemplateRepository },
-    { provide: 'ScheduleTemplateI18nRepository', useClass: TypeOrmScheduleTemplateI18nRepository },
-    { provide: 'ShiftTemplateRepository', useClass: TypeOrmShiftTemplateRepository },
-    { provide: 'ShiftTemplateI18nRepository', useClass: TypeOrmShiftTemplateI18nRepository },
-    { provide: 'EmployeeScheduleRepository', useClass: TypeOrmEmployeeScheduleRepository },
-    { provide: 'TimesheetPeriodRepository', useClass: TypeOrmTimesheetPeriodRepository },
-    { provide: 'TimesheetEntryRepository', useClass: TypeOrmTimesheetEntryRepository },
-    { provide: 'OvertimeRequestRepository', useClass: TypeOrmOvertimeRequestRepository },
-    { provide: 'CompOffGrantRepository', useClass: TypeOrmCompOffGrantRepository },
+    {
+      provide: 'AttendanceRecordRepository',
+      useClass: TypeOrmAttendanceRecordRepository,
+    },
+    {
+      provide: 'AttendanceCorrectionRepository',
+      useClass: TypeOrmAttendanceCorrectionRepository,
+    },
+    {
+      provide: 'ScheduleTemplateRepository',
+      useClass: TypeOrmScheduleTemplateRepository,
+    },
+    {
+      provide: 'ScheduleTemplateI18nRepository',
+      useClass: TypeOrmScheduleTemplateI18nRepository,
+    },
+    {
+      provide: 'ShiftTemplateRepository',
+      useClass: TypeOrmShiftTemplateRepository,
+    },
+    {
+      provide: 'ShiftTemplateI18nRepository',
+      useClass: TypeOrmShiftTemplateI18nRepository,
+    },
+    {
+      provide: 'EmployeeScheduleRepository',
+      useClass: TypeOrmEmployeeScheduleRepository,
+    },
+    {
+      provide: 'TimesheetPeriodRepository',
+      useClass: TypeOrmTimesheetPeriodRepository,
+    },
+    {
+      provide: 'TimesheetEntryRepository',
+      useClass: TypeOrmTimesheetEntryRepository,
+    },
+    {
+      provide: 'OvertimeRequestRepository',
+      useClass: TypeOrmOvertimeRequestRepository,
+    },
+    {
+      provide: 'CompOffGrantRepository',
+      useClass: TypeOrmCompOffGrantRepository,
+    },
   ],
   exports: [
     AttendanceService,

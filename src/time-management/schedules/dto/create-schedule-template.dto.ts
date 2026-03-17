@@ -9,19 +9,9 @@ import {
   IsObject,
   Min,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ScheduleType } from '../enums/schedule.enums';
-
-class TranslationDto {
-  @IsString()
-  name: string;
-
-  @IsString()
-  @IsOptional()
-  description?: string;
-}
 
 export class CreateScheduleTemplateDto {
   @ApiProperty({ description: 'Unique code within company' })
@@ -39,7 +29,11 @@ export class CreateScheduleTemplateDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: 'Schedule type', enum: ScheduleType, required: false })
+  @ApiProperty({
+    description: 'Schedule type',
+    enum: ScheduleType,
+    required: false,
+  })
   @IsEnum(ScheduleType)
   @IsOptional()
   scheduleType?: ScheduleType;
@@ -66,7 +60,10 @@ export class CreateScheduleTemplateDto {
   @IsOptional()
   breakDurationMinutes?: number;
 
-  @ApiProperty({ description: 'Whether the schedule is overnight', required: false })
+  @ApiProperty({
+    description: 'Whether the schedule is overnight',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isOvernight?: boolean;
@@ -98,7 +95,11 @@ export class UpdateScheduleTemplateDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: 'Schedule type', enum: ScheduleType, required: false })
+  @ApiProperty({
+    description: 'Schedule type',
+    enum: ScheduleType,
+    required: false,
+  })
   @IsEnum(ScheduleType)
   @IsOptional()
   scheduleType?: ScheduleType;
@@ -125,7 +126,10 @@ export class UpdateScheduleTemplateDto {
   @IsOptional()
   breakDurationMinutes?: number;
 
-  @ApiProperty({ description: 'Whether the schedule is overnight', required: false })
+  @ApiProperty({
+    description: 'Whether the schedule is overnight',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isOvernight?: boolean;
@@ -135,7 +139,10 @@ export class UpdateScheduleTemplateDto {
   @IsOptional()
   weeklyHours?: number;
 
-  @ApiProperty({ description: 'Whether the template is active', required: false })
+  @ApiProperty({
+    description: 'Whether the template is active',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

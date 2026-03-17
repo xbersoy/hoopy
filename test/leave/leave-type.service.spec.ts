@@ -35,10 +35,14 @@ describe('LeaveTypeService', () => {
 
   beforeEach(async () => {
     repo = {
-      create: jest.fn().mockImplementation((data) => ({ id: undefined, ...data })),
-      save: jest.fn().mockImplementation((entity) =>
-        Promise.resolve({ ...entity, id: entity.id || 'lt-new' }),
-      ),
+      create: jest
+        .fn()
+        .mockImplementation((data) => ({ id: undefined, ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ ...entity, id: entity.id || 'lt-new' }),
+        ),
       findByCompany: jest.fn().mockResolvedValue([]),
       findOne: jest.fn().mockResolvedValue(null),
       findByCode: jest.fn().mockResolvedValue(null),
@@ -78,7 +82,11 @@ describe('LeaveTypeService', () => {
 
       expect(repo.findByCode).toHaveBeenCalledWith('comp-1', 'annual');
       expect(repo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ companyId: 'comp-1', code: 'annual', name: 'Annual Leave' }),
+        expect.objectContaining({
+          companyId: 'comp-1',
+          code: 'annual',
+          name: 'Annual Leave',
+        }),
       );
       expect(repo.save).toHaveBeenCalled();
       expect(result.id).toBe('lt-new');
@@ -145,7 +153,9 @@ describe('LeaveTypeService', () => {
     });
 
     it('should throw NotFoundException when not found', async () => {
-      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('bad-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -163,9 +173,9 @@ describe('LeaveTypeService', () => {
     it('should block structural changes on system types', async () => {
       repo.findOne.mockResolvedValue({ ...mockLeaveType, isSystem: true });
 
-      await expect(
-        service.update('lt-1', { isPaid: false }),
-      ).rejects.toThrow(ConflictException);
+      await expect(service.update('lt-1', { isPaid: false })).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('should allow name/description changes on system types', async () => {
@@ -183,7 +193,11 @@ describe('LeaveTypeService', () => {
   describe('i18n translations', () => {
     it('should upsert translations on create', async () => {
       repo.save.mockResolvedValue({ ...mockLeaveType, id: 'lt-new' });
-      repo.findOne.mockResolvedValue({ ...mockLeaveType, id: 'lt-new', translations: [] });
+      repo.findOne.mockResolvedValue({
+        ...mockLeaveType,
+        id: 'lt-new',
+        translations: [],
+      });
 
       await service.create('comp-1', {
         code: 'annual',
@@ -195,8 +209,20 @@ describe('LeaveTypeService', () => {
       });
 
       expect(i18nRepo.upsert).toHaveBeenCalledTimes(2);
-      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'lt-new', 'en', 'Annual Leave', 'Paid annual leave');
-      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'lt-new', 'tr', 'Yıllık İzin', 'Ücretli yıllık izin');
+      expect(i18nRepo.upsert).toHaveBeenCalledWith(
+        'comp-1',
+        'lt-new',
+        'en',
+        'Annual Leave',
+        'Paid annual leave',
+      );
+      expect(i18nRepo.upsert).toHaveBeenCalledWith(
+        'comp-1',
+        'lt-new',
+        'tr',
+        'Yıllık İzin',
+        'Ücretli yıllık izin',
+      );
     });
 
     it('should upsert translations on update', async () => {
@@ -208,7 +234,13 @@ describe('LeaveTypeService', () => {
         },
       });
 
-      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'lt-1', 'en', 'Updated Leave', undefined);
+      expect(i18nRepo.upsert).toHaveBeenCalledWith(
+        'comp-1',
+        'lt-1',
+        'en',
+        'Updated Leave',
+        undefined,
+      );
     });
   });
 

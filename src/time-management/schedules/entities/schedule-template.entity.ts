@@ -43,7 +43,12 @@ export class ScheduleTemplate {
   description: string | null;
 
   @ApiProperty({ description: 'Schedule type', enum: ScheduleType })
-  @Column({ name: 'schedule_type', type: 'varchar', length: 50, default: ScheduleType.FIXED })
+  @Column({
+    name: 'schedule_type',
+    type: 'varchar',
+    length: 50,
+    default: ScheduleType.FIXED,
+  })
   scheduleType: ScheduleType;
 
   @ApiProperty({ description: 'Work days configuration' })

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { ActivityLogPayload } from '../dto';
-import {
-  ActivityCategory,
-  ActorType,
-} from '../constants';
+import { ActivityCategory, ActorType } from '../constants';
 import { RequestAuditContext } from '../types';
 
 @Injectable()

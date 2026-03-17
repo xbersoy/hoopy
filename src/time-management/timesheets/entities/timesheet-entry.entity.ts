@@ -22,7 +22,9 @@ export class TimesheetEntry {
   @Column({ name: 'timesheet_period_id', type: 'uuid' })
   timesheetPeriodId: string;
 
-  @ManyToOne(() => TimesheetPeriod, (period) => period.entries, { onDelete: 'CASCADE' })
+  @ManyToOne(() => TimesheetPeriod, (period) => period.entries, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'timesheet_period_id' })
   timesheetPeriod: TimesheetPeriod;
 
@@ -55,7 +57,12 @@ export class TimesheetEntry {
   description: string | null;
 
   @ApiProperty({ description: 'Project code', required: false })
-  @Column({ name: 'project_code', type: 'varchar', length: 100, nullable: true })
+  @Column({
+    name: 'project_code',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
   projectCode: string | null;
 
   @ApiProperty({ description: 'Task code', required: false })

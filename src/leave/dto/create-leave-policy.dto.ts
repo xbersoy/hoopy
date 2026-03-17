@@ -123,7 +123,10 @@ export class CreateLeavePolicyDto {
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Policy name', example: 'Standard Annual Leave Policy' })
+  @ApiProperty({
+    description: 'Policy name',
+    example: 'Standard Annual Leave Policy',
+  })
   @IsString()
   name: string;
 

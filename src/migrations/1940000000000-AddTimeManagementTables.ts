@@ -16,7 +16,9 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         CONSTRAINT "UQ_leave_type_i18n_locale" UNIQUE ("leave_type_id", "locale")
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_type_i18n_company_locale" ON "leave_type_i18n" ("company_id", "locale")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_type_i18n_company_locale" ON "leave_type_i18n" ("company_id", "locale")`,
+    );
 
     await queryRunner.query(`
       CREATE TABLE "leave_policy_i18n" (
@@ -31,7 +33,9 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         CONSTRAINT "UQ_leave_policy_i18n_locale" UNIQUE ("leave_policy_id", "locale")
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_leave_policy_i18n_company_locale" ON "leave_policy_i18n" ("company_id", "locale")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_leave_policy_i18n_company_locale" ON "leave_policy_i18n" ("company_id", "locale")`,
+    );
 
     // ─── Attendance tables ──────────────────────────────────
     await queryRunner.query(`
@@ -59,8 +63,12 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         CONSTRAINT "UQ_attendance_employee_date" UNIQUE ("company_id", "employee_id", "date")
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_attendance_company_date" ON "attendance_records" ("company_id", "date")`);
-    await queryRunner.query(`CREATE INDEX "IDX_attendance_employee" ON "attendance_records" ("employee_id", "date")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_attendance_company_date" ON "attendance_records" ("company_id", "date")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_attendance_employee" ON "attendance_records" ("employee_id", "date")`,
+    );
 
     await queryRunner.query(`
       CREATE TABLE "attendance_correction_requests" (
@@ -84,8 +92,12 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         "updated_at" timestamptz NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_correction_company_status" ON "attendance_correction_requests" ("company_id", "status")`);
-    await queryRunner.query(`CREATE INDEX "IDX_correction_employee" ON "attendance_correction_requests" ("employee_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_correction_company_status" ON "attendance_correction_requests" ("company_id", "status")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_correction_employee" ON "attendance_correction_requests" ("employee_id")`,
+    );
 
     // ─── Schedule tables ────────────────────────────────────
     await queryRunner.query(`
@@ -174,8 +186,12 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         "updated_at" timestamptz NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_emp_schedule_employee" ON "employee_schedules" ("employee_id", "effective_from")`);
-    await queryRunner.query(`CREATE INDEX "IDX_emp_schedule_company" ON "employee_schedules" ("company_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_emp_schedule_employee" ON "employee_schedules" ("employee_id", "effective_from")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_emp_schedule_company" ON "employee_schedules" ("company_id")`,
+    );
 
     // ─── Timesheet tables ───────────────────────────────────
     await queryRunner.query(`
@@ -202,8 +218,12 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         CONSTRAINT "UQ_timesheet_period" UNIQUE ("company_id", "employee_id", "period_start", "period_end")
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_timesheet_employee" ON "timesheet_periods" ("employee_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_timesheet_company_status" ON "timesheet_periods" ("company_id", "status")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_timesheet_employee" ON "timesheet_periods" ("employee_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_timesheet_company_status" ON "timesheet_periods" ("company_id", "status")`,
+    );
 
     await queryRunner.query(`
       CREATE TABLE "timesheet_entries" (
@@ -223,7 +243,9 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         "updated_at" timestamptz NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_timesheet_entry_period" ON "timesheet_entries" ("timesheet_period_id", "date")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_timesheet_entry_period" ON "timesheet_entries" ("timesheet_period_id", "date")`,
+    );
 
     // ─── Overtime & Comp-Off tables ─────────────────────────
     await queryRunner.query(`
@@ -247,8 +269,12 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         "updated_at" timestamptz NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_overtime_company_status" ON "overtime_requests" ("company_id", "status")`);
-    await queryRunner.query(`CREATE INDEX "IDX_overtime_employee" ON "overtime_requests" ("employee_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_overtime_company_status" ON "overtime_requests" ("company_id", "status")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_overtime_employee" ON "overtime_requests" ("employee_id")`,
+    );
 
     await queryRunner.query(`
       CREATE TABLE "comp_off_grants" (
@@ -267,8 +293,12 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
         "updated_at" timestamptz NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_compoff_employee" ON "comp_off_grants" ("employee_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_compoff_company_status" ON "comp_off_grants" ("company_id", "status")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_compoff_employee" ON "comp_off_grants" ("employee_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_compoff_company_status" ON "comp_off_grants" ("company_id", "status")`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -276,13 +306,25 @@ export class AddTimeManagementTables1940000000000 implements MigrationInterface 
     await queryRunner.query(`DROP TABLE IF EXISTS "overtime_requests" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "timesheet_entries" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "timesheet_periods" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "employee_schedules" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "shift_template_i18n" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "employee_schedules" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "shift_template_i18n" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "shift_templates" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "schedule_template_i18n" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "schedule_templates" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "attendance_correction_requests" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "attendance_records" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "schedule_template_i18n" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "schedule_templates" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "attendance_correction_requests" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "attendance_records" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "leave_policy_i18n" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "leave_type_i18n" CASCADE`);
   }

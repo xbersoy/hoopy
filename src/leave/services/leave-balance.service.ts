@@ -74,7 +74,10 @@ export class LeaveBalanceService {
     return entries[0];
   }
 
-  async getLedger(companyId: string, employeeId: string): Promise<LeaveBalanceLedger[]> {
+  async getLedger(
+    companyId: string,
+    employeeId: string,
+  ): Promise<LeaveBalanceLedger[]> {
     return this.ledgerRepository.findByEmployee(companyId, employeeId);
   }
 }
