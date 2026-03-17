@@ -16,6 +16,7 @@ import { PicklistsModule } from './picklists/picklists.module';
 import { AdminAccessModule } from './admin-access/admin-access.module';
 import { WorkflowsModule } from './workflows/workflows.module';
 import { StateMachineModule } from './state-machine/state-machine.module';
+import { ActivityClientModule } from './activity-client/activity-client.module';
 import { ConfigService } from '@nestjs/config';
 import { initSupabase } from './supabase/supabase.client';
 
@@ -39,6 +40,7 @@ import { initSupabase } from './supabase/supabase.client';
     AdminAccessModule,
     StateMachineModule,
     WorkflowsModule,
+    ActivityClientModule,
   ],
   controllers: [AppController],
 })

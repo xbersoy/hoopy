@@ -5,6 +5,7 @@ import {
   APP_CONFIG,
   REDIS_CONFIG,
   ENCRYPTION_CONFIG,
+  ACTIVITY_SERVICE_CONFIG,
 } from './configuration.consts';
 
 export default () => ({
@@ -42,5 +43,9 @@ export default () => ({
   },
   [ENCRYPTION_CONFIG]: {
     key: process.env.ENCRYPTION_KEY,
+  },
+  [ACTIVITY_SERVICE_CONFIG]: {
+    baseUrl: process.env.ACTIVITY_SERVICE_URL,
+    apiKey: process.env.ACTIVITY_SERVICE_API_KEY,
   },
 });
