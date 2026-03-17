@@ -1,0 +1,33 @@
+export enum AttendanceStatus {
+  PRESENT = 'PRESENT',
+  ABSENT = 'ABSENT',
+  HALF_DAY = 'HALF_DAY',
+  ON_LEAVE = 'ON_LEAVE',
+  HOLIDAY = 'HOLIDAY',
+  WEEKEND = 'WEEKEND',
+  REMOTE = 'REMOTE',
+}
+
+export enum CheckSource {
+  MANUAL = 'MANUAL',
+  BIOMETRIC = 'BIOMETRIC',
+  GEO_FENCE = 'GEO_FENCE',
+  WEB = 'WEB',
+  MOBILE = 'MOBILE',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum CorrectionType {
+  MISSING_CHECK_IN = 'MISSING_CHECK_IN',
+  MISSING_CHECK_OUT = 'MISSING_CHECK_OUT',
+  WRONG_TIME = 'WRONG_TIME',
+  STATUS_CHANGE = 'STATUS_CHANGE',
+  OTHER = 'OTHER',
+}
+
+export enum CorrectionStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED',
+}

@@ -14,6 +14,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Company } from '../../company/entities/company.entity';
 import { LeaveType } from './leave-type.entity';
 import { LeaveEntitlementRule } from './leave-entitlement-rule.entity';
+import { LeavePolicyI18n } from './leave-policy-i18n.entity';
 
 @Entity('leave_policies')
 @Unique('UQ_leave_policy_company_code', ['companyId', 'code'])
@@ -72,6 +73,9 @@ export class LeavePolicy {
 
   @OneToMany(() => LeaveEntitlementRule, (rule) => rule.policy, { cascade: true })
   entitlementRules: LeaveEntitlementRule[];
+
+  @OneToMany(() => LeavePolicyI18n, (i18n) => i18n.leavePolicy, { cascade: true })
+  translations: LeavePolicyI18n[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

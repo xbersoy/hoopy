@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
   Unique,
   Index,
@@ -12,6 +13,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Company } from '../../company/entities/company.entity';
 import { LeaveUnitType, SystemLeaveType } from '../enums/leave.enums';
+import { LeaveTypeI18n } from './leave-type-i18n.entity';
 
 @Entity('leave_types')
 @Unique('UQ_leave_type_company_code', ['companyId', 'code'])
@@ -88,6 +90,9 @@ export class LeaveType {
   @ApiProperty({ description: 'Additional metadata', required: false })
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any> | null;
+
+  @OneToMany(() => LeaveTypeI18n, (i18n) => i18n.leaveType, { cascade: true })
+  translations: LeaveTypeI18n[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

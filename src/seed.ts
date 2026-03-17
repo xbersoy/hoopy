@@ -15,6 +15,7 @@ import { PicklistsSeeder } from './seeds/tasks/10-picklists.seeder';
 import { StateMachineSeeder } from './seeds/tasks/11-state-machine.seeder';
 import { WorkflowSeeder } from './seeds/tasks/12-workflow.seeder';
 import { LeaveSeeder } from './seeds/tasks/13-leave.seeder';
+import { TimeManagementSeeder } from './seeds/tasks/14-time-management.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
@@ -39,6 +40,7 @@ async function bootstrap() {
       new StateMachineSeeder(),
       new WorkflowSeeder(),
       new LeaveSeeder(),
+      new TimeManagementSeeder(),
     ];
 
     for (const seeder of seeders) {

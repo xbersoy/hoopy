@@ -8,6 +8,7 @@ describe('LeavePolicyService', () => {
   let service: LeavePolicyService;
   let policyRepo: jest.Mocked<any>;
   let ruleRepo: jest.Mocked<any>;
+  let i18nRepo: jest.Mocked<any>;
 
   const mockPolicy: LeavePolicy = {
     id: 'pol-1',
@@ -23,6 +24,7 @@ describe('LeavePolicyService', () => {
     effectiveStartDate: null,
     effectiveEndDate: null,
     metadata: null,
+    translations: [],
     entitlementRules: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -49,11 +51,18 @@ describe('LeavePolicyService', () => {
       deleteByPolicyId: jest.fn().mockResolvedValue(undefined),
     };
 
+    i18nRepo = {
+      upsert: jest.fn().mockResolvedValue(undefined),
+      findByEntity: jest.fn().mockResolvedValue([]),
+      remove: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LeavePolicyService,
         { provide: 'LeavePolicyRepository', useValue: policyRepo },
         { provide: 'LeaveEntitlementRuleRepository', useValue: ruleRepo },
+        { provide: 'LeavePolicyI18nRepository', useValue: i18nRepo },
       ],
     }).compile();
 

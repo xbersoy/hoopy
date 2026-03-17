@@ -58,7 +58,7 @@ export class LeaveSeeder implements Seeder {
       return;
     }
 
-    // ── 1. Create system leave types ──
+    // ── 1. Create system leave types with translations ──
     const systemTypes = [
       {
         code: SystemLeaveType.ANNUAL,
@@ -71,6 +71,10 @@ export class LeaveSeeder implements Seeder {
         sortOrder: 1,
         color: '#3B82F6',
         icon: 'calendar',
+        translations: {
+          en: { name: 'Annual Leave', description: 'Paid annual leave entitlement' },
+          tr: { name: 'Yıllık İzin', description: 'Ücretli yıllık izin hakkı' },
+        },
       },
       {
         code: SystemLeaveType.SICK,
@@ -84,6 +88,10 @@ export class LeaveSeeder implements Seeder {
         sortOrder: 2,
         color: '#EF4444',
         icon: 'heart-pulse',
+        translations: {
+          en: { name: 'Sick Leave', description: 'Leave for illness or medical appointments' },
+          tr: { name: 'Hastalık İzni', description: 'Hastalık veya tıbbi randevular için izin' },
+        },
       },
       {
         code: SystemLeaveType.UNPAID,
@@ -96,6 +104,10 @@ export class LeaveSeeder implements Seeder {
         sortOrder: 3,
         color: '#6B7280',
         icon: 'ban',
+        translations: {
+          en: { name: 'Unpaid Leave', description: 'Leave without pay' },
+          tr: { name: 'Ücretsiz İzin', description: 'Ücretsiz izin' },
+        },
       },
       {
         code: SystemLeaveType.MATERNITY,
@@ -108,6 +120,10 @@ export class LeaveSeeder implements Seeder {
         sortOrder: 4,
         color: '#EC4899',
         icon: 'baby',
+        translations: {
+          en: { name: 'Maternity Leave', description: 'Leave for childbirth and newborn care' },
+          tr: { name: 'Doğum İzni', description: 'Doğum ve yenidoğan bakımı için izin' },
+        },
       },
       {
         code: SystemLeaveType.PATERNITY,
@@ -120,6 +136,10 @@ export class LeaveSeeder implements Seeder {
         sortOrder: 5,
         color: '#8B5CF6',
         icon: 'baby',
+        translations: {
+          en: { name: 'Paternity Leave', description: 'Leave for new fathers' },
+          tr: { name: 'Babalık İzni', description: 'Yeni babalar için izin' },
+        },
       },
       {
         code: SystemLeaveType.BEREAVEMENT,
@@ -132,6 +152,10 @@ export class LeaveSeeder implements Seeder {
         sortOrder: 6,
         color: '#374151',
         icon: 'heart',
+        translations: {
+          en: { name: 'Bereavement Leave', description: 'Leave for family loss' },
+          tr: { name: 'Vefat İzni', description: 'Aile kaybı için izin' },
+        },
       },
     ];
 
@@ -142,7 +166,7 @@ export class LeaveSeeder implements Seeder {
       this.logger.log(`Created leave type: ${lt.name}`);
     }
 
-    // ── 2. Create a custom leave type ──
+    // ── 2. Create a custom leave type with translations ──
     const welcomeType = await leaveTypeService.create(company.id, {
       code: 'new_joiner_welcome',
       name: 'New Joiner Welcome Leave',
@@ -154,11 +178,15 @@ export class LeaveSeeder implements Seeder {
       sortOrder: 10,
       color: '#10B981',
       icon: 'gift',
+      translations: {
+        en: { name: 'New Joiner Welcome Leave', description: 'Extra leave for new employees valid during first 6 months' },
+        tr: { name: 'Yeni İşe Başlama İzni', description: 'İlk 6 ay geçerli olan yeni çalışanlar için ek izin' },
+      },
     });
     createdTypes[welcomeType.code] = welcomeType;
     this.logger.log(`Created custom leave type: ${welcomeType.name}`);
 
-    // ── 3. Create leave policies ──
+    // ── 3. Create leave policies with translations ──
 
     // Standard Annual Leave Policy — 14 days/year
     const annualPolicy = await policyService.create(company.id, {
@@ -167,6 +195,10 @@ export class LeaveSeeder implements Seeder {
       name: 'Standard Annual Leave Policy',
       description: '14 days per calendar year with 5-day carryover',
       priority: 0,
+      translations: {
+        en: { name: 'Standard Annual Leave Policy', description: '14 days per calendar year with 5-day carryover' },
+        tr: { name: 'Standart Yıllık İzin Politikası', description: 'Yılda 14 gün, 5 gün devir hakkı ile' },
+      },
       entitlementRules: [
         {
           name: '14 days per year',
@@ -192,6 +224,10 @@ export class LeaveSeeder implements Seeder {
       name: 'Standard Sick Leave Policy',
       description: '10 days per calendar year, attachment after 2 days',
       priority: 0,
+      translations: {
+        en: { name: 'Standard Sick Leave Policy', description: '10 days per calendar year, attachment after 2 days' },
+        tr: { name: 'Standart Hastalık İzni Politikası', description: 'Yılda 10 gün, 2 günden sonra rapor gerekli' },
+      },
       entitlementRules: [
         {
           name: '10 days per year',
@@ -215,6 +251,10 @@ export class LeaveSeeder implements Seeder {
       name: 'New Joiner Welcome Leave Policy',
       description: '7 days of extra leave valid during first 6 months of employment',
       priority: 0,
+      translations: {
+        en: { name: 'New Joiner Welcome Leave Policy', description: '7 days of extra leave valid during first 6 months of employment' },
+        tr: { name: 'Yeni İşe Başlama İzin Politikası', description: 'İstihdamın ilk 6 ayında geçerli 7 günlük ek izin' },
+      },
       entitlementRules: [
         {
           name: '7 days for first 6 months',

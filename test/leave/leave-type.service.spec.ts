@@ -7,6 +7,7 @@ import { LeaveUnitType } from '@/leave/enums/leave.enums';
 describe('LeaveTypeService', () => {
   let service: LeaveTypeService;
   let repo: jest.Mocked<any>;
+  let i18nRepo: jest.Mocked<any>;
 
   const mockLeaveType: LeaveType = {
     id: 'lt-1',
@@ -27,6 +28,7 @@ describe('LeaveTypeService', () => {
     color: '#3B82F6',
     icon: 'calendar',
     metadata: null,
+    translations: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -43,10 +45,17 @@ describe('LeaveTypeService', () => {
       remove: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
     };
 
+    i18nRepo = {
+      upsert: jest.fn().mockResolvedValue(undefined),
+      findByEntity: jest.fn().mockResolvedValue([]),
+      remove: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LeaveTypeService,
         { provide: 'LeaveTypeRepository', useValue: repo },
+        { provide: 'LeaveTypeI18nRepository', useValue: i18nRepo },
       ],
     }).compile();
 
@@ -60,6 +69,7 @@ describe('LeaveTypeService', () => {
   describe('create', () => {
     it('should create a leave type', async () => {
       repo.save.mockResolvedValue({ ...mockLeaveType, id: 'lt-new' });
+      repo.findOne.mockResolvedValue({ ...mockLeaveType, id: 'lt-new' });
 
       const result = await service.create('comp-1', {
         code: 'annual',
@@ -84,6 +94,7 @@ describe('LeaveTypeService', () => {
 
     it('should pass optional fields through', async () => {
       repo.save.mockResolvedValue({ ...mockLeaveType });
+      repo.findOne.mockResolvedValue({ ...mockLeaveType });
 
       await service.create('comp-1', {
         code: 'sick',
@@ -164,6 +175,40 @@ describe('LeaveTypeService', () => {
 
       const result = await service.update('lt-1', { name: 'Renamed' });
       expect(result.name).toBe('Renamed');
+    });
+  });
+
+  // ── i18n translations ──
+
+  describe('i18n translations', () => {
+    it('should upsert translations on create', async () => {
+      repo.save.mockResolvedValue({ ...mockLeaveType, id: 'lt-new' });
+      repo.findOne.mockResolvedValue({ ...mockLeaveType, id: 'lt-new', translations: [] });
+
+      await service.create('comp-1', {
+        code: 'annual',
+        name: 'Annual Leave',
+        translations: {
+          en: { name: 'Annual Leave', description: 'Paid annual leave' },
+          tr: { name: 'Yıllık İzin', description: 'Ücretli yıllık izin' },
+        },
+      });
+
+      expect(i18nRepo.upsert).toHaveBeenCalledTimes(2);
+      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'lt-new', 'en', 'Annual Leave', 'Paid annual leave');
+      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'lt-new', 'tr', 'Yıllık İzin', 'Ücretli yıllık izin');
+    });
+
+    it('should upsert translations on update', async () => {
+      repo.findOne.mockResolvedValue({ ...mockLeaveType });
+
+      await service.update('lt-1', {
+        translations: {
+          en: { name: 'Updated Leave' },
+        },
+      });
+
+      expect(i18nRepo.upsert).toHaveBeenCalledWith('comp-1', 'lt-1', 'en', 'Updated Leave', undefined);
     });
   });
 

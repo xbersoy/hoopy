@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository, FindOptionsWhere, ILike, In } from 'typeorm';
 import { LeaveType } from './entities/leave-type.entity';
+import { LeaveTypeI18n } from './entities/leave-type-i18n.entity';
 import { LeavePolicy } from './entities/leave-policy.entity';
+import { LeavePolicyI18n } from './entities/leave-policy-i18n.entity';
 import { LeaveEntitlementRule } from './entities/leave-entitlement-rule.entity';
 import { LeaveGrant } from './entities/leave-grant.entity';
 import { LeaveBalanceLedger } from './entities/leave-balance-ledger.entity';
@@ -21,6 +23,12 @@ export interface LeaveTypeRepository {
   remove(entity: LeaveType): Promise<LeaveType>;
 }
 
+export interface LeaveTypeI18nRepository {
+  upsert(companyId: string, leaveTypeId: string, locale: string, name: string, description?: string): Promise<LeaveTypeI18n>;
+  findByLeaveType(leaveTypeId: string): Promise<LeaveTypeI18n[]>;
+  deleteByLeaveType(leaveTypeId: string): Promise<void>;
+}
+
 export interface LeavePolicyRepository {
   create(data: Partial<LeavePolicy>): LeavePolicy;
   save(entity: LeavePolicy): Promise<LeavePolicy>;
@@ -28,6 +36,12 @@ export interface LeavePolicyRepository {
   findOne(id: string): Promise<LeavePolicy | null>;
   findByLeaveType(companyId: string, leaveTypeId: string): Promise<LeavePolicy[]>;
   remove(entity: LeavePolicy): Promise<LeavePolicy>;
+}
+
+export interface LeavePolicyI18nRepository {
+  upsert(companyId: string, leavePolicyId: string, locale: string, name: string, description?: string): Promise<LeavePolicyI18n>;
+  findByPolicy(leavePolicyId: string): Promise<LeavePolicyI18n[]>;
+  deleteByPolicy(leavePolicyId: string): Promise<void>;
 }
 
 export interface LeaveEntitlementRuleRepository {
@@ -98,10 +112,10 @@ export class TypeOrmLeaveTypeRepository implements LeaveTypeRepository {
   findByCompany(companyId: string, includeSystem = true): Promise<LeaveType[]> {
     const where: FindOptionsWhere<LeaveType>[] = [{ companyId }];
     if (includeSystem) where.push({ isSystem: true, companyId: null as any });
-    return this.repo.find({ where, order: { sortOrder: 'ASC', name: 'ASC' } });
+    return this.repo.find({ where, relations: ['translations'], order: { sortOrder: 'ASC', name: 'ASC' } });
   }
   findOne(id: string): Promise<LeaveType | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ['translations'] });
   }
   findByCode(companyId: string, code: string): Promise<LeaveType | null> {
     return this.repo.findOne({
@@ -113,6 +127,31 @@ export class TypeOrmLeaveTypeRepository implements LeaveTypeRepository {
   }
   remove(entity: LeaveType): Promise<LeaveType> {
     return this.repo.remove(entity);
+  }
+}
+
+@Injectable()
+export class TypeOrmLeaveTypeI18nRepository implements LeaveTypeI18nRepository {
+  private readonly repo: Repository<LeaveTypeI18n>;
+  constructor(@InjectDataSource() ds: DataSource) {
+    this.repo = ds.getRepository(LeaveTypeI18n);
+  }
+
+  async upsert(companyId: string, leaveTypeId: string, locale: string, name: string, description?: string): Promise<LeaveTypeI18n> {
+    let existing = await this.repo.findOne({ where: { leaveTypeId, locale } });
+    if (existing) {
+      existing.name = name;
+      existing.description = description ?? null;
+      return this.repo.save(existing);
+    }
+    const entity = this.repo.create({ companyId, leaveTypeId, locale, name, description: description ?? null });
+    return this.repo.save(entity);
+  }
+  findByLeaveType(leaveTypeId: string): Promise<LeaveTypeI18n[]> {
+    return this.repo.find({ where: { leaveTypeId }, order: { locale: 'ASC' } });
+  }
+  async deleteByLeaveType(leaveTypeId: string): Promise<void> {
+    await this.repo.delete({ leaveTypeId });
   }
 }
 
@@ -132,14 +171,14 @@ export class TypeOrmLeavePolicyRepository implements LeavePolicyRepository {
   findByCompany(companyId: string): Promise<LeavePolicy[]> {
     return this.repo.find({
       where: { companyId },
-      relations: ['leaveType', 'entitlementRules'],
+      relations: ['leaveType', 'entitlementRules', 'translations'],
       order: { priority: 'ASC' },
     });
   }
   findOne(id: string): Promise<LeavePolicy | null> {
     return this.repo.findOne({
       where: { id },
-      relations: ['leaveType', 'entitlementRules'],
+      relations: ['leaveType', 'entitlementRules', 'translations'],
     });
   }
   findByLeaveType(companyId: string, leaveTypeId: string): Promise<LeavePolicy[]> {
@@ -151,6 +190,31 @@ export class TypeOrmLeavePolicyRepository implements LeavePolicyRepository {
   }
   remove(entity: LeavePolicy): Promise<LeavePolicy> {
     return this.repo.remove(entity);
+  }
+}
+
+@Injectable()
+export class TypeOrmLeavePolicyI18nRepository implements LeavePolicyI18nRepository {
+  private readonly repo: Repository<LeavePolicyI18n>;
+  constructor(@InjectDataSource() ds: DataSource) {
+    this.repo = ds.getRepository(LeavePolicyI18n);
+  }
+
+  async upsert(companyId: string, leavePolicyId: string, locale: string, name: string, description?: string): Promise<LeavePolicyI18n> {
+    let existing = await this.repo.findOne({ where: { leavePolicyId, locale } });
+    if (existing) {
+      existing.name = name;
+      existing.description = description ?? null;
+      return this.repo.save(existing);
+    }
+    const entity = this.repo.create({ companyId, leavePolicyId, locale, name, description: description ?? null });
+    return this.repo.save(entity);
+  }
+  findByPolicy(leavePolicyId: string): Promise<LeavePolicyI18n[]> {
+    return this.repo.find({ where: { leavePolicyId }, order: { locale: 'ASC' } });
+  }
+  async deleteByPolicy(leavePolicyId: string): Promise<void> {
+    await this.repo.delete({ leavePolicyId });
   }
 }
 

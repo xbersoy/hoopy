@@ -1,20 +1,41 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsInt, IsObject, Min } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsBoolean, IsInt, IsObject, Min, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { LeaveUnitType } from '../enums/leave.enums';
+
+export class LeaveTypeTranslationDto {
+  @ApiProperty({ description: 'Localized name', example: 'Annual Leave' })
+  @IsString()
+  name: string;
+
+  @ApiProperty({ description: 'Localized description', required: false })
+  @IsString()
+  @IsOptional()
+  description?: string;
+}
 
 export class CreateLeaveTypeDto {
   @ApiProperty({ description: 'Unique code', example: 'annual' })
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Display name', example: 'Annual Leave' })
+  @ApiProperty({ description: 'Default display name (fallback)', example: 'Annual Leave' })
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Description', required: false })
+  @ApiProperty({ description: 'Default description (fallback)', required: false })
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Translations keyed by locale',
+    example: { en: { name: 'Annual Leave', description: 'Paid annual leave' }, tr: { name: 'Yıllık İzin' } },
+    required: false,
+  })
+  @IsObject()
+  @IsOptional()
+  translations?: Record<string, LeaveTypeTranslationDto>;
 
   @ApiProperty({ description: 'Unit type', enum: LeaveUnitType, required: false })
   @IsEnum(LeaveUnitType)
@@ -73,6 +94,14 @@ export class UpdateLeaveTypeDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Translations keyed by locale (upsert)',
+    required: false,
+  })
+  @IsObject()
+  @IsOptional()
+  translations?: Record<string, LeaveTypeTranslationDto>;
 
   @ApiProperty({ required: false })
   @IsEnum(LeaveUnitType)

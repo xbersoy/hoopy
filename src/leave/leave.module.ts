@@ -3,7 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
   LeaveType,
+  LeaveTypeI18n,
   LeavePolicy,
+  LeavePolicyI18n,
   LeaveEntitlementRule,
   LeaveGrant,
   LeaveBalanceLedger,
@@ -13,7 +15,9 @@ import {
 
 import {
   TypeOrmLeaveTypeRepository,
+  TypeOrmLeaveTypeI18nRepository,
   TypeOrmLeavePolicyRepository,
+  TypeOrmLeavePolicyI18nRepository,
   TypeOrmLeaveEntitlementRuleRepository,
   TypeOrmLeaveGrantRepository,
   TypeOrmLeaveBalanceLedgerRepository,
@@ -38,7 +42,9 @@ import { PermissionsModule } from '../permissions/permissions.module';
   imports: [
     TypeOrmModule.forFeature([
       LeaveType,
+      LeaveTypeI18n,
       LeavePolicy,
+      LeavePolicyI18n,
       LeaveEntitlementRule,
       LeaveGrant,
       LeaveBalanceLedger,
@@ -63,7 +69,9 @@ import { PermissionsModule } from '../permissions/permissions.module';
 
     // Repositories
     { provide: 'LeaveTypeRepository', useClass: TypeOrmLeaveTypeRepository },
+    { provide: 'LeaveTypeI18nRepository', useClass: TypeOrmLeaveTypeI18nRepository },
     { provide: 'LeavePolicyRepository', useClass: TypeOrmLeavePolicyRepository },
+    { provide: 'LeavePolicyI18nRepository', useClass: TypeOrmLeavePolicyI18nRepository },
     { provide: 'LeaveEntitlementRuleRepository', useClass: TypeOrmLeaveEntitlementRuleRepository },
     { provide: 'LeaveGrantRepository', useClass: TypeOrmLeaveGrantRepository },
     { provide: 'LeaveBalanceLedgerRepository', useClass: TypeOrmLeaveBalanceLedgerRepository },

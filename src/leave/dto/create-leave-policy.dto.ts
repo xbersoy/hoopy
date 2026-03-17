@@ -24,6 +24,17 @@ import {
   ConsumptionStrategy,
 } from '../enums/leave.enums';
 
+export class LeavePolicyTranslationDto {
+  @ApiProperty({ description: 'Localized name' })
+  @IsString()
+  name: string;
+
+  @ApiProperty({ description: 'Localized description', required: false })
+  @IsString()
+  @IsOptional()
+  description?: string;
+}
+
 export class CreateEntitlementRuleDto {
   @ApiProperty({ description: 'Rule name', example: '14 days yearly' })
   @IsString()
@@ -141,6 +152,14 @@ export class CreateLeavePolicyDto {
   @IsOptional()
   metadata?: Record<string, any>;
 
+  @ApiProperty({
+    description: 'Translations keyed by locale',
+    required: false,
+  })
+  @IsObject()
+  @IsOptional()
+  translations?: Record<string, LeavePolicyTranslationDto>;
+
   @ApiProperty({ type: [CreateEntitlementRuleDto], required: false })
   @IsArray()
   @ValidateNested({ each: true })
@@ -159,6 +178,11 @@ export class UpdateLeavePolicyDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({ required: false })
+  @IsObject()
+  @IsOptional()
+  translations?: Record<string, LeavePolicyTranslationDto>;
 
   @ApiProperty({ required: false })
   @IsInt()

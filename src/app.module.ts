@@ -18,6 +18,7 @@ import { WorkflowsModule } from './workflows/workflows.module';
 import { StateMachineModule } from './state-machine/state-machine.module';
 import { ActivityClientModule } from './activity-client/activity-client.module';
 import { LeaveModule } from './leave/leave.module';
+import { TimeManagementModule } from './time-management/time-management.module';
 import { ConfigService } from '@nestjs/config';
 import { initSupabase } from './supabase/supabase.client';
 
@@ -43,6 +44,7 @@ import { initSupabase } from './supabase/supabase.client';
     WorkflowsModule,
     ActivityClientModule,
     LeaveModule,
+    TimeManagementModule,
   ],
   controllers: [AppController],
 })

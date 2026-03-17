@@ -1,5 +1,7 @@
 export { LeaveType } from './leave-type.entity';
+export { LeaveTypeI18n } from './leave-type-i18n.entity';
 export { LeavePolicy } from './leave-policy.entity';
+export { LeavePolicyI18n } from './leave-policy-i18n.entity';
 export { LeaveEntitlementRule } from './leave-entitlement-rule.entity';
 export { LeaveGrant } from './leave-grant.entity';
 export { LeaveBalanceLedger } from './leave-balance-ledger.entity';

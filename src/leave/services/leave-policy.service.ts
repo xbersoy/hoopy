@@ -3,6 +3,7 @@ import { LeavePolicy } from '../entities/leave-policy.entity';
 import {
   LeavePolicyRepository,
   LeaveEntitlementRuleRepository,
+  LeavePolicyI18nRepository,
 } from '../leave.repository';
 import { CreateLeavePolicyDto, UpdateLeavePolicyDto } from '../dto/create-leave-policy.dto';
 
@@ -14,10 +15,13 @@ export class LeavePolicyService {
 
     @Inject('LeaveEntitlementRuleRepository')
     private readonly ruleRepository: LeaveEntitlementRuleRepository,
+
+    @Inject('LeavePolicyI18nRepository')
+    private readonly i18nRepository: LeavePolicyI18nRepository,
   ) {}
 
   async create(companyId: string, dto: CreateLeavePolicyDto): Promise<LeavePolicy> {
-    const { entitlementRules, effectiveStartDate, effectiveEndDate, ...policyData } = dto;
+    const { entitlementRules, effectiveStartDate, effectiveEndDate, translations, ...policyData } = dto;
 
     const entity = this.policyRepository.create({
       companyId,
@@ -32,6 +36,12 @@ export class LeavePolicyService {
         this.ruleRepository.create({ ...r, leavePolicyId: saved.id }),
       );
       await this.ruleRepository.saveAll(rules);
+    }
+
+    if (translations) {
+      for (const [locale, t] of Object.entries(translations)) {
+        await this.i18nRepository.upsert(companyId, saved.id, locale, t.name, t.description);
+      }
     }
 
     return this.findOne(saved.id);
@@ -55,7 +65,7 @@ export class LeavePolicyService {
 
   async update(id: string, dto: UpdateLeavePolicyDto): Promise<LeavePolicy> {
     const entity = await this.findOne(id);
-    const { entitlementRules, effectiveStartDate, effectiveEndDate, ...policyData } = dto;
+    const { entitlementRules, effectiveStartDate, effectiveEndDate, translations, ...policyData } = dto;
 
     if (Object.keys(policyData).length > 0) {
       Object.assign(entity, {
@@ -77,6 +87,12 @@ export class LeavePolicyService {
           this.ruleRepository.create({ ...r, leavePolicyId: id }),
         );
         await this.ruleRepository.saveAll(rules);
+      }
+    }
+
+    if (translations) {
+      for (const [locale, t] of Object.entries(translations)) {
+        await this.i18nRepository.upsert(entity.companyId, id, locale, t.name, t.description);
       }
     }
 
