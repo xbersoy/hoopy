@@ -27,6 +27,9 @@ const RESOURCE_TYPES = [
   'state-machine-definition',
   'workflow-definition',
   'workflow-instance',
+  'leave-type',
+  'leave-policy',
+  'leave-request',
 ];
 
 const ACTIONS = ['create', 'read', 'update', 'delete'];
@@ -58,6 +61,9 @@ const ROLE_DEFINITIONS: Array<{
       'state-machine-definition': ['create', 'read', 'update', 'delete'],
       'workflow-definition': ['create', 'read', 'update', 'delete'],
       'workflow-instance': ['create', 'read', 'update', 'delete'],
+      'leave-type': ['create', 'read', 'update', 'delete'],
+      'leave-policy': ['create', 'read', 'update', 'delete'],
+      'leave-request': ['create', 'read', 'update', 'delete'],
       company: ['read'],
       user: ['read'],
       contact: ['read'],
@@ -71,6 +77,7 @@ const ROLE_DEFINITIONS: Array<{
       'org-unit': ['read'],
       'org-unit-type': ['read'],
       'workflow-instance': ['read'],
+      'leave-request': ['create', 'read'],
       company: ['read'],
       contact: ['read'],
     },
