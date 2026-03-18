@@ -16,6 +16,9 @@ import { EmployeeWorkExperience } from './employee-work-experience.entity';
 import { EmployeeJobInformation } from './employee-job-information.entity';
 import { EmployeeLicenseCertification } from './employee-license-certification.entity';
 import { EmployeeNationalId } from './employee-national-id.entity';
+import { EmployeeWorkAuthorization } from './employee-work-authorization.entity';
+import { EmployeeSkill } from './employee-skill.entity';
+import { EmployeeCompetency } from './employee-competency.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
 import { Company } from '../../company/entities/company.entity';
@@ -165,6 +168,37 @@ export class Employee {
     cascade: true,
   })
   nationalIds: EmployeeNationalId[];
+
+  @ApiProperty({
+    description: 'Work authorizations of the employee',
+    type: [EmployeeWorkAuthorization],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeWorkAuthorization, (workAuth) => workAuth.employee, {
+    cascade: true,
+  })
+  workAuthorizations: EmployeeWorkAuthorization[];
+
+  @ApiProperty({
+    description: 'Skills of the employee',
+    type: [EmployeeSkill],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeSkill, (skill) => skill.employee, { cascade: true })
+  employeeSkills: EmployeeSkill[];
+
+  @ApiProperty({
+    description: 'Competency assessments of the employee',
+    type: [EmployeeCompetency],
+    required: false,
+    isArray: true,
+  })
+  @OneToMany(() => EmployeeCompetency, (competency) => competency.employee, {
+    cascade: true,
+  })
+  employeeCompetencies: EmployeeCompetency[];
 
   @OneToOne(() => User, (user) => user.employee, { nullable: true })
   @JoinColumn()

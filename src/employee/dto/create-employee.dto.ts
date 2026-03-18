@@ -15,6 +15,7 @@ import { CreateEmployeeWorkExperienceDto } from './create-employee-work-experien
 import { CreateEmployeeJobInformationDto } from './create-employee-job-information.dto';
 import { CreateEmployeeLicenseCertificationDto } from './create-employee-license-certification.dto';
 import { CreateEmployeeNationalIdDto } from './create-employee-national-id.dto';
+import { CreateEmployeeWorkAuthorizationDto } from './create-employee-work-authorization.dto';
 
 export class CreateEmployeeEducationDto {
   @ApiProperty({
@@ -214,6 +215,17 @@ export class CreateEmployeeDto {
   @Type(() => CreateEmployeeNationalIdDto)
   @IsOptional()
   nationalIds?: CreateEmployeeNationalIdDto[];
+
+  @ApiProperty({
+    description: 'Work authorizations of the employee',
+    type: [CreateEmployeeWorkAuthorizationDto],
+    required: false,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateEmployeeWorkAuthorizationDto)
+  @IsOptional()
+  workAuthorizations?: CreateEmployeeWorkAuthorizationDto[];
 
   @ApiProperty({
     description: 'ID of the user linked to this employee',

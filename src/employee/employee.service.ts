@@ -12,6 +12,7 @@ import {
   EmployeeJobInformationRepository,
   EmployeeLicenseCertificationRepository,
   EmployeeNationalIdRepository,
+  EmployeeWorkAuthorizationRepository,
   EmployeeRepository,
 } from './employee.repository';
 
@@ -41,6 +42,9 @@ export class EmployeeService {
 
     @Inject('EmployeeNationalIdRepository')
     private readonly nationalIdRepository: EmployeeNationalIdRepository,
+
+    @Inject('EmployeeWorkAuthorizationRepository')
+    private readonly workAuthorizationRepository: EmployeeWorkAuthorizationRepository,
   ) {}
 
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
@@ -52,6 +56,7 @@ export class EmployeeService {
       jobInformations,
       licensesCertifications,
       nationalIds,
+      workAuthorizations,
       userId,
       companyId,
       ...employeeData
@@ -77,6 +82,7 @@ export class EmployeeService {
       this.saveJobInformations(jobInformations, savedEmployee),
       this.saveLicensesCertifications(licensesCertifications, savedEmployee),
       this.saveNationalIds(nationalIds, savedEmployee),
+      this.saveWorkAuthorizations(workAuthorizations, savedEmployee),
     ]);
 
     return this.findOne(savedEmployee.id);
@@ -121,6 +127,7 @@ export class EmployeeService {
       jobInformations,
       licensesCertifications,
       nationalIds,
+      workAuthorizations,
       ...employeeData
     } = updateEmployeeDto;
 
@@ -147,6 +154,7 @@ export class EmployeeService {
       this.replaceJobInformations(jobInformations, employee, id),
       this.replaceLicensesCertifications(licensesCertifications, employee, id),
       this.replaceNationalIds(nationalIds, employee, id),
+      this.replaceWorkAuthorizations(workAuthorizations, employee, id),
     ]);
 
     return this.findOne(id);
@@ -164,6 +172,7 @@ export class EmployeeService {
       this.jobInformationRepository.deleteByEmployeeId(id),
       this.licenseCertificationRepository.deleteByEmployeeId(id),
       this.nationalIdRepository.deleteByEmployeeId(id),
+      this.workAuthorizationRepository.deleteByEmployeeId(id),
     ]);
 
     await this.employeeRepository.remove(employee);
@@ -364,5 +373,34 @@ export class EmployeeService {
     if (!nationalIds) return;
     await this.nationalIdRepository.deleteByEmployeeId(employeeId);
     await this.saveNationalIds(nationalIds, employee);
+  }
+
+  private async saveWorkAuthorizations(
+    workAuthorizations: CreateEmployeeDto['workAuthorizations'],
+    employee: Employee,
+  ): Promise<void> {
+    if (!workAuthorizations?.length) return;
+    const entities = workAuthorizations.map((dto) =>
+      this.workAuthorizationRepository.create({
+        ...dto,
+        issueDate: dto.issueDate ? new Date(dto.issueDate) : undefined,
+        expirationDate: dto.expirationDate
+          ? new Date(dto.expirationDate)
+          : undefined,
+        employee,
+        employee_id: employee.id,
+      }),
+    );
+    await this.workAuthorizationRepository.saveAll(entities);
+  }
+
+  private async replaceWorkAuthorizations(
+    workAuthorizations: UpdateEmployeeDto['workAuthorizations'],
+    employee: Employee,
+    employeeId: string,
+  ): Promise<void> {
+    if (!workAuthorizations) return;
+    await this.workAuthorizationRepository.deleteByEmployeeId(employeeId);
+    await this.saveWorkAuthorizations(workAuthorizations, employee);
   }
 }

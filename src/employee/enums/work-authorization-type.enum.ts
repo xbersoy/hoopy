@@ -1,0 +1,9 @@
+export enum WorkAuthorizationType {
+  WORK_VISA = 'WORK_VISA',
+  PERMANENT_RESIDENT = 'PERMANENT_RESIDENT',
+  CITIZEN = 'CITIZEN',
+  WORK_PERMIT = 'WORK_PERMIT',
+  EAD = 'EAD',
+  TN_VISA = 'TN_VISA',
+  OTHER = 'OTHER',
+}

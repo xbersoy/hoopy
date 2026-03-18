@@ -9,6 +9,7 @@ import { EmployeeWorkExperience } from './entities/employee-work-experience.enti
 import { EmployeeJobInformation } from './entities/employee-job-information.entity';
 import { EmployeeLicenseCertification } from './entities/employee-license-certification.entity';
 import { EmployeeNationalId } from './entities/employee-national-id.entity';
+import { EmployeeWorkAuthorization } from './entities/employee-work-authorization.entity';
 
 // --- Interfaces ---
 
@@ -77,6 +78,14 @@ export interface EmployeeNationalIdRepository {
   deleteByEmployeeId(employeeId: string): Promise<void>;
 }
 
+export interface EmployeeWorkAuthorizationRepository {
+  create(data: Partial<EmployeeWorkAuthorization>): EmployeeWorkAuthorization;
+  saveAll(
+    workAuthorizations: EmployeeWorkAuthorization[],
+  ): Promise<EmployeeWorkAuthorization[]>;
+  deleteByEmployeeId(employeeId: string): Promise<void>;
+}
+
 // --- All relations to load ---
 
 const EMPLOYEE_RELATIONS = [
@@ -87,6 +96,12 @@ const EMPLOYEE_RELATIONS = [
   'jobInformations',
   'licensesCertifications',
   'nationalIds',
+  'workAuthorizations',
+  'employeeSkills',
+  'employeeSkills.skill',
+  'employeeSkills.skill.skillType',
+  'employeeCompetencies',
+  'employeeCompetencies.competency',
   'user',
   'company',
 ];
@@ -327,6 +342,32 @@ export class TypeOrmEmployeeNationalIdRepository implements EmployeeNationalIdRe
 
   saveAll(nationalIds: EmployeeNationalId[]): Promise<EmployeeNationalId[]> {
     return this.repo.save(nationalIds);
+  }
+
+  async deleteByEmployeeId(employeeId: string): Promise<void> {
+    await this.repo.delete({ employee_id: employeeId });
+  }
+}
+
+@Injectable()
+export class TypeOrmEmployeeWorkAuthorizationRepository implements EmployeeWorkAuthorizationRepository {
+  constructor(
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+  ) {
+    this.repo = this.dataSource.getRepository(EmployeeWorkAuthorization);
+  }
+
+  private readonly repo: Repository<EmployeeWorkAuthorization>;
+
+  create(data: Partial<EmployeeWorkAuthorization>): EmployeeWorkAuthorization {
+    return this.repo.create(data);
+  }
+
+  saveAll(
+    workAuthorizations: EmployeeWorkAuthorization[],
+  ): Promise<EmployeeWorkAuthorization[]> {
+    return this.repo.save(workAuthorizations);
   }
 
   async deleteByEmployeeId(employeeId: string): Promise<void> {

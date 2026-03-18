@@ -25,6 +25,9 @@ describe('EmployeeService', () => {
     jobInformations: [],
     licensesCertifications: [],
     nationalIds: [],
+    workAuthorizations: [],
+    employeeSkills: [],
+    employeeCompetencies: [],
     user: undefined,
     company: undefined,
     createdAt: new Date(),
@@ -85,6 +88,10 @@ describe('EmployeeService', () => {
           useValue: { ...emptyRepo },
         },
         { provide: 'EmployeeNationalIdRepository', useValue: { ...emptyRepo } },
+        {
+          provide: 'EmployeeWorkAuthorizationRepository',
+          useValue: { ...emptyRepo },
+        },
       ],
     }).compile();
 

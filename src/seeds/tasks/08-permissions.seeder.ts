@@ -37,6 +37,10 @@ const RESOURCE_TYPES = [
   'employee-schedule',
   'timesheet',
   'overtime-request',
+  'skill-type',
+  'skill',
+  'competency',
+  'competency-category',
 ];
 
 const ACTIONS = ['create', 'read', 'update', 'delete'];
@@ -78,6 +82,10 @@ const ROLE_DEFINITIONS: Array<{
       'employee-schedule': ['create', 'read', 'update', 'delete'],
       timesheet: ['create', 'read', 'update', 'delete'],
       'overtime-request': ['create', 'read', 'update', 'delete'],
+      'skill-type': ['create', 'read', 'update', 'delete'],
+      skill: ['create', 'read', 'update', 'delete'],
+      competency: ['create', 'read', 'update', 'delete'],
+      'competency-category': ['create', 'read', 'update', 'delete'],
       company: ['read'],
       user: ['read'],
       contact: ['read'],
@@ -99,6 +107,10 @@ const ROLE_DEFINITIONS: Array<{
       'employee-schedule': ['read'],
       timesheet: ['create', 'read'],
       'overtime-request': ['create', 'read'],
+      'skill-type': ['read'],
+      skill: ['read'],
+      competency: ['read'],
+      'competency-category': ['read'],
       company: ['read'],
       contact: ['read'],
     },
