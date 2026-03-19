@@ -18,6 +18,7 @@ import { LeaveSeeder } from './seeds/tasks/13-leave.seeder';
 import { TimeManagementSeeder } from './seeds/tasks/14-time-management.seeder';
 import { WorkAuthorizationSeeder } from './seeds/tasks/15-work-authorization.seeder';
 import { SkillsCompetenciesSeeder } from './seeds/tasks/16-skills-competencies.seeder';
+import { FeedbackSeeder } from './seeds/tasks/17-feedback.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
@@ -45,6 +46,7 @@ async function bootstrap() {
       new TimeManagementSeeder(),
       new WorkAuthorizationSeeder(),
       new SkillsCompetenciesSeeder(),
+      new FeedbackSeeder(),
     ];
 
     for (const seeder of seeders) {

@@ -41,9 +41,17 @@ const RESOURCE_TYPES = [
   'skill',
   'competency',
   'competency-category',
+  'feedback-category',
+  'feedback-item',
+  'feedback-request',
+  'survey-template',
+  'survey',
+  'survey-response',
+  'survey-analytics',
+  'announcement',
 ];
 
-const ACTIONS = ['create', 'read', 'update', 'delete'];
+const ACTIONS = ['create', 'read', 'update', 'delete', 'publish'];
 
 // ── Role definitions ────────────────────────────────────────────
 const ROLE_DEFINITIONS: Array<{
@@ -86,6 +94,14 @@ const ROLE_DEFINITIONS: Array<{
       skill: ['create', 'read', 'update', 'delete'],
       competency: ['create', 'read', 'update', 'delete'],
       'competency-category': ['create', 'read', 'update', 'delete'],
+      'feedback-category': ['create', 'read', 'update', 'delete'],
+      'feedback-item': ['create', 'read', 'update', 'delete'],
+      'feedback-request': ['create', 'read', 'update', 'delete', 'publish'],
+      'survey-template': ['create', 'read', 'update', 'delete'],
+      survey: ['create', 'read', 'update', 'delete', 'publish'],
+      'survey-response': ['read'],
+      'survey-analytics': ['read'],
+      announcement: ['create', 'read', 'update', 'delete', 'publish'],
       company: ['read'],
       user: ['read'],
       contact: ['read'],
@@ -111,8 +127,13 @@ const ROLE_DEFINITIONS: Array<{
       skill: ['read'],
       competency: ['read'],
       'competency-category': ['read'],
-      company: ['read'],
-      contact: ['read'],
+      'feedback-category': ['read'],
+      'feedback-item': ['create', 'read'],
+      'feedback-request': ['read'],
+      'survey-template': ['read'],
+      survey: ['read'],
+      'survey-response': ['create', 'read'],
+      announcement: ['read'],
     },
   },
   {

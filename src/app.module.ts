@@ -19,6 +19,7 @@ import { StateMachineModule } from './state-machine/state-machine.module';
 import { ActivityClientModule } from './activity-client/activity-client.module';
 import { LeaveModule } from './leave/leave.module';
 import { TimeManagementModule } from './time-management/time-management.module';
+import { FeedbackModule } from './feedback/feedback.module';
 import { ConfigService } from '@nestjs/config';
 import { initSupabase } from './supabase/supabase.client';
 
@@ -45,6 +46,7 @@ import { initSupabase } from './supabase/supabase.client';
     ActivityClientModule,
     LeaveModule,
     TimeManagementModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
 })
